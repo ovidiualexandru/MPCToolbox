@@ -35,14 +35,14 @@ Q_hat = Qsmall;
 A_hat = [-B eye(size(A,1))];
 b_hat = A*x0;
 
-for i = 2:N
+for i = 1:N-1
     C_hat = blkdiag(C_hat, Csmall);
     Q_hat = blkdiag(Q_hat, Qsmall);
     A_hat = blkdiag(A_hat, Asmall);
-    lines_l = nx + (i-2)*nx + 1;
-    lines_u = lines_l + nx - 1;
-    cols_l = nu + (i-2)*(nx + nu) + 1;
-    cols_u = cols_l + nx - 1;
+    lines_l = i*nx + 1;
+    lines_u = (i+1)*nx;
+    cols_l = i*nu + (i-1)*nx + 1;
+    cols_u = i*nu + i*nx;
     %[lines_l lines_u; cols_l cols_u]
     A_hat(lines_l: lines_u, cols_l: cols_u)= -A;
 end
