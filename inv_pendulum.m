@@ -1,9 +1,9 @@
 clear
 %% System and restrictions
-A = [ 1.0259    0.5040   0       0;
-      1.0389    1.0259   0       0;
-     -0.0006         0   1    0.05;
-     -0.0247    -0.0006  0       1];
+A = [ 1.0259     0.5040   0       0;
+      1.0389     1.0259   0       0;
+     -0.0006          0   1    0.05;
+     -0.0247    -0.0006   0       1];
  
 B = [-0.0013; -0.0504; 0.0006; 0.025];
 
@@ -14,18 +14,16 @@ Q = [ 1      0   0     0;
       0      0   1     0; 
       0      0   0  0.01];
   
-R = 1;
+R = 10;
 
-nu = size(B,2);
-nx = size(A,1);
+nu = size(B,2); %number of inputs
+nx = size(A,1); %number of states
 
 Cx =[ 1 0 0 0;
-     -1 0 0 0;
-    ];
+     -1 0 0 0];
 Cu = [0; 0];
 dx = [0.2; 0.2];
 %% Construct C_hat and Q_hat
-%Csmall = blkdiag(Cu,Cx);
 Csmall = [zeros(2,1) Cx]; 
 Qsmall = blkdiag(R,Q);
 Asmall = [-B eye(size(A,1))];
