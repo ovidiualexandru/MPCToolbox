@@ -49,16 +49,32 @@ end
 dx_hat = repmat(dx, [N 1]);
 b_hat = [b_hat; repmat(bsmall, [N-1 1])];
 q = zeros(size(Q_hat,1),1);
-options = optimoptions('quadprog', 'Algorithm', 'interior-point-convex');
+options = optimoptions('quadprog', ...
+    'Algorithm', 'interior-point-convex', 'Display', 'off');
 [Z,FVAL,EXITFLAG] = quadprog(Q_hat, q, C_hat, dx_hat, A_hat, b_hat,[],[],[], options);
 %% Plotting
+X = reshape(Z, 5,[]);
+X = X';
+u = X(:,1);
+X = X(:,2:5);
 figure(1);
-plot(Z(1:5:end));
-figure(2);
-plot(Z(2:5:end));
-figure(3);
-plot(Z(3:5:end));
-figure(4);
-plot(Z(4:5:end));
-figure(5);
-plot(Z(5:5:end));
+subplot(4,2,1);
+plot(u);
+title('Input u');
+grid on
+subplot(4,2,2);
+plot(X(:,1));
+title('Arm position x_1');
+grid on
+subplot(4,2,4);
+plot(X(:,2));
+title('Arm speed x_2');
+grid on
+subplot(4,2,6);
+plot(X(:,3));
+title('Trolley position x_3');
+grid on
+subplot(4,2,8);
+plot(X(:,4));
+title('Trolley speed x_4');
+grid on
