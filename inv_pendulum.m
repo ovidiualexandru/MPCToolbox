@@ -1,49 +1,43 @@
 clear
-%% System and restrictions
+%% System
 A = [ 1.0259     0.5040   0       0;
       1.0389     1.0259   0       0;
      -0.0006          0   1    0.05;
      -0.0247    -0.0006   0       1];
- 
 B = [-0.0013; -0.0504; 0.0006; 0.025];
-
-x0 = [0.2; 0; 0; 0];
- 
+x0 = [0.2; 0; 0; 0]; %Initial state
+%% Restrictions and cost matrices
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
       0      0   1     0; 
       0      0   0  0.01];
-  
-R = 10;
-
+R = 0.01;
+Cx =[ 1 0 0 0; -1 0 0 0];
+Cu = [0; 0];
+dx = [0.2; 0.2];
+%% Optimization problem definition
+N = 100;
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 
-Cx =[ 1 0 0 0;
-     -1 0 0 0];
-Cu = [0; 0];
-dx = [0.2; 0.2];
-%% Construct C_hat and Q_hat
 Csmall = [zeros(2,1) Cx]; 
 Qsmall = blkdiag(R,Q);
 Asmall = [-B eye(size(A,1))];
 bsmall= zeros(size(A,1),1);
-
-N = 25;
 C_hat = Csmall;
 Q_hat = Qsmall;
 A_hat = [-B eye(size(A,1))];
 b_hat = A*x0;
-
 for i = 1:N-1
+    %Add another element to the block diagonal matrices
     C_hat = blkdiag(C_hat, Csmall);
     Q_hat = blkdiag(Q_hat, Qsmall);
     A_hat = blkdiag(A_hat, Asmall);
+    %Add '-A' to the subdiagonal
     lines_l = i*nx + 1;
     lines_u = (i+1)*nx;
     cols_l = i*nu + (i-1)*nx + 1;
     cols_u = i*nu + i*nx;
-    %[lines_l lines_u; cols_l cols_u]
     A_hat(lines_l: lines_u, cols_l: cols_u)= -A;
 end
 dx_hat = repmat(dx, [N 1]);
