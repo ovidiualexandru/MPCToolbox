@@ -13,8 +13,8 @@ Q = [ 1      0   0     0;
       0      0   0  0.01];
 R = 0.01;
 dx = [0.2; inf; inf; inf;
-      0.2; inf; inf; inf]; %state constraints, positive and -negative
-du = [inf; inf]; %input constraints
+      -0.2; -inf; -inf; -inf]; %state constraints, positive and negative
+du = [inf; -inf]; %input constraints
 %% QP solve
 N = 200;
 Nc = 20;
@@ -41,47 +41,47 @@ t = 0:N-1;
 figure(1);
 subplot(4,2,1);
 plot(t,u);
-rescaleYLim(gca, [-constraints_u(2)*1.1 constraints_u(1)*1.1]);
+rescaleYLim(gca, [constraints_u(2) constraints_u(1)]*1.1);
 grid on
 title('Input u');
 line([0;N],[constraints_u(1);constraints_u(1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-line([0;N],[-constraints_u(2);-constraints_u(2)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+line([0;N],[constraints_u(2);constraints_u(2)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
 line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 
 subplot(4,2,2);
 plot(t,X(1,:));
-rescaleYLim(gca, [-constraints_x(2,1)*1.1 constraints_x(1,1)*1.1]);
+rescaleYLim(gca, [constraints_x(2,1) constraints_x(1,1)]*1.1);
 grid on
 title('Arm position x_1');
 line([0;N],[constraints_x(1,1);constraints_x(1,1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-line([0;N],[-constraints_x(2,1);-constraints_x(2,1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+line([0;N],[constraints_x(2,1);constraints_x(2,1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
 line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 
 subplot(4,2,4);
 plot(t,X(2,:));
-rescaleYLim(gca, [-constraints_x(2,2)*1.1 constraints_x(1,2)*1.1]);
+rescaleYLim(gca, [constraints_x(2,2) constraints_x(1,2)]*1.1);
 grid on
 title('Arm speed x_2');
 line([0;N],[constraints_x(1,2);constraints_x(1,2)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-line([0;N],[-constraints_x(2,2);-constraints_x(2,2)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+line([0;N],[constraints_x(2,2);constraints_x(2,2)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
 line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 
 subplot(4,2,6);
 plot(t,X(3,:));
 grid on
-rescaleYLim(gca, [-constraints_x(2,3)*1.1 constraints_x(1,3)*1.1]); 
+rescaleYLim(gca, [constraints_x(2,3) constraints_x(1,3)]*1.1); 
 title('Trolley position x_3');
 line([0;N],[constraints_x(1,3);constraints_x(1,3)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-line([0;N],[-constraints_x(2,3);-constraints_x(2,3)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+line([0;N],[constraints_x(2,3);constraints_x(2,3)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
 line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 
 subplot(4,2,8);
 plot(t,X(4,:));
-rescaleYLim(gca, [-constraints_x(2,4)*1.1 constraints_x(1,4)*1.1]);
+rescaleYLim(gca, [constraints_x(2,4) constraints_x(1,4)]*1.1);
 grid on
 title('Trolley speed x_4');
 line([0;N],[constraints_x(1,4);constraints_x(1,4)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-line([0;N],[-constraints_x(2,4);-constraints_x(2,4)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+line([0;N],[constraints_x(2,4);constraints_x(2,4)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
 line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 
 axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');

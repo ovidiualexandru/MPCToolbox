@@ -2,6 +2,8 @@ function [u, X, FVAL, EXITFLAG] = qp_fullstate(A, B, Q, R, Nc, du, dx, x0)
 %% QP definition
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
+du(end/2+1:end) = -du(end/2+1:end); %convert negative constraints to positive
+dx(end/2+1:end) = -dx(end/2+1:end); %convert negative constraints to positive
 Cx = [eye(nx); -eye(nx)];
 Cu = [eye(nu); -eye(nu)];
 Csmall = blkdiag(Cu,Cx); 
