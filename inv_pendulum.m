@@ -6,6 +6,11 @@ A = [ 1.0259     0.5040   0       0;
      -0.0247    -0.0006   0       1];
 B = [-0.0013; -0.0504; 0.0006; 0.025];
 x0 = [0.2; 0; 0; 0]; %Initial state
+N = 200; % simulation steps
+Nc = 20; % control and prediction horizon
+d = zeros(4,N); %disturbance vector
+dist_k = 60;
+d(2, dist_k) = -0.5;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
@@ -16,16 +21,11 @@ dx = [0.2; inf; inf; inf;
       -0.2; -inf; -inf; -inf]; %state constraints, positive and negative
 du = [inf; -inf]; %input constraints
 %% QP solve
-N = 200;
-Nc = 20;
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 X = zeros(nx, N); %save all states, for plotting
 u = zeros(nu, N); %save all inputs
 x = x0;
-d = zeros(4,N);
-dist_k = 60;
-d(2, dist_k:end) = 0;
 for i = 1:N
     X(:,i) = x; %save current state
     [ue, Xe] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);    
