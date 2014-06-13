@@ -30,8 +30,9 @@ d_hat = repmat([du;dx], [Nc 1]);
 b_hat = [b_hat; repmat(bsmall, [Nc-1 1])];
 q = zeros(size(Q_hat,1),1);
 %% QP solver
-options = optimoptions('quadprog', ...
-    'Algorithm', 'interior-point-convex', 'Display', 'off');
+% options = optimoptions('quadprog', ...
+%     'Algorithm', 'interior-point-convex', 'Display', 'off'); %Matlab 2013
+options = optimset('Algorithm', 'interior-point-convex', 'Display', 'off'); % Matlab 2011
 [Z,FVAL,EXITFLAG] = quadprog(Q_hat, q, C_hat, d_hat, A_hat, b_hat,[],[],[], options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
