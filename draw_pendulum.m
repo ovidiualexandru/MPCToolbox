@@ -4,7 +4,7 @@ y1 = y0 - round(cos(theta)*l);
 x1 = x0 - round(sin(theta)*l);
 circles = [x1 y1 br];
 shapeInserter = vision.ShapeInserter('Shape', 'Circles', 'Fill', 1, ...
-    'Opacity', 1);
+    'Opacity', 1, 'Antialiasing', 1);
 I = ones(height, width); % create a blank image
 J = step(shapeInserter, I, circles);
 release(shapeInserter);
