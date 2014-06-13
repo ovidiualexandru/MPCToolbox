@@ -5,12 +5,12 @@ A = [ 1.0259     0.5040   0       0;
      -0.0006          0   1    0.05;
      -0.0247    -0.0006   0       1];
 B = [-0.0013; -0.0504; 0.0006; 0.025];
-x0 = [0.2; 0; 0; 0]; %Initial state
+x0 = [0.2; 0; -0.1; 0]; %Initial state
 N = 200; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
 dist_k = 60;
-d(2, dist_k) = -0.5;
+d(2, dist_k) = -0.1;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
@@ -31,7 +31,7 @@ for i = 1:N
     [ue, Xe] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);    
     u(i) = ue(1); %use only the first command from predictions
     x = A*x + B*u(i); %compute next state
-    x = x + 0.00.*rand(nx,1).*x + d(:,i); %add disturbance
+    x = x + 0.03.*rand(nx,1).*x + d(:,i); %add noise and disturbance
 end
 %% Plotting
 constraints_x = reshape(dx,[],2)';
