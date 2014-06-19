@@ -1,4 +1,4 @@
-function x = quanser_sl_cont(h, x0, u)
+function [A,B] = quanser_sl_cont(x0, u)
 % h - timestep
 % x0 - initial state
 % x - new state
@@ -55,6 +55,3 @@ A = [ 0 1 0 0 0 0;
 G1 = [0 p4*cos(theta*pi/180) 0 p8 0 p10*sin(theta*pi/180)]';
 G2 = [0 p4*cos(theta*pi/180) 0 -p8 0 p10*sin(theta*pi/180)]';
 B = [G1 G2];
-%% Calculate new state
-x = x0 + h*(A*x0 + B*u);
-% x = A*x0 + B*u;

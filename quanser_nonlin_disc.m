@@ -1,4 +1,4 @@
-function x = quanser_nonlin_disc(h, x0, u)
+function [F, G] = quanser_nonlin_disc(x0)
 % h - timestep
 % x0 - initial state
 % x - new state
@@ -53,5 +53,3 @@ F = [ epsilon_d;
 G1 = [0 p4*cos(theta*pi/180) 0 p8 0 p10*sin(theta*pi/180)]';
 G2 = [0 p4*cos(theta*pi/180) 0 -p8 0 p10*sin(theta*pi/180)]';
 G = [G1 G2];
-%% Calculate new state
-x = x0 + h*(F + G*u);
