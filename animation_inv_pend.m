@@ -1,6 +1,6 @@
 %% Tunables
 vid_width = 1000;
-vid_height = 640;
+vid_height = 700;
 %% Preparations
 t = 0:N-1;
 figh = figure(2);
@@ -57,13 +57,15 @@ titlestring = sprintf('Run with N=%d, Nc = %d',N,Nc);
 text(0.5, 1, ['\bf ' titlestring],'HorizontalAlignment','center','VerticalAlignment', 'top');
 %% Draw dynamic images and save to file
 subplot(4,2, [5,7]);
-im_width = 200;
-im_height = 70;
-y0 = im_height - 15;
-br = 3;
-l = 50;
-t_height = 10;
+set(gca, 'Units', 'Pixels');
+d = get(gca, 'Position');
+im_width = round(d(3));
+im_height = round(d(4));
+t_height = 20;
 t_width = 30;
+br = 4;
+l = 100;
+y0 = im_height - t_height - 15;
 for i = 1:N
     set(l1, 'XData', [t(i); t(i)]);
     set(l2, 'XData', [t(i); t(i)]);
