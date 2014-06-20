@@ -27,7 +27,7 @@ for i = 1:N
     xd = f(1:6);
     x = x + h*xd;
 end
-%% Succesive Liniarization discrete model
+%% Succesive Liniarization model, discretized with c2d 
 Xbard = zeros(nx, N); %save all states, for plotting
 x = x0;
 [A,B] = quanser_cont_sl(x,u(:,1)); %Initial (A,B) pair
@@ -58,12 +58,24 @@ end
 t = 1:N;
 
 figure(1);
-clf
-% set(gcf, 'Units', 'normalized');
-% set(gcf, 'Position', [1 0.4 1 0.5]); % set the figure at 50% height screen 2
+clf;
 whitebg([0 0 0]);
 
-subplot(2,3,1);
+%Plot the input 3 times, for each state pair
+for i = 1:3
+    subplot(3,3,i);
+    plot(t, u(1,:) ,'y--', t, u(2,:), 'c--');
+    title('Inputs');
+    grid on
+    xlabel('[k]');
+    ylabel('[volts]');
+    if i == 1
+        legend('Vf', 'Vb', 'Location', 'Best');
+    end
+end
+
+%Plot the states
+subplot(3,3,1+3);
 plot(t,Xtil(1,:), 'b-');
 title('Elevation angle $\epsilon$','Interpreter','latex');
 hold on
@@ -76,7 +88,7 @@ grid on
 legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
 hold off
 
-subplot(2,3,4);
+subplot(3,3,4+3);
 plot(t,Xtil(2,:), 'b-');
 title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
 hold on
@@ -88,7 +100,7 @@ ylabel('[deg/s]');
 grid on
 hold off
 
-subplot(2,3,2);
+subplot(3,3,2+3);
 plot(t,Xtil(3,:), 'b-');
 title('Pitch angle $\theta$','Interpreter','latex');
 hold on
@@ -100,7 +112,7 @@ ylabel('[deg]');
 grid on
 hold off
 
-subplot(2,3,5);
+subplot(3,3,5+3);
 plot(t,Xtil(4,:), 'b-');
 title('Pitch speed $\dot{\theta}$','Interpreter','latex');
 hold on
@@ -112,7 +124,7 @@ ylabel('[deg/s]');
 grid on
 hold off
 
-subplot(2,3,3);
+subplot(3,3,3+3);
 plot(t,Xtil(5,:), 'b-');
 title('Travel angle $\phi$','Interpreter','latex');
 hold on
@@ -124,7 +136,7 @@ ylabel('[deg]');
 grid on
 hold off
 
-subplot(2,3,6);
+subplot(3,3,6+3);
 plot(t,Xtil(6,:), 'b-');
 title('Travel speed $\dot{\phi}$','Interpreter','latex');
 hold on
@@ -135,13 +147,3 @@ xlabel('[k]');
 ylabel('[deg/s]');
 grid on
 hold off
-
-figure(2);
-clf
-whitebg([0 0 0]);
-plot(t, u(1,:) ,'y-', t, u(2,:), 'c--');
-title('Inputs');
-grid on
-legend('Vf', 'Vb', 'Location', 'Best');
-xlabel('[k]');
-ylabel('[volts]');
