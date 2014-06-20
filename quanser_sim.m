@@ -1,4 +1,13 @@
 clear
+%% *Simulate Quanser helicopter*
+% This is a script that simulates the Quanser 3-DOF helicopter and plots
+%   the results in figure 1.
+% This file needs the following files to be in the same directory:
+%   - _quanser_params.m_ : load model coefficients
+%   - _quanser_cont_nl.m_ : nonlinear model state derivative estimation
+%   - _quanser_con_sl.m_ : successive linearizations model
+%
+
 %% Initialization
 x0 = [45; 0; 5; 0; 30; 0]; %Initial state
 N = 50; % samples

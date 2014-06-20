@@ -1,64 +1,42 @@
 function [A,B] = quanser_cont_sl(x0, u)
-% x0 - initial state
-% u - inputs
-% A,B - linearized model pair
+%% *Continous SL model for the Quanser helicopter*
+% The model is taken from here: 
+% <https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf>
+% The state vector is defined ( <_d> meaning derived):
+% x = [epsilon epsilon_d theta theta_d phi phi_d]';
+% Parameters:
+% - x0 : initial state.
+% - u : a 2-by-1 vector containing the inputs
+% - A,B - linearized model pair
 %% Model params
-Jepsilon = 0.86; %kg*m^2
-Jtheta = 0.044; %kg*m^2
-Jphi = 0.82; %kg*m^2
-La = 0.62; %m
-Lc = 0.44; %m
-Ld = 0.05; %m
-Le = 0.02; %m
-Lh = 0.177; %m
-Mf = 0.69; %kg
-Mb = 0.69; %kg
-Mc = 1.69; %kg
-Km = 0.5; %N/V
-g = 9.81; %m/s^2;
-niu_epsilon = 0.001; %kg*m^2/s
-niu_theta = 0.001; %kg*m^2/s
-niu_phi = 0.005; %kg*m^2/s
-
 epsilon = x0(1);
 epsilon_d = x0(2);
 theta = x0(3);
 theta_d = x0(4);
 phi = x0(5);
 phi_d = x0(6);
-
-deltaa = atan((Ld+Le)/La);
-deltac = atan(Ld/Lc);
-deltah = atan(Le/Lh);
-
-p1 = (-(Mf + Mb)*g*La + Mc*g*Lc) / Jepsilon;
-p2 = (-(Mf + Mb)*g*La*tan(deltaa)+ Mc*g*Lc*tan(deltac))/Jepsilon;
-p3 = -niu_epsilon/Jepsilon;
-p4 = Km*La/Jepsilon;
-p5 = (-Mf + Mb)*g*Lh/Jtheta;
-p6 = -(Mf + Mb)*g*Lh*tan(deltah)/Jtheta;
-p7 = -niu_theta/Jtheta;
-p8 = Km*Lh/Jtheta;
-p9 = -niu_phi/Jphi;
-p10 = -Km*La/Jphi;
-
 Vf = u(1);
 Vb = u(2);
+p = quanser_params();
 %% Model matrices
-a21 = -p1 * sin(epsilon*pi/180) + p2 * cos(epsilon*pi/180);
-a22 = p3;
-a23 = -p4 * sin(theta*pi/180) * (Vf+Vb);
-a43 = -p5 * sin(theta*pi/180) + p6 * cos(theta*pi/180);
-a44 = p7;
-a63 = p10 * cos(theta*pi/180) * (Vf+Vb);
-a66 = p9;
+a21 = -p(1) * sin(epsilon*pi/180) + p(2) * cos(epsilon*pi/180);
+a22 = p(3);
+a23 = -p(4) * sin(theta*pi/180) * (Vf + Vb);
+a43 = -p(5) * sin(theta*pi/180) + p(6) * cos(theta*pi/180);
+a44 = p(7);
+a63 = p(10) * cos(theta*pi/180) * (Vf+Vb);
+a66 = p(9);
 A = [ 0  , 1  , 0  , 0  , 0  , 0  ;
       a21, a22, a23, 0  , 0  , 0  ;
       0  , 0  , 0  , 1  , 0  , 0  ;
       0  , 0  , a43, a44, 0  , 0  ;
       0  , 0  , 0  , 0  , 0  , 1  ;
       0  , 0  , a63, 0  , 0  , a66;
-    ]; 
-G1 = [0 p4*cos(theta*pi/180) 0 p8 0 p10*sin(theta*pi/180)]';
-G2 = [0 p4*cos(theta*pi/180) 0 -p8 0 p10*sin(theta*pi/180)]';
+    ];
+
+g2 = p(4)*cos(theta*pi/180);
+g4 = p(8);
+g6 = p(10)*sin(theta*pi/180);
+G1 = [0; g2; 0; g4; 0; g6];
+G2 = [0; g2; 0; -g4; 0; g6];
 B = [G1 G2];

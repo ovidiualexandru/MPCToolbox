@@ -7,60 +7,33 @@ function f = quanser_cont_nl(t, y)
 % Parameters:
 % - t : time-instant (required by ode45), not used in function.
 % - y : an 8-by-1 vector with the initial state and inputs. y = [x0;u]
-% - f : the derived state, padded with zeros (assuming constant inputs). f = [xd; zeros(2,1)];
-%       where xd = F + G*u
+% - f : the derived state, padded with zeros (assuming constant inputs). 
+%       f = [xd; zeros(2,1)]; where xd = F + G*u
 x0 = y(1:6);
 u = y(7:8);
-%% Model params
-Jepsilon = 0.86; %kg*m^2
-Jtheta = 0.044; %kg*m^2
-Jphi = 0.82; %kg*m^2
-La = 0.62; %m
-Lc = 0.44; %m
-Ld = 0.05; %m
-Le = 0.02; %m
-Lh = 0.177; %m
-Mf = 0.69; %kg
-Mb = 0.69; %kg
-Mc = 1.69; %kg
-Km = 0.5; %N/V
-g = 9.81; %m/s^2;
-niu_epsilon = 0.001; %kg*m^2/s
-niu_theta = 0.001; %kg*m^2/s
-niu_phi = 0.005; %kg*m^2/s
-
+%% Model 
 epsilon = x0(1);
 epsilon_d = x0(2);
 theta = x0(3);
 theta_d = x0(4);
 phi = x0(5);
 phi_d = x0(6);
-
-deltaa = atan((Ld+Le)/La);
-deltac = atan(Ld/Lc);
-deltah = atan(Le/Lh);
-
-p1 = (-(Mf + Mb)*g*La + Mc*g*Lc) / Jepsilon;
-p2 = (-(Mf + Mb)*g*La*tan(deltaa)+ Mc*g*Lc*tan(deltac))/Jepsilon;
-p3 = -niu_epsilon/Jepsilon;
-p4 = Km*La/Jepsilon;
-p5 = (-Mf + Mb)*g*Lh/Jtheta;
-p6 = -(Mf + Mb)*g*Lh*tan(deltah)/Jtheta;
-p7 = -niu_theta/Jtheta;
-p8 = Km*Lh/Jtheta;
-p9 = -niu_phi/Jphi;
-p10 = -Km*La/Jphi;
+p = quanser_params();
 %% Model matrices
-F = [ epsilon_d;
-      p1*cos(epsilon*pi/180) + p2*(sin(epsilon*pi/180)) + p3*epsilon_d;
-      theta_d;
-      p5*cos(theta*pi/180) + p6*sin(theta*pi/180) + p7*theta_d;
-      phi_d;
-      p9*phi_d;
-    ];
-G1 = [0 p4*cos(theta*pi/180) 0 p8 0 p10*sin(theta*pi/180)]';
-G2 = [0 p4*cos(theta*pi/180) 0 -p8 0 p10*sin(theta*pi/180)]';
+f1 = epsilon_d;
+f2 = p(1)*cos(epsilon*pi/180) + p(2)*sin(epsilon*pi/180) + p(3)*epsilon_d;
+f3 = theta_d;
+f4 = p(5)*cos(theta*pi/180) + p(6)*sin(theta*pi/180) + p(7)*theta_d;
+f5 = phi_d;
+f6 = p(9)*phi_d;
+F = [ f1; f2; f3; f4; f5; f6];
+
+g2 = p(4)*cos(theta*pi/180);
+g4 = p(8);
+g6 = p(10)*sin(theta*pi/180);
+G1 = [0; g2; 0; g4; 0; g6];
+G2 = [0; g2; 0; -g4; 0; g6];
 G = [G1 G2];
-%% Calculate new state
+%% Calculate derived state
 xd = F + G*u;
 f = [xd; zeros(2,1)];
