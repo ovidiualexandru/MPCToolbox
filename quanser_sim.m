@@ -1,12 +1,12 @@
 clear
 %% Initialization
-x0 = [20; 0; 10; 0; 5; 0]; %Initial state
-N = 15; % samples
-h = 0.1; % s - sampling time
+x0 = [45; 0; 0; 0; 0; 0]; %Initial state
+N = 200; % samples
+h = 0.01; % s - sampling time
 nu = 2;
 nx = 6;
 %% Input signal shape
-u = zeros(nu, N);
+u = ones(nu, N);
 u(:,11:50) = repmat([0.5; 3],1,40);
 u(:, 51: 100) = repmat([3.6; 1],1,50);
 u(:, 101:150) = repmat([1.1; 1.1],1,50);
@@ -59,10 +59,9 @@ t = 1:N;
 
 figure(1);
 clf
-set(gcf, 'Units', 'normalized');
-set(gcf, 'Position', [1 0.4 1 0.5]); % set the figure at 50% height screen 2
+% set(gcf, 'Units', 'normalized');
+% set(gcf, 'Position', [1 0.4 1 0.5]); % set the figure at 50% height screen 2
 whitebg([0 0 0]);
-
 
 subplot(2,3,1);
 plot(t,Xtil(1,:), 'b-');
@@ -136,3 +135,13 @@ xlabel('[k]');
 ylabel('[deg/s]');
 grid on
 hold off
+
+figure(2);
+clf
+whitebg([0 0 0]);
+plot(t, u(1,:) ,'y-', t, u(2,:), 'c--');
+title('Inputs');
+grid on
+legend('Vf', 'Vb', 'Location', 'Best');
+xlabel('[k]');
+ylabel('[volts]');
