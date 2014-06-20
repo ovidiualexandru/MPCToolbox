@@ -1,10 +1,13 @@
 function f = quanser_nonlin_cont(t, y)
-%% Intro
-% *Continous nonlinear model for the Quanser helicopter*
+%% *Continous nonlinear model for the Quanser helicopter*
 % The model is taken from here: 
 % <https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf>
 % The state vector is defined ( <_d> meaning derived):
 % x = [epsilon epsilon_d theta theta_d phi phi_d]';
+% Parameters:
+% - t : time-instant (required by ode45), not used in function.
+% - y : an 8-by-1 vector with the initial state and inputs. y = [x0;u]
+% - f : the derived state, padded with zeros (assuming constant inputs). f = [xd; zeros(2,1)];
 x0 = y(1:6);
 u = y(7:8);
 %% Model params
@@ -58,5 +61,5 @@ G1 = [0 p4*cos(theta*pi/180) 0 p8 0 p10*sin(theta*pi/180)]';
 G2 = [0 p4*cos(theta*pi/180) 0 -p8 0 p10*sin(theta*pi/180)]';
 G = [G1 G2];
 %% Calculate new state
-x = F + G*u;
-f = [x; 0;0];
+xd = F + G*u;
+f = [xd; zeros(2,1)];

@@ -1,8 +1,7 @@
 function [A,B] = quanser_sl_cont(x0, u)
-% h - timestep
 % x0 - initial state
-% x - new state
 % u - inputs
+% A,B - linearized model pair
 %% Model params
 Jepsilon = 0.86; %kg*m^2
 Jtheta = 0.044; %kg*m^2
@@ -27,8 +26,6 @@ theta = x0(3);
 theta_d = x0(4);
 phi = x0(5);
 phi_d = x0(6);
-Vf = u(1);
-Vb = u(2);
 
 deltaa = atan((Ld+Le)/La);
 deltac = atan(Ld/Lc);
@@ -44,6 +41,9 @@ p7 = -niu_theta/Jtheta;
 p8 = Km*Lh/Jtheta;
 p9 = -niu_phi/Jphi;
 p10 = -Km*La/Jphi;
+
+Vf = u(1);
+Vb = u(2);
 %% Model matrices
 A = [ 0 1 0 0 0 0;
     -p1*sin(epsilon*pi/180), p3, -p4*sin(theta*pi/180)*(Vf+Vb),0 ,0 ,0;

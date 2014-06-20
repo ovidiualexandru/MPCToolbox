@@ -4,13 +4,13 @@ x0 = [20; 0; 10; 0; 5; 0]; %Initial state
 N = 300; % samples
 h = 0.1; % s - sampling time
 nu = 2;
-nx = length(x0);
-%% Define inputs
+nx = 6;
+%% Input signal shape
 u = zeros(nu, N);
 u(:,11:50) = repmat([0.5; 3],1,40);
 u(:, 51: 100) = repmat([3.6; 1],1,50);
 u(:, 101:150) = repmat([1.1; 1.1],1,50);
-%% Continous nonlinear model
+%% Nonlinear model with ode45
 Xtil = zeros(nx, N); %save all states, for plotting
 x = x0;
 for i = 1:N
@@ -18,7 +18,7 @@ for i = 1:N
     [Tout, Yout] = ode45(@quanser_nonlin_cont, [0 h], [x; u(:,i)]);
     x = Yout(end, 1:6)'; %get new state
 end
-%% Discrete nonlinear model - Euler discretization
+%% Nonlinear model with euler discretization
 Xhat = zeros(nx, N); %save all states, for plotting
 x = x0;
 for i = 1:N
@@ -26,7 +26,7 @@ for i = 1:N
     [F, G] = quanser_nonlin_disc(x);
     x = x + h*(F + G*u(:,i));
 end
-%% Discrete linear model - Successive linearizations
+%% Succesive Liniarization model with euler discretization
 Xbar = zeros(nx, N); %save all states, for plotting
 x = x0;
 [A,B] = quanser_sl_cont(x,u(:,1)); %Initial (A,B) pair

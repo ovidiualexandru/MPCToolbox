@@ -1,8 +1,6 @@
 function [F, G] = quanser_nonlin_disc(x0)
-% h - timestep
 % x0 - initial state
-% x - new state
-% u - inputs
+% F,G - model matrices for nonlinear function \dot{x} = F + G*u
 %% Model params
 Jepsilon = 0.86; %kg*m^2
 Jtheta = 0.044; %kg*m^2
