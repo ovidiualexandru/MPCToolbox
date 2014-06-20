@@ -15,7 +15,7 @@ Xtil = zeros(nx, N); %save all states, for plotting
 x = x0;
 for i = 1:N
     Xtil(:,i) = x; %save current state
-    [Tout, Yout] = ode45(@quanser_nonlin_cont, [0 h], [x; u(:,i)]);
+    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u(:,i)]);
     x = Yout(end, 1:6)'; %get new state
 end
 %% Nonlinear model with euler discretization
@@ -23,20 +23,21 @@ Xhat = zeros(nx, N); %save all states, for plotting
 x = x0;
 for i = 1:N
     Xhat(:,i) = x; %save current state
-    [F, G] = quanser_nonlin_disc(x);
-    x = x + h*(F + G*u(:,i));
+    f = quanser_cont_nl([],[x; u(:,i)]);
+    xd = f(1:6);
+    x = x + h*xd;
 end
 %% Succesive Liniarization model with euler discretization
 Xbar = zeros(nx, N); %save all states, for plotting
 x = x0;
-[A,B] = quanser_sl_cont(x,u(:,1)); %Initial (A,B) pair
+[A,B] = quanser_cont_sl(x,u(:,1)); %Initial (A,B) pair
 for i = 1:N
     Xbar(:,i) = x; %save current state
-    [A,B] = quanser_sl_cont(x,u(:,i)); %uncomment this to recalculate
-%     (A,B) for each timestep
-    x = x + h*(A*x + B*u(:,i));
+    [A,B] = quanser_cont_sl(x,u(:,i)); %recalculate (A,B) for each timestep
+    xd = A*x + B*u(:,i);
+    x = x + h*xd;
 end
-Xbar = zeros(nx, N);
+% Xbar = zeros(nx, N);
 %% Plotting 
 t = 0:h:((N-1)*h);
 
