@@ -1,4 +1,4 @@
-function [A,B] = quanser_cont_sl(x0, u)
+function [A,B,g] = quanser_cont_sl(x0, u)
 %% *Continous SL model for the Quanser helicopter*
 % The model is taken from here: 
 % <https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf>
@@ -7,7 +7,11 @@ function [A,B] = quanser_cont_sl(x0, u)
 % Parameters:
 % - x0 : initial state.
 % - u : a 2-by-1 vector containing the inputs
-% - A,B - linearized model pair
+% - A,B : linearized model pair
+% - g : the affine term in x_d = A*x + B*u + g;
+%       g = f(xk,uk) - A*xk - B*uk;
+%       f(xk,uk) - x_d from the NL model (quanser_cont_nl)
+% - xd : the calculated nonlinear derived state, x_d
 %% Model params
 epsilon = x0(1);
 epsilon_d = x0(2);
@@ -40,3 +44,6 @@ g6 = p(10)*sin(theta*pi/180);
 G1 = [0; g2; 0; g4; 0; g6];
 G2 = [0; g2; 0; -g4; 0; g6];
 B = [G1 G2];
+f = quanser_cont_nl([], [x0; u]);
+xd = f(1:6);
+g = xd - A*x0 - B*u;
