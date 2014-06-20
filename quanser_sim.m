@@ -1,15 +1,15 @@
 clear
 %% Initialization
-x0 = [45; 0; 0; 0; 0; 0]; %Initial state
-N = 200; % samples
-h = 0.01; % s - sampling time
+x0 = [45; 0; 5; 0; 30; 0]; %Initial state
+N = 50; % samples
+h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 %% Input signal shape
 u = ones(nu, N);
-u(:,11:50) = repmat([0.5; 3],1,40);
-u(:, 51: 100) = repmat([3.6; 1],1,50);
-u(:, 101:150) = repmat([1.1; 1.1],1,50);
+u(:, 1:20) = repmat([5; 5],1,20);
+u(:, 21: 30) = repmat([3.7; 2.5],1,10);
+u(:, 31:50) = repmat([3.5; 3.2],1,20);
 %% Nonlinear model with ode45
 Xtil = zeros(nx, N); %save all states, for plotting
 x = x0;
