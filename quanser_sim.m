@@ -10,16 +10,19 @@ clear
 
 %% Initialization
 x0 = [45; 0; 5; 0; 30; 0]; %Initial state
-N = 150; % samples
+N = 10; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-l = 2; %SL horizon i.e. how many steps until a new affine term is calculated
+l = 5; %SL horizon i.e. how many steps until a new affine term is calculated
 %% Input signal shape
 u = ones(nu, N);
-u(:, 1:30) = repmat([3; 3],1,30);
-u(:, 31: 60) = repmat([5; 0],1,30);
-u(:, 61:90) = repmat([0; 5],1,30);
+% u(:, 1:30) = repmat([3; 3],1,30);
+% u(:, 31: 60) = repmat([5; 0],1,30);
+% u(:, 61:90) = repmat([0; 5],1,30);
+u(1,1:5) = [2 3 2.3 0 3];
+u(2,1:5) = [2.2 2.1 1.3 4 3];
+u(:,6:10) = ones(2,5)*3;
 %% Nonlinear model with ode45
 Xtil = zeros(nx, N); %save all states, for plotting
 x = x0;
@@ -45,15 +48,17 @@ C = [1 0 0 0 0 0; 0 0 0 0 1 0];
 for i = 1:N
     Xbard(:,i) = x; %save current state
     if mod(i,l) == 0
-        [A,B,~] = quanser_cont_sl(x,u(:,i)); %recalculate (A,B,g)
+        [A,B,g] = quanser_cont_sl(x,u(:,i)); %recalculate (A,B,g)
     end
     sys = ss(A,B,C,0);
     sysd = c2d(sys,h, 'zoh');
+    sysd.a = eye(nx) + h*A;
+    sysd.b = h*B;
     Ad = sysd.a;
     Bd = sysd.b;
-    x = Ad*x + Bd*u(:,i);
+    x = Ad*x + Bd*u(:,i) + h*g;
 end
-Xbard = zeros(nx, N);
+% Xbard = zeros(nx, N);
 %% Succesive Liniarization model with euler discretization
 Xbarc = zeros(nx, N); %save all states, for plotting
 x = x0;
