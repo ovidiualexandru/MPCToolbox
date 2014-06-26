@@ -57,7 +57,8 @@ for i = 1:N
 %     x = x + 0.0.*rand(nx,1).*x ; %add noise and disturbance
 end
 %% Plotting
-t = 1:N;
+tk = 1:N;
+t = ((1:N)-1) * h;
 
 figure(1);
 clf;
@@ -65,20 +66,31 @@ whitebg([0 0 0]);
 
 %Plot the input 3 times, for each state pair
 for i = 1:3
-    subplot(3,3,i);
-    plot(t, u(1,:) ,'y--', t, u(2,:), 'c:');
+    haxes = subplot(3,3,i);
+    %Plot the secondary X Axis first - because of grid
+    plot(t, U(1,:) ,'y--', t, U(2,:), 'c:', 'Parent', haxes);
+    set(haxes, 'XAxisLocation', 'top');
+    xlabel('t [s]');
+    ylabel('[volts]');
     title('Inputs');
     grid on
-    xlabel('[k]');
-    ylabel('[volts]');
+    hold on
+    %Now the primary X Axis
+    haxes_pos = get(haxes, 'Position');
+    haxes2 = axes('Position', haxes_pos, 'Color', 'none');
+    plot(tk, U(1,:) ,'y--', tk, U(2,:), 'c:', 'Parent', haxes2);
+    xlabel('samples [k]');
+    grid on
+    hold off
     if i == 1
         legend('Vf', 'Vb', 'Location', 'Best');
     end
+    
 end
 
 %Plot the states
 subplot(3,3,1+3);
-plot(t,X(1,:), 'b-');
+plot(tk,X(1,:), 'b-');
 title('Elevation angle $\epsilon$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
@@ -86,35 +98,35 @@ grid on
 legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
 
 subplot(3,3,4+3);
-plot(t,X(2,:), 'b-');
+plot(tk,X(2,:), 'b-');
 title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg/s]');
 grid on
 
 subplot(3,3,2+3);
-plot(t,X(3,:), 'b-');
+plot(tk,X(3,:), 'b-');
 title('Pitch angle $\theta$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
 grid on
 
 subplot(3,3,5+3);
-plot(t,X(4,:), 'b-');
+plot(tk,X(4,:), 'b-');
 title('Pitch speed $\dot{\theta}$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg/s]');
 grid on
 
 subplot(3,3,3+3);
-plot(t,X(5,:), 'b-');
+plot(tk,X(5,:), 'b-');
 title('Travel angle $\phi$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
 grid on
 
 subplot(3,3,6+3);
-plot(t,X(6,:), 'b-');
+plot(tk,X(6,:), 'b-');
 title('Travel speed $\dot{\phi}$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg/s]');
