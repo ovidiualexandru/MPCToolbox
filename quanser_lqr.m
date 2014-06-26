@@ -1,7 +1,7 @@
 clear
 %% System initialization
-x0 = [45; 2; 25; 0; 30; 0]; %Initial state
-u0 = [1.8865; 1.936]; % [Vf Vb] initial inputs
+x0 = [90; 0; 30; 20; 30; 0]; %Initial state
+u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 2000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
@@ -13,16 +13,16 @@ R = diag([0.01, 0.01],0);
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
-u = u0;
 x = x0;
-X(:,1) = x;
-U(:,1) = u;
+u = u0;
 [A,B,g] = quanser_cont_sl(x,u); %Initial (A,B,g) pair
 K = lqr(A,B,Q,R,0);
 x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% LQR solve
-for i = 2:N
+for i = 1:N
+    X(:,i) = x; % save states
+    U(:,i) = u; % save inputs
     [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
     x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
     if mod(i,Nc) == 0
@@ -37,8 +37,6 @@ for i = 2:N
     end
     ubar = -K*(x - x_o);
     u = ubar + u_o; % new input
-    X(:,i) = x; % save states
-    U(:,i) = u; % save inputs
 end
 %% Plotting
 tk = 1:N;
