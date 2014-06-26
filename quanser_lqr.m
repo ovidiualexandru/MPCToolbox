@@ -25,6 +25,8 @@ for i = 1:N
     U(:,i) = u; % save inputs
     [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
     x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
+    ubar = -K*(x - x_o);
+    u = ubar + u_o; % new input
     if mod(i,Nc) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
@@ -35,8 +37,6 @@ for i = 1:N
             fprintf('\n');
         end
     end
-    ubar = -K*(x - x_o);
-    u = ubar + u_o; % new input
 end
 %% Plotting
 tk = 1:N;
