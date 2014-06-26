@@ -42,7 +42,6 @@ for i = 2:N
 end
 %% Plotting
 tk = 1:N;
-t = ((1:N)-1) * h;
 
 figure(1);
 clf;
@@ -50,26 +49,16 @@ whitebg([0 0 0]);
 
 %Plot the input 3 times, for each state pair
 for i = 1:3
-    haxes = subplot(3,3,i);
-    %Plot the secondary X Axis first - because of grid
-    plot(t, U(1,:) ,'y--', t, U(2,:), 'c:', 'Parent', haxes);
-    set(haxes, 'XAxisLocation', 'top');
-    xlabel('t [s]');
-    ylabel('[volts]');
-    title('Inputs');
-    grid on
-    hold on
-    %Now the primary X Axis
-    haxes_pos = get(haxes, 'Position');
-    haxes2 = axes('Position', haxes_pos, 'Color', 'none');
-    plot(tk, U(1,:) ,'y--', tk, U(2,:), 'c:', 'Parent', haxes2);
+    subplot(3,3,i);
+    plot(tk, U(1,:) ,'y--', tk, U(2,:), 'c:');
     xlabel('samples [k]');
+    ylabel('[volts]');
     grid on
     hold off
     if i == 1
         legend('Vf', 'Vb', 'Location', 'Best');
     end
-    
+    title('Inputs');
 end
 
 %Plot the states
