@@ -1,15 +1,15 @@
 clear
 %% System initialization
-x0 = [20; 0; 10; 0; 0; 0]; %Initial state
+x0 = [15; 0; 30; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 2000; % samples
+N = 1000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Nc = 4; % control and prediction horizon
+Np = 5; % control and prediction horizon
 %% Cost matrices and constraints
-Q = diag([1, 0.1, 1, 0.1, 1, 0.1],0);
-R = diag([3, 3],0);
+Q = diag([1, 0.01, 1, 0.01, 1, 0.01],0);
+R = diag([0.3, 0.3],0);
 dx = [inf; inf; inf; inf; inf; inf;
       -inf; -inf; -inf; -inf; -inf; -inf]; %state constraints, positive and negative
 du = [inf; inf;
@@ -31,25 +31,25 @@ x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% MPC solve
 for i = 1:N
+    [ue, Xe] = qp_fullstate(Ad, Bd, Q, R, Np, du, dx, x);
+    ubar = ue(:,1); %use only the first command in the sequence
+    u = ubar + u_o;
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
     [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
     x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
-    [ue, Xe] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
-    ubar = ue(:,1); %use only the first command from predictions
-    u = ubar + u_o;
-    if mod(i,Nc) == 0
+    if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         sys = ss(A,B,C,0);
         sysd = c2d(sys,h, 'zoh');
-%         sysd.a = eye(nx) + h*A;
-%         sysd.b = h*B;
+        sysd.a = eye(nx) + h*A;
+        sysd.b = h*B;
         Ad = sysd.a;
         Bd = sysd.b;
         x_o = x;
         u_o = linsolve(B, -g - A*x);
         fprintf('%d ', i);
-        if mod(i,20*Nc) == 0
+        if mod(i,20*Np) == 0
             fprintf('\n');
         end
     end

@@ -5,8 +5,7 @@ A = [ 1.0259     0.5040   0       0;
      -0.0006          0   1    0.05;
      -0.0247    -0.0006   0       1];
 B = [-0.0013; -0.0504; 0.0006; 0.025];
-x0 = [0.1; 0; 0; 0]; %Initial state
-u0 = 0;
+x0 = [0.2; 0; 0; 0]; %Initial state
 N = 150; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
@@ -17,24 +16,23 @@ Q = [ 1      0   0     0;
       0   0.01   0     0; 
       0      0   1     0; 
       0      0   0  0.01];
-R = 0.03;
+R = 0.01;
 dx = [0.2; inf; inf; inf;
       -0.2; -inf; -inf; -inf]; %state constraints, positive and negative
-du = [5; -5]; %input constraints
+du = [inf; -inf]; %input constraints
 %% QP solve
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
-u = u0;
 for i = 1:N
+    [ue, Xe] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
+    u = ue(1); %use only the first command from predictions
     X(:,i) = x; %save current state
     U(:,i) = u;
     x = A*x + B*u; %compute next state
     x = x + 0.0.*rand(nx,1).*x + d(:,i); %add noise and disturbance
-    [ue, Xe] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
-    u = ue(1); %use only the first command from predictions
 end
 %% Plotting
 constraints_x = reshape(dx,[],2)';
@@ -42,6 +40,7 @@ constraints_u = du;
 
 t = 0:N-1;
 figure(1);
+clf;
 subplot(4,2,1);
 plot(t,U);
 rescaleYLim(gca, [constraints_u(2) constraints_u(1)]*1.1);

@@ -10,11 +10,11 @@ clear
 
 %% Initialization
 x0 = [45; 0; 5; 0; 30; 0]; %Initial state
-N = 10; % samples
+N = 50; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-l = 5; %SL horizon i.e. how many steps until a new affine term is calculated
+Np = 5; %SL horizon i.e. how many steps until a new affine term is calculated
 %% Input signal shape
 U = ones(nu, N);
 % u(:, 1:30) = repmat([3; 3],1,30);
@@ -47,7 +47,7 @@ x = x0;
 C = [1 0 0 0 0 0; 0 0 0 0 1 0];
 for i = 1:N
     Xbard(:,i) = x; %save current state
-    if mod(i,l) == 0
+    if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,U(:,i)); %recalculate (A,B,g)
     end
     sys = ss(A,B,C,0);
@@ -65,7 +65,7 @@ x = x0;
 [A,B,g] = quanser_cont_sl(x,U(:,1)); %Initial (A,B) pair
 for i = 1:N
     Xbarc(:,i) = x; %save current state
-    if mod(i,l) == 0
+    if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,U(:,i)); %recalculate (A,B,g)
     end
     xd = A*x + B*U(:,i) + g;
