@@ -32,10 +32,10 @@ for i = 1:N
         K = lqr(A,B,Q,R,0);
         x_o = x;
         u_o = linsolve(B, -g - A*x);
-        fprintf('%d ', i);
-        if mod(i,20*Np) == 0
-            fprintf('\n');
-        end
+%         fprintf('%d ', i);
+%         if mod(i,20*Np) == 0
+%             fprintf('\n');
+%         end
     end
 end
 %% Plotting
