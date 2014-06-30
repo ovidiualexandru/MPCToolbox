@@ -1,7 +1,9 @@
+function quanser_plot(X,U,figtitle)
 %% Quanser simulation plot
 % Call this for a nice plot of the results from a simulation.
 % Examples: quanser_mpc, quanser_lqr
 %% Configuration
+N = size(X,2);
 t = 1:N;
 Sx = {'b-', 'r-', 'b-', 'r-', 'b-', 'r-'};
 Su = {'y--', 'c:'};

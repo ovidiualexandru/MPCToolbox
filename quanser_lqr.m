@@ -41,10 +41,8 @@ for i = 1:N
     end
 end
 %% Plotting
-figtitle = 'LQR Quanser Plot';
-quanser_plot
-figtitle = 'LQR Quanser Phase-Plot';
-quanser_phase_plot
+quanser_plot(X,U,'LQR Quanser Plot');
+quanser_phase_plot(X, 'LQR Quanser Phase-Plot');
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');

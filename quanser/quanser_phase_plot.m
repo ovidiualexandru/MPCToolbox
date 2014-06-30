@@ -1,3 +1,4 @@
+function quanser_phase_plot(X,figtitle)
 %% Quanser phase plot
 % Call this for a nice phase plot for each state pair.
 % Examples: quanser_mpc, quanser_lqr
