@@ -2,8 +2,10 @@ function [u, X, FVAL, EXITFLAG] = qp_fullstate(A, B, Q, R, Nc, du, dx, x0)
 %% QP definition
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
-du(end/2+1:end) = -du(end/2+1:end); %convert negative constraints to positive
-dx(end/2+1:end) = -dx(end/2+1:end); %convert negative constraints to positive
+du(2,:) = -du(2,:); %convert negative constraints to positive
+dx(2,:) = -dx(2,:); %convert negative constraints to positive
+du = reshape(du',[],1); %reshape du into a vector
+dx = reshape(dx',[],1); %reshape dx into a vector
 Cx = [eye(nx); -eye(nx)];
 Cu = [eye(nu); -eye(nu)];
 Csmall = blkdiag(Cu,Cx); 

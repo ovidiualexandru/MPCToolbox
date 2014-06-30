@@ -12,10 +12,10 @@ Np = 5; % control and prediction horizon
 %% Cost matrices and constraints
 Q = diag([1, 0.01, 0.25, 0.01, 0.01, 0.01],0);
 R = diag([1, 1],0);
-dx = [inf; inf; inf; inf; inf; inf;
-      -inf; -inf; -inf; -inf; -inf; -inf]; %state constraints, positive and negative
-du = [inf; inf;
-      -inf; -inf]; %input constraints
+dx = [inf, inf, inf, inf, inf, inf;
+      -inf, -inf, -inf, -inf, -inf, -inf]; %state constraints, positive and negative
+du = [5, 5;
+      -1, -1]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -57,7 +57,7 @@ for i = 1:N
     end
 end
 %% Plotting
-quanser_plot(X,U,'MPC Quanser Plot');
+quanser_plot(X,U,'MPC Quanser Plot',dx, du);
 quanser_phase_plot(X, 'MPC Quanser Phase-Plot');
 %% Clean-up
 rmpath('./quanser');
