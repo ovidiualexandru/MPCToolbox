@@ -1,4 +1,6 @@
 clear
+addpath('./quanser');
+addpath('./util');
 %% System initialization
 x0 = [15; 0; 30; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
@@ -56,3 +58,6 @@ for i = 1:N
 end
 %% Plotting
 quanser_plot
+%% Clean-up
+rmpath('./quanser');
+rmpath('./util');
