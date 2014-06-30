@@ -57,7 +57,9 @@ for i = 1:N
     end
 end
 %% Plotting
+figtitle = 'MPC Quanser Plot';
 quanser_plot
+figtitle = 'MPC Quanser Phase-Plot';
 quanser_phase_plot
 %% Clean-up
 rmpath('./quanser');

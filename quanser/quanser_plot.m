@@ -14,6 +14,7 @@ rows = 3;
 cols = 3;
 figure(1);
 clf;
+set(gcf, 'Name',figtitle);
 whitebg([0 0 0]);
 %% Plot inputs
 for i = 1:cols

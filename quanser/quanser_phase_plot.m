@@ -10,6 +10,7 @@ figure(2);
 clf;
 whitebg([1 1 1]);
 figure(2);
+set(gcf, 'Name',figtitle);
 %% Phase-plot
 for i = 1:3
     k = 2*i - 1; %state index
