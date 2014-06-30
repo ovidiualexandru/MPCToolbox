@@ -2,7 +2,7 @@ clear
 %% System initialization
 x0 = [15; 0; 30; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 1000; % samples
+N = 100; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
@@ -55,58 +55,53 @@ for i = 1:N
     end
 end
 %% Plotting
-tk = 1:N;
+t = 1:N;
 
 figure(1);
 clf;
 whitebg([0 0 0]);
+rows = 3;
+cols = 3;
 
-Sx = {'b-', 'b-', 'b-', 'r-', 'r-', 'r-'};
+Sx = {'b-', 'r-', 'b-', 'r-', 'b-', 'r-'};
 Su = {'y--', 'c:'};
-[xhandles, uhandles] =  plotsim(X([1 3 5 2 4 6] ,:),U,tk,2,Sx,Su);
-% Now the states are [epsilon, theta phi, epsilon_dot, theta_dot, phi_dot]
-axes(uhandles(1));
-legend('Vf', 'Vb', 'Location', 'Best');
+titles = {'Elevation angle $\epsilon$'; 'Elevation speed $\dot{\epsilon}$';
+    'Pitch angle $\theta$';'Pitch speed $\dot{\theta}$';
+    'Travel angle $\phi$';'Travel speed $\dot{\phi}$'};
+ylabels = {'[deg]','[deg/s]','[deg]','[deg/s]','[deg]','[deg/s]'};
 
-for i = 1:length(uhandles)
-    axes(uhandles(i));
+%Plot inputs
+for i = 1:cols
+    subplot(rows, cols, i);
+    plot(t, U(1,:) ,Su{1}, t, U(2,:), Su{2});
     xlabel('samples [k]');
     ylabel('[volts]');
     title('Inputs');
+    grid on
+    if i == 1
+        legend('Vf', 'Vb', 'Location', 'Best');
+    end
 end
 
-axes(xhandles(1));
-title('Elevation angle $\epsilon$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg]');
-legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
-
-axes(xhandles(2));
-title('Pitch angle $\theta$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg]');
-grid on
-
-axes(xhandles(3));
-title('Travel angle $\phi$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg]');
-grid on
-
-axes(xhandles(4));
-title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-
-axes(xhandles(5));
-title('Pitch speed $\dot{\theta}$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-
-axes(xhandles(6));
-title('Travel speed $\dot{\phi}$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
+% Plot states
+for i = 1:3
+    %Plot state
+    pos = i + cols;
+    k = 2*i - 1;
+    subplot(rows, cols, pos );
+    plot(t, X(k,:) ,Sx{k});
+    title(titles{k},'Interpreter','latex');
+    xlabel('[k]');
+    ylabel(ylabels{k});
+    grid on 
+    if i == 1
+        legend('NL ode45', 'Location', 'Best');
+    end
+    %Plot secondary state - its derivative
+    subplot(rows, cols, pos + cols);
+    plot(t, X(k+1,:) ,Sx{k+1});
+    title(titles{k+1},'Interpreter','latex');
+    xlabel('[k]');
+    ylabel(ylabels{k+1});
+    grid on
+end
