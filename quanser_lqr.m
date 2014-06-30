@@ -42,6 +42,7 @@ for i = 1:N
 end
 %% Plotting
 quanser_plot
+quanser_phase_plot
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');

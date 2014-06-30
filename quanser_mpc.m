@@ -4,7 +4,7 @@ addpath('./util');
 %% System initialization
 x0 = [15; 0; 30; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 100; % samples
+N = 1000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
@@ -58,6 +58,7 @@ for i = 1:N
 end
 %% Plotting
 quanser_plot
+quanser_phase_plot
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');
