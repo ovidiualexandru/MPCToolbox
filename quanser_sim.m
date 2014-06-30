@@ -72,97 +72,69 @@ for i = 1:N
     x = x + h*xd;
 end
 % Xbarc = zeros(nx, N);
-%% Plotting 
-% t = 0:h:((N-1)*h);
+%% Plotting
+% Configuration
 t = 1:N;
-
+Sx = {'b-', 'r-', 'b-', 'r-', 'b-', 'r-'};
+Su = {'y--', 'c:'};
+titles = {'Elevation angle $\epsilon$'; 'Elevation speed $\dot{\epsilon}$';
+    'Pitch angle $\theta$';'Pitch speed $\dot{\theta}$';
+    'Travel angle $\phi$';'Travel speed $\dot{\phi}$'};
+ylabels = {'[deg]','[deg/s]','[deg]','[deg/s]','[deg]','[deg/s]'};
+% Figure initialization
+rows = 3;
+cols = 3;
 figure(1);
 clf;
 whitebg([0 0 0]);
-
-%Plot the input 3 times, for each state pair
-for i = 1:3
-    subplot(3,3,i);
-    plot(t, U(1,:) ,'y--', t, U(2,:), 'c--');
+%Plot inputs
+for i = 1:cols
+    subplot(rows, cols, i);
+    plot(t, U(1,:) ,Su{1}, t, U(2,:), Su{2});
+    xlabel('samples [k]');
+    ylabel('[volts]');
     title('Inputs');
     grid on
-    xlabel('[k]');
-    ylabel('[volts]');
     if i == 1
         legend('Vf', 'Vb', 'Location', 'Best');
     end
 end
 
-%Plot the states
-subplot(3,3,1+3);
-plot(t,Xtil(1,:), 'b-');
-title('Elevation angle $\epsilon$','Interpreter','latex');
-hold on
-plot(t,Xhat(1,:), 'r:');
-plot(t,Xbard(1,:), 'c--');
-plot(t,Xbarc(1,:), 'g:');
-xlabel('[k]');
-ylabel('[deg]');
-grid on
-legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
-hold off
-
-subplot(3,3,4+3);
-plot(t,Xtil(2,:), 'b-');
-title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
-hold on
-plot(t,Xhat(2,:), 'r:');
-plot(t,Xbard(2,:), 'c--');
-plot(t,Xbarc(2,:), 'g:');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-hold off
-
-subplot(3,3,2+3);
-plot(t,Xtil(3,:), 'b-');
-title('Pitch angle $\theta$','Interpreter','latex');
-hold on
-plot(t,Xhat(3,:), 'r:');
-plot(t,Xbard(3,:), 'c--');
-plot(t,Xbarc(3,:), 'g:');
-xlabel('[k]');
-ylabel('[deg]');
-grid on
-hold off
-
-subplot(3,3,5+3);
-plot(t,Xtil(4,:), 'b-');
-title('Pitch speed $\dot{\theta}$','Interpreter','latex');
-hold on
-plot(t,Xhat(4,:), 'r:');
-plot(t,Xbard(4,:), 'c--');
-plot(t,Xbarc(4,:), 'g:');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-hold off
-
-subplot(3,3,3+3);
-plot(t,Xtil(5,:), 'b-');
-title('Travel angle $\phi$','Interpreter','latex');
-hold on
-plot(t,Xhat(5,:), 'r:');
-plot(t,Xbard(5,:), 'c--');
-plot(t,Xbarc(5,:), 'g:');
-xlabel('[k]');
-ylabel('[deg]');
-grid on
-hold off
-
-subplot(3,3,6+3);
-plot(t,Xtil(6,:), 'b-');
-title('Travel speed $\dot{\phi}$','Interpreter','latex');
-hold on
-plot(t,Xhat(6,:), 'r:');
-plot(t,Xbard(6,:), 'c--');
-plot(t,Xbarc(6,:), 'g:');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-hold off
+% Plot states
+for i = 1:3
+    %Plot state
+    pos = i + cols; %position in figure
+    k = 2*i - 1; %state index
+    subplot(rows, cols, pos );
+    hold on
+    plot(t,Xtil(k,:), 'b-');
+    plot(t,Xhat(k,:), 'r:');
+    plot(t,Xbard(k,:), 'c--');
+    plot(t,Xbarc(k,:), 'g:');
+    xlabel('[k]');
+    ylabel('[deg]');
+    grid on
+    hold off
+    title(titles{k},'Interpreter','latex');
+    xlabel('[k]');
+    ylabel(ylabels{k});
+    grid on 
+    if i == 1
+        legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
+    end
+    %Plot secondary state - its derivative
+    subplot(rows, cols, pos + cols);
+    hold on
+    plot(t,Xtil(k+1,:), 'b-');
+    plot(t,Xhat(k+1,:), 'r:');
+    plot(t,Xbard(k+1,:), 'c--');
+    plot(t,Xbarc(k+1,:), 'g:');
+    xlabel('[k]');
+    ylabel('[deg/s]');
+    grid on
+    hold off
+    title(titles{k+1},'Interpreter','latex');
+    xlabel('[k]');
+    ylabel(ylabels{k+1});
+    grid on
+end
