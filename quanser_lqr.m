@@ -10,8 +10,8 @@ nu = 2;
 nx = 6;
 Np = 5; % control and prediction horizon
 %% Cost matrices
-Q = diag([1, 0.01, 1, 0.01, 1, 0.01],0);
-R = diag([0.3, 0.3],0);
+Q = diag([1, 0.01, 0.25, 0.01, 0.01, 0.01],0);
+R = diag([1, 1],0);
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs

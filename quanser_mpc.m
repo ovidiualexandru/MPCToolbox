@@ -10,8 +10,8 @@ nu = 2;
 nx = 6;
 Np = 5; % control and prediction horizon
 %% Cost matrices and constraints
-Q = diag([1, 0.01, 1, 0.01, 1, 0.01],0);
-R = diag([0.3, 0.3],0);
+Q = diag([1, 0.01, 0.25, 0.01, 0.01, 0.01],0);
+R = diag([1, 1],0);
 dx = [inf; inf; inf; inf; inf; inf;
       -inf; -inf; -inf; -inf; -inf; -inf]; %state constraints, positive and negative
 du = [inf; inf;
