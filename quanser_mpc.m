@@ -61,59 +61,51 @@ figure(1);
 clf;
 whitebg([0 0 0]);
 
-%Plot the input 3 times, for each state pair
-for i = 1:3
-    subplot(3,3,i);
-    plot(tk, U(1,:) ,'y--', tk, U(2,:), 'c:');
+Sx = {'b-', 'b-', 'b-', 'r-', 'r-', 'r-'};
+Su = {'y--', 'c:'};
+[xhandles, uhandles] =  plotsim(X([1 3 5 2 4 6] ,:),U,tk,2,Sx,Su);
+% Now the states are [epsilon, theta phi, epsilon_dot, theta_dot, phi_dot]
+axes(uhandles(1));
+legend('Vf', 'Vb', 'Location', 'Best');
+
+for i = 1:length(uhandles)
+    axes(uhandles(i));
     xlabel('samples [k]');
     ylabel('[volts]');
-    grid on
-    hold off
-    if i == 1
-        legend('Vf', 'Vb', 'Location', 'Best');
-    end
     title('Inputs');
 end
 
-%Plot the states
-subplot(3,3,1+3);
-plot(tk,X(1,:), 'b-');
+axes(xhandles(1));
 title('Elevation angle $\epsilon$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
-grid on
 legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
 
-subplot(3,3,4+3);
-plot(tk,X(2,:), 'b-');
-title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-
-subplot(3,3,2+3);
-plot(tk,X(3,:), 'b-');
+axes(xhandles(2));
 title('Pitch angle $\theta$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
 grid on
 
-subplot(3,3,5+3);
-plot(tk,X(4,:), 'b-');
-title('Pitch speed $\dot{\theta}$','Interpreter','latex');
-xlabel('[k]');
-ylabel('[deg/s]');
-grid on
-
-subplot(3,3,3+3);
-plot(tk,X(5,:), 'b-');
+axes(xhandles(3));
 title('Travel angle $\phi$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg]');
 grid on
 
-subplot(3,3,6+3);
-plot(tk,X(6,:), 'b-');
+axes(xhandles(4));
+title('Elevation speed $\dot{\epsilon}$','Interpreter','latex');
+xlabel('[k]');
+ylabel('[deg/s]');
+grid on
+
+axes(xhandles(5));
+title('Pitch speed $\dot{\theta}$','Interpreter','latex');
+xlabel('[k]');
+ylabel('[deg/s]');
+grid on
+
+axes(xhandles(6));
 title('Travel speed $\dot{\phi}$','Interpreter','latex');
 xlabel('[k]');
 ylabel('[deg/s]');
