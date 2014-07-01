@@ -1,7 +1,38 @@
-function quanser_plot(X,U,figtitle, varargin)
+function quanser_plot(X,U, varargin)
 %% Quanser simulation plot
 % Call this for a nice plot of the results from a simulation.
 % Examples: quanser_mpc, quanser_lqr
+% Parameter order:
+% - X: 6-by-N matrix with the state snapshots
+% - U: 2-by-N matrix of the input snapshots
+% - figtitle: figure title
+% - fignumber: figure number
+% - dx: 2-by-6 matrix with constraints on each state
+% - du: 2-by-2 matrix with constraints on each input. Only first is plotted
+%
+%% Parameter processing
+nx = 6;
+nu = 2;
+if nargin > 2
+    figtitle = varargin{1};
+else
+    figtitle = 'Quanser Phase-Plot';
+end
+if nargin > 3
+    fignumber = varargin{2};
+else
+    fignumber = 1;
+end
+if nargin > 4
+    dx = varargin{3};
+else
+    dx = repmat([inf; -inf], 1, nx);
+end
+if nargin > 5
+    du = varargin{4};
+else
+    du = repmat([inf; -inf], 1, nu);
+end
 %% Configuration
 N = size(X,2);
 t = 1:N;
@@ -14,19 +45,10 @@ ylabels = {'[deg]','[deg/s]','[deg]','[deg/s]','[deg]','[deg/s]'};
 %% Figure initialization
 rows = 3;
 cols = 3;
-figure(1);
+figure(fignumber);
 clf;
 set(gcf, 'Name',figtitle);
 whitebg([0 0 0]);
-nx = 6;
-nu = 2;
-if nargin > 3
-    dx = varargin{1};
-    du = varargin{2};
-else
-    dx = repmat([inf; -inf], 1, nx);
-    du = repmat([inf; -inf], 1, nu);
-end
 %% Plot inputs
 for i = 1:cols
     %% Plot state

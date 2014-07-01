@@ -2,7 +2,7 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [38; 0; 30; 0; 20; 0]; %Initial state
+x0 = [15; 0; 30; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 1000; % samples
 h = 0.1; % s - sampling time
@@ -57,8 +57,8 @@ for i = 1:N
     end
 end
 %% Plotting
-quanser_plot(X,U,'MPC Quanser Plot',dx, du);
-quanser_phase_plot(X, 'MPC Quanser Phase-Plot');
+quanser_plot(X,U,'MPC Quanser Plot',1,dx, du);
+quanser_phase_plot(X, 'MPC Quanser Phase-Plot',2);
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');

@@ -1,18 +1,34 @@
-function quanser_phase_plot(X,figtitle)
+function quanser_phase_plot(X,varargin)
 %% Quanser phase plot
 % Call this for a nice phase plot for each state pair.
 % Examples: quanser_mpc, quanser_lqr
+% Parameter order:
+% - X: 6-by-N matrix with the state snapshots
+% - figtitle: figure title
+% - fignumber: figure number
+%
+%% Parameter processing
+if nargin > 1
+    figtitle = varargin{1};
+else
+    figtitle = 'Quanser Phase Plot';
+end
+if nargin > 2
+    fignumber = varargin{2};
+else
+    fignumber = 2;
+end
 %% Configuration
 titles = {'Elevation $\epsilon$'; 'Pitch $\theta$'; 'Travel $\phi$'};
 %% Figure initialization
 rows = 2;
 cols = 3;
-figure(2);
+figure(fignumber);
 clf;
 whitebg([1 1 1]);
 set(gcf, 'Name',figtitle);
 %% Phase-plot
-subplot(rows,cols, [1:3]);
+subplot(rows,cols, 1:3);
 plot(X(5,:), X(1,:), 'b-');
 xlabel('Travel [deg]');
 ylabel('Elevation [deg]');
