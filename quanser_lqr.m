@@ -23,7 +23,8 @@ x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% LQR solve
 for i = 1:N
-    ubar = -K*(x - x_o);
+%     ubar = -K*(x - x_o);
+    ubar = -K*x;
     u = ubar + u_o; % new input
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
