@@ -5,33 +5,33 @@ function quanser_plot(X,U, varargin)
 % Parameter order:
 % - X: 6-by-N matrix with the state snapshots
 % - U: 2-by-N matrix of the input snapshots
-% - figtitle: figure title
-% - fignumber: figure number
 % - dx: 2-by-6 matrix with constraints on each state
 % - du: 2-by-2 matrix with constraints on each input. Only first is plotted
+% - figtitle: figure title
+% - fignumber: figure number
 %
 %% Parameter processing
 nx = 6;
 nu = 2;
-if nargin > 2
-    figtitle = varargin{1};
-else
-    figtitle = 'Quanser Phase-Plot';
-end
-if nargin > 3
-    fignumber = varargin{2};
-else
-    fignumber = 1;
-end
-if nargin > 4
-    dx = varargin{3};
+if nargin > 1
+    dx = varargin{1};
 else
     dx = repmat([inf; -inf], 1, nx);
 end
-if nargin > 5
-    du = varargin{4};
+if nargin > 2
+    du = varargin{2};
 else
     du = repmat([inf; -inf], 1, nu);
+end
+if nargin > 3
+    figtitle = varargin{3};
+else
+    figtitle = 'Quanser Phase-Plot';
+end
+if nargin > 4
+    fignumber = varargin{4};
+else
+    fignumber = 1;
 end
 %% Configuration
 N = size(X,2);

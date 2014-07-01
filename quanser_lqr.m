@@ -42,7 +42,11 @@ for i = 1:N
     end
 end
 %% Plotting
-quanser_plot(X,U,'LQR Quanser Plot',3);
+dx = [inf, inf, inf, inf, inf, inf;
+      -inf, -inf, -inf, -inf, -inf, -inf]; %state constraints, positive and negative
+du = [inf, inf;
+      -inf, -inf]; %input constraints
+quanser_plot(X,U,dx,du,'LQR Quanser Plot',3);
 quanser_phase_plot(X, 'LQR Quanser Phase-Plot',4);
 %% Clean-up
 rmpath('./quanser');
