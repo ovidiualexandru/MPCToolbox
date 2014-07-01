@@ -5,17 +5,23 @@ function quanser_phase_plot(X,figtitle)
 %% Configuration
 titles = {'Elevation $\epsilon$'; 'Pitch $\theta$'; 'Travel $\phi$'};
 %% Figure initialization
-rows = 1;
+rows = 2;
 cols = 3;
 figure(2);
 clf;
 whitebg([1 1 1]);
-figure(2);
 set(gcf, 'Name',figtitle);
+%% Phase-plot
+subplot(rows,cols, [1:3]);
+plot(X(5,:), X(1,:), 'b-');
+xlabel('Travel [deg]');
+ylabel('Elevation [deg]');
+title('Elevation - Travel Phase Plot','Interpreter','latex');
+grid on
 %% Phase-plot
 for i = 1:3
     k = 2*i - 1; %state index
-    subplot(rows, cols, i);
+    subplot(rows, cols, i+cols);
     plot(X(k,:), X(k+1,:), 'b-');
     xlabel('Angle [deg]');
     ylabel('Angular speed [deg/s]');
