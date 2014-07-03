@@ -29,7 +29,11 @@ X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
 for i = 1:N
-    [ue, Xe] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
+    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
+    if EXITFLAG ~= 1
+        fprintf('Iteration %d\n',i)
+        error('Quadprog error ');
+    end
     u = ue(1); %use only the first command from predictions
     X(:,i) = x; %save current state
     U(:,i) = u;
