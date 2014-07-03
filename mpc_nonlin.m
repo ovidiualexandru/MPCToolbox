@@ -1,6 +1,4 @@
-% Objective function for fmincon
-
-function [u,Z, FVAL, EXITFLAG] = mpc_nonlin(x0, handle_nonlindisc)
+function [u,Z, FVAL, EXITFLAG] = mpc_nonlin(handle_nonlindisc, x0, Q, R, Nc)
 %Nonlinear constraints for fmincon
     function [C,Ceq] = nonlconfunc(z)
         %De for nu pot scapa
