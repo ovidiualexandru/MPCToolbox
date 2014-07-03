@@ -2,9 +2,9 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [15; 0; 30; 0; 20; 0]; %Initial state
+x0 = [15; 0; 0; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 1000; % samples
+N = 2000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
