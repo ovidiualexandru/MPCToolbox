@@ -23,13 +23,7 @@ x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% LQR solve
 for i = 1:N
-%     ubar = -K*(x - x_o);
-    ubar = -K*x;
-    u = ubar + u_o; % new input
-    X(:,i) = x; % save states
-    U(:,i) = u; % save inputs
-    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
-    x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
+    %% Update SL Model
     if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
@@ -40,6 +34,16 @@ for i = 1:N
             fprintf('\n');
         end
     end
+    %% Get next command
+    % ubar = -K*(x - x_o);
+    ubar = -K*x;
+    u = ubar + u_o; % new input
+    %% Data logging
+    X(:,i) = x; % save states
+    U(:,i) = u; % save inputs
+    %% Send to plant
+    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
+    x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
 end
 %% Plotting
 dx = [inf, inf, inf, inf, inf, inf;

@@ -23,37 +23,17 @@ U = zeros(nu, N); %save all inputs
 x = x0;
 u = u0;
 [A,B,g] = quanser_cont_sl(x,u); %Initial (A,B,g) pair
-C = [1 0 0 0 0 0; 0 0 0 0 1 0];
-sys = ss(A,B,C,0);
-sysd = c2d(sys,h, 'zoh');
-sysd.a = eye(nx) + h*A;
-sysd.b = h*B;
-Ad = sysd.a;
-Bd = sysd.b;
+Ad = eye(nx) + h*A;
+Bd = h*B;
 x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% MPC solve
 for i = 1:N
-    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
-%     if EXITFLAG ~= 1
-%         fprintf('Iteration %d\n',i)
-%         error('Quadprog error ');
-%     end
-    ubar = ue(:,1); %use only the first command in the sequence
-    u = ubar + u_o;
-    X(:,i) = x; % save states
-    U(:,i) = u; % save inputs
-    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
-    x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
-%     x = x + 0.01.*rand(nx,1).*x;
+    %% Update SL Model
     if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
-        sys = ss(A,B,C,0);
-        sysd = c2d(sys,h, 'zoh');
-        sysd.a = eye(nx) + h*A;
-        sysd.b = h*B;
-        Ad = sysd.a;
-        Bd = sysd.b;
+        Ad = eye(nx) + h*A;
+        Bd = h*B;
         x_o = x;
         u_o = linsolve(B, -g - A*x);
         fprintf('%d ', i);
@@ -61,6 +41,29 @@ for i = 1:N
             fprintf('\n');
         end
     end
+    %% Get next command
+    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
+    if EXITFLAG ~= 1
+        fprintf('Iteration %d\n',i)
+        error('Quadprog error ');
+    end
+    ubar = ue(:,1); %use only the first command in the sequence
+    u = ubar + u_o;
+    %% Data logging
+    X(:,i) = x; % save states
+    U(:,i) = u; % save inputs
+    %% Send to plant
+    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
+    xr = Yout(end, 1:6)'; %get new real state xr, i.e. xr = x(k+1)
+    % xr = xr + 0.11.*rand(nx,1).*x;
+    % Derivation using euler method
+    x(2) = (xr(1) - x(1))/h;
+    x(4) = (xr(3) - x(3))/h;
+    x(6) = (xr(5) - x(5))/h;
+    % Copy absolute encoders values
+    x(1) = xr(1);
+    x(3) = xr(3);
+    x(5) = xr(5);
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'MPC Quanser Plot',1);
