@@ -9,6 +9,7 @@ h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 Np = 5; % control and prediction horizon
+Nc = 5;
 %% Cost matrices and constraints
 Q = diag([1, 0.01, 0.25, 0.01, 0.01, 0.01],0);
 R = diag([1, 1],0);
@@ -33,13 +34,18 @@ x_o = x;
 u_o = linsolve(B, -g - A*x);
 %% MPC solve
 for i = 1:N
-    [ue, Xe] = qp_fullstate(Ad, Bd, Q, R, Np, du, dx, x);
+    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
+%     if EXITFLAG ~= 1
+%         fprintf('Iteration %d\n',i)
+%         error('Quadprog error ');
+%     end
     ubar = ue(:,1); %use only the first command in the sequence
     u = ubar + u_o;
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
     [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
     x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
+%     x = x + 0.01.*rand(nx,1).*x;
     if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         sys = ss(A,B,C,0);
