@@ -2,6 +2,14 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = qp_fullstate(A, B, Q, R, Nc, du, dx, x
 %% QP definition
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
+ubx = dx(1,:)';
+lbx = dx(2,:)';
+ubu = du(1,:)';
+lbu = du(2,:)';
+lb = [lbu; lbx];
+ub = [ubu; ubx];
+LB = repmat(lb, Nc, 1);
+UB = repmat(ub, Nc, 1);
 du(2,:) = -du(2,:); %convert negative constraints to positive
 dx(2,:) = -dx(2,:); %convert negative constraints to positive
 du = reshape(du',[],1); %reshape du into a vector
@@ -40,7 +48,7 @@ else
     options = optimoptions('quadprog', ...
         'Algorithm', 'interior-point-convex', 'Display', 'off'); %Matlab 2013
 end
-[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, C_hat, d_hat, A_hat, b_hat,[],[],[], options);
+[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat,LB,UB,[], options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);

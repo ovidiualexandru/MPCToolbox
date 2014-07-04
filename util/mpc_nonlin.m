@@ -29,6 +29,14 @@ end
 %% QP definition
 nu = size(du,2); %number of inputs
 nx = size(dx,2); %number of states
+ubx = dx(1,:)';
+lbx = dx(2,:)';
+ubu = du(1,:)';
+lbu = du(2,:)';
+lb = [lbu; lbx];
+ub = [ubu; ubx];
+LB = repmat(lb, Nc, 1);
+UB = repmat(ub, Nc, 1);
 du(2,:) = -du(2,:); %convert negative constraints to positive
 dx(2,:) = -dx(2,:); %convert negative constraints to positive
 du = reshape(du',[],1); %reshape du into a vector
@@ -47,10 +55,12 @@ end
 d_hat = repmat([du;dx], [Nc 1]);
 q = zeros(size(Q_hat,1),1);
 z0 = zeros(size(Q_hat,1),1);
+
+
 %% Nonlinear solver
 options = optimoptions('fmincon', ...
         'Algorithm', 'active-set', 'Display', 'off'); %Matlab 2013
-[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, C_hat, d_hat,[],[],[],[], @nonlconfunc, options);
+[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], [],[],[],LB,UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);
