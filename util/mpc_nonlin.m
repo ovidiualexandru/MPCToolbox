@@ -1,4 +1,4 @@
-function [u, X, FVAL, EXITFLAG] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
         %De for nu pot scapa
@@ -10,10 +10,16 @@ function [u, X, FVAL, EXITFLAG] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, d
         Xl = reshape(z, nu+nx,[]);
         ul = Xl(1:nu,:);
         Xl = Xl(nu+1:end,:);
+        x = x0;
+        Ceq = zeros(size(z));
         for i = 1:Nc
-            z = Xl(i,:);
-            x = handle_nlmodeld(x, ul, h);
-            Ceq(:) = z - x;
+            b = Xl(:,i);
+            x = handle_nlmodeld(x, ul(:,i), h);
+            dif = b - x; %x_{k+1} - f(x_k)
+            ceq = [zeros(nu, 1); dif]; %append zeros because inputs have no eq constraints
+            idx_start = (i-1)*(nx+nu)+1;
+            idx_end = i*(nx+nu);
+            Ceq(idx_start:idx_end) = ceq;
         end
     end
 %% Argument processing
@@ -40,8 +46,11 @@ for i = 1:Nc-1
 end
 d_hat = repmat([du;dx], [Nc 1]);
 q = zeros(size(Q_hat,1),1);
+z0 = zeros(size(Q_hat,1),1);
 %% Nonlinear solver
-[Z ,FVAL,EXITFLAG] = fmincon(@(z) z'*Q_hat*z + q'*z, x0, C_hat, d_hat,[],[],[],[], @nonlconfunc);
+options = optimoptions('fmincon', ...
+        'Algorithm', 'active-set', 'Display', 'off'); %Matlab 2013
+[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, C_hat, d_hat,[],[],[],[], @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);
