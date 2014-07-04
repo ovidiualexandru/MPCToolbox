@@ -1,11 +1,6 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
-        %De for nu pot scapa
-        % C e mereu 0
-        % Ceq 'simuleaza' toate starile viitoare din X
-        % ToDo:
-        % - descompune X in [u x]
         C = zeros(size(z));
         Xl = reshape(z, nu+nx,[]);
         ul = Xl(1:nu,:);
