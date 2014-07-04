@@ -10,23 +10,14 @@ lb = [lbu; lbx];
 ub = [ubu; ubx];
 LB = repmat(lb, Nc, 1);
 UB = repmat(ub, Nc, 1);
-du(2,:) = -du(2,:); %convert negative constraints to positive
-dx(2,:) = -dx(2,:); %convert negative constraints to positive
-du = reshape(du',[],1); %reshape du into a vector
-dx = reshape(dx',[],1); %reshape dx into a vector
-Cx = [eye(nx); -eye(nx)];
-Cu = [eye(nu); -eye(nu)];
-Csmall = blkdiag(Cu,Cx); 
 Qsmall = blkdiag(R,Q);
 Asmall = [-B eye(nx)];
 bsmall= zeros(nx,1);
-C_hat = Csmall;
 Q_hat = Qsmall;
 A_hat = [-B eye(nx)];
 b_hat = A*x0;
 for i = 1:Nc-1
     %Add another element to the block diagonal matrices
-    C_hat = blkdiag(C_hat, Csmall);
     Q_hat = blkdiag(Q_hat, Qsmall);
     A_hat = blkdiag(A_hat, Asmall);
     %Add '-A' to the subdiagonal
@@ -36,7 +27,6 @@ for i = 1:Nc-1
     cols_u = i*nu + i*nx;
     A_hat(lines_l: lines_u, cols_l: cols_u)= -A;
 end
-d_hat = repmat([du;dx], [Nc 1]);
 b_hat = [b_hat; repmat(bsmall, [Nc-1 1])];
 q = zeros(size(Q_hat,1),1);
 %% QP solver

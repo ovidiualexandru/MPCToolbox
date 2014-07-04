@@ -37,26 +37,14 @@ lb = [lbu; lbx];
 ub = [ubu; ubx];
 LB = repmat(lb, Nc, 1);
 UB = repmat(ub, Nc, 1);
-du(2,:) = -du(2,:); %convert negative constraints to positive
-dx(2,:) = -dx(2,:); %convert negative constraints to positive
-du = reshape(du',[],1); %reshape du into a vector
-dx = reshape(dx',[],1); %reshape dx into a vector
-Cx = [eye(nx); -eye(nx)];
-Cu = [eye(nu); -eye(nu)];
-Csmall = blkdiag(Cu,Cx); 
 Qsmall = blkdiag(R,Q);
-C_hat = Csmall;
 Q_hat = Qsmall;
 for i = 1:Nc-1
     %Add another element to the block diagonal matrices
-    C_hat = blkdiag(C_hat, Csmall);
     Q_hat = blkdiag(Q_hat, Qsmall);
 end
-d_hat = repmat([du;dx], [Nc 1]);
 q = zeros(size(Q_hat,1),1);
 z0 = zeros(size(Q_hat,1),1);
-
-
 %% Nonlinear solver
 options = optimoptions('fmincon', ...
         'Algorithm', 'active-set', 'Display', 'off'); %Matlab 2013
