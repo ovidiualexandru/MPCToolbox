@@ -42,8 +42,9 @@ for i = 1:N
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
     %% Send to plant
-    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
-    x = Yout(end, 1:6)'; %get new state, i.e. x = x(k)
+    xr = quanser_disc_nl(x,u,h);
+    % x = xr + 0.1.*rand(nx,1).*xr;
+    x = xr;
 end
 %% Plotting
 dx = [inf, inf, inf, inf, inf, inf;
