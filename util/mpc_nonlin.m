@@ -42,7 +42,7 @@ q = zeros(size(Q_hat,1),1);
 z0 = zeros(size(Q_hat,1),1);
 %% Nonlinear solver
 options = optimoptions('fmincon', ...
-        'Algorithm', 'active-set', 'Display', 'off'); %Matlab 2013
+        'Algorithm', 'sqp', 'Display', 'off'); %Matlab 2013
 [Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], [],[],[],LB,UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
