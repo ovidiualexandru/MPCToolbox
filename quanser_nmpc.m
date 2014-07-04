@@ -4,19 +4,19 @@ addpath('./util');
 %% System initialization
 x0 = [15; 0; 0; 0; 20; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 50; % samples
+N = 1000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 Np = 5; % control and prediction horizon
 Nc = 5;
 %% Cost matrices and constraints
-Q = diag([5, 1, 5, 1, 5, 1],0);
+Q = diag([1, 1, 1, 1, 1, 1],0);
 R = diag([1, 1],0);
-dx = [45, inf, 50, inf, inf, inf;
-      -45, -inf, -50, -inf, -inf, -inf]; %state constraints, positive and negative
-du = [5, 5;
-      -1, -1]; %input constraints
+dx = [inf, inf, inf, inf, inf, inf;
+      -inf, -inf, -inf, -inf, -inf, -inf]; %state constraints, positive and negative
+du = [inf, inf;
+      -inf, -inf]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -47,8 +47,8 @@ for i = 1:N
     x = xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC Quanser Plot',1);
-quanser_phase_plot(X, 'MPC Quanser Phase-Plot',2);
+quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',1);
+quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',2);
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');
