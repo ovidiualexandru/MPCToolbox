@@ -53,17 +53,9 @@ for i = 1:N
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
     %% Send to plant
-    [Tout, Yout] = ode45(@quanser_cont_nl, [0 h], [x; u]); %f(xk, uk)
-    xr = Yout(end, 1:6)'; %get new real state xr, i.e. xr = x(k+1)
-    % xr = xr + 0.11.*rand(nx,1).*x;
-    % Derivation using euler method
-    x(2) = (xr(1) - x(1))/h;
-    x(4) = (xr(3) - x(3))/h;
-    x(6) = (xr(5) - x(5))/h;
-    % Copy absolute encoders values
-    x(1) = xr(1);
-    x(3) = xr(3);
-    x(5) = xr(5);
+    xr = quanser_disc_nl(x,u,h);
+    % x = xr + 0.1.*rand(nx,1).*xr;
+    x = xr;
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'MPC Quanser Plot',1);
