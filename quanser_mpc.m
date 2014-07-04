@@ -42,7 +42,7 @@ for i = 1:N
         end
     end
     %% Get next command
-    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
+    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = qp_fullstate(Ad, Bd, Q, R, Nc, du, dx, x);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
