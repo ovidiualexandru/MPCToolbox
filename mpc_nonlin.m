@@ -1,4 +1,4 @@
-function [u, X, FVAL, EXITFLAG] = mpc_nonlin(hande_nlmodeld, Q, R, Nc, du, dx, x0)
+function [u, X, FVAL, EXITFLAG] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
         %De for nu pot scapa
@@ -11,12 +11,13 @@ function [u, X, FVAL, EXITFLAG] = mpc_nonlin(hande_nlmodeld, Q, R, Nc, du, dx, x
         ul = Xl(1:nu,:);
         Xl = Xl(nu+1:end,:);
         for i = 1:Nc
-            x = hande_nlmodeld(x,ul,h);
+            z = Xl(i,:);
+            x = handle_nlmodeld(x, ul, h);
             Ceq(:) = z - x;
         end
     end
 %% Argument processing
-if ~isa(hande_nlmodeld, 'function_handle')
+if ~isa(handle_nlmodeld, 'function_handle')
     error('handle_nlmodeld must be a function handle.');
 end
 %% QP definition
