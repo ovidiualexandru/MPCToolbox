@@ -8,9 +8,9 @@ N = 2000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 5; % control and prediction horizon
+Np = 3; % control and prediction horizon
 %% Cost matrices
-Q = diag([1, 0.01, 0.25, 0.01, 0.01, 0.01],0);
+Q = diag([1, .01, 1, .01, 1, .01],0);
 R = diag([1, 1],0);
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
@@ -19,24 +19,26 @@ x = x0;
 u = u0;
 [A,B,g] = quanser_cont_sl(x,u); %Initial (A,B,g) pair
 K = lqr(A,B,Q,R,0);
-x_o = x;
-u_o = linsolve(B, -g - A*x);
+n = linsolve([A B], -g);
+x_o = n(1:nx);
+u_o = n(nx + 1:end);
 %% LQR solve
 for i = 1:N
     %% Update SL Model
     if mod(i,Np) == 0
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
-        x_o = x;
-        u_o = linsolve(B, -g - A*x);
+        n = linsolve([A B], -g);
+        x_o = n(1:nx);
+        u_o = n(nx + 1:end);
         fprintf('%d ', i);
         if mod(i,20*Np) == 0
             fprintf('\n');
         end
     end
     %% Get next command
-    % ubar = -K*(x - x_o);
-    ubar = -K*x;
+    xbar = x - x_o;
+    ubar = -K*xbar;
     u = ubar + u_o; % new input
     %% Data logging
     X(:,i) = x; % save states
