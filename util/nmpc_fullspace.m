@@ -1,4 +1,4 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = mpc_nonlin(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
         C = zeros(size(z));

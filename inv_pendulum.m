@@ -29,7 +29,7 @@ X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
 for i = 1:N
-    [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
+    [ue, Xe,FVAL,EXITFLAG] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

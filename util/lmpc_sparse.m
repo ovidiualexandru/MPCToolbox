@@ -1,4 +1,4 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = qp_fullstate(A, B, Q, R, Nc, du, dx, x0)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x0)
 %% QP definition
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
