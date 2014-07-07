@@ -12,7 +12,7 @@ N = 150; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
 dist_k = 60;
-d(2, dist_k) = 0.0;
+d(2, dist_k) = 0.30;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
@@ -30,9 +30,9 @@ U = zeros(nu, N); %save all inputs
 x = x0;
 for i = 1:N
     [ue, Xe,FVAL,EXITFLAG] = qp_fullstate(A, B, Q, R, Nc, du, dx, x);
-    if EXITFLAG ~= 1
-        fprintf('Iteration %d\n',i)
-        error('Quadprog error ');
+    if EXITFLAG < 0
+        fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
+        error('Solver error');
     end
     u = ue(1); %use only the first command from predictions
     X(:,i) = x; %save current state
@@ -42,7 +42,7 @@ for i = 1:N
 end
 %% Plotting
 t = 0:N-1;
-figure(1);
+figure;
 clf;
 subplot(4,2,1);
 plot(t,U);
