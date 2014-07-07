@@ -11,7 +11,7 @@ nx = 6;
 Np = 5; % control and prediction horizon
 Nc = 5;
 %% Cost matrices and constraints
-Q = diag([1, 1, 1, 1, 1, 1],0);
+Q = diag([2, .1, 2, .1, 2, .1],0);
 R = diag([1, 1],0);
 dx = [45, inf, 50, inf, inf, inf;
       -45, -inf, -50, -inf, -inf, -inf]; %state constraints, positive and negative
