@@ -41,8 +41,14 @@ end
 q = zeros(size(Q_hat,1),1);
 z0 = zeros(size(Q_hat,1),1);
 %% Nonlinear solver
-options = optimoptions('fmincon', ...
+rel = version('-release');
+rel = rel(1:4); %just the year
+if strcmp(rel,'2011')
+    options = optimset('Algorithm', 'sqp', 'Display', 'off'); % Matlab 2011
+else
+    options = optimoptions('fmincon', ...
         'Algorithm', 'sqp', 'Display', 'off'); %Matlab 2013
+end
 [Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], [],[],[],LB,UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
