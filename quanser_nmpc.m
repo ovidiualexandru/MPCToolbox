@@ -2,21 +2,21 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [15; 0; 0; 0; 20; 0]; %Initial state
+x0 = [30; 0; 5; 0; 40; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 200; % samples
+N = 1000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
 %% Cost matrices and constraints
-Q = diag([10, 1, 10, 1, 10, 1],0);
+Q = diag([5, 1, 1, 1, 10, 1],0);
 R = diag([0.01, 0.01],0);
-dx = [inf, inf, inf, inf, inf, inf;
-      -inf, -inf, -inf, -inf, -inf, -inf]; %state constraints, positive and negative
-du = [inf, inf;
-      -inf, -inf]; %input constraints
+dx = [60, inf, 45, inf, 180, inf;
+      -60, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
+du = [5, 5;
+      0, 0]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
