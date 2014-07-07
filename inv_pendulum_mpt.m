@@ -7,21 +7,21 @@ A = [ 1.0259     0.5040   0       0;
      -0.0006          0   1    0.05;
      -0.0247    -0.0006   0       1];
 B = [-0.0013; -0.0504; 0.0006; 0.025];
-x0 = [0.2; 0; 0; 0]; %Initial state
+x0 = [0.15; 0; 0; 0]; %Initial state
 N = 150; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
 dist_k = 60;
-d(2, dist_k) = 0.30;
+d(2, dist_k) = 0.0;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
       0      0   1     0; 
       0      0   0  0.01];
 R = 0.01;
-dx = [0.2, inf, inf, inf;
-      -0.2, -inf, -inf, -inf]; %state constraints, positive and negative
-du = [inf; -inf]; %input constraints
+dx = [0.2, inf, 1, inf;
+      -0.2, -inf, -1, -inf]; %state constraints, positive and negative
+du = [5; -5]; %input constraints
 %% QP solve
 sys = LTISystem('A', A, 'B', B, 'Ts', 0.05); % check this?
 ctrl = MPCController(sys, Nc);
@@ -41,7 +41,7 @@ for i = 1:N
     X(:,i) = x; %save current state
     U(:,i) = u;
     x = A*x + B*u; %compute next state
-    x = x + 0.0.*rand(nx,1).*x + d(:,i); %add noise and disturbance
+    x = x + 0.1.*rand(nx,1).*x + d(:,i); %add noise and disturbance
 end
 %% Plotting
 t = 0:N-1;
