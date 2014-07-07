@@ -17,20 +17,13 @@ X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
 u = u0;
-[A,B,g] = quanser_cont_sl(x,u); %Initial (A,B,g) pair
-K = lqr(A,B,Q,R,0);
-n = linsolve([A B], -g);
-x_o = n(1:nx);
-u_o = n(nx + 1:end);
 %% LQR solve
 for i = 1:N
     %% Update SL Model
-    if mod(i,Np) == 0
+    if mod(i,Np) == 0 || i == 1
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
-        n = linsolve([A B], -g);
-        x_o = n(1:nx);
-        u_o = n(nx + 1:end);
+        [x_o, u_o] = affine_eq(A,B,g);
         fprintf('%d ', i);
         if mod(i,20*Np) == 0
             fprintf('\n');
