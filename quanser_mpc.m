@@ -2,7 +2,7 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [15; 0; 30; 0; 10; 0]; %Initial state
+x0 = [5; 0; 0; 0; 3; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 1000; % samples
 h = 0.1; % s - sampling time
@@ -11,12 +11,12 @@ nx = 6;
 Np = 5; % control and prediction horizon
 Nc = 5;
 %% Cost matrices and constraints
-Q = diag([2, .1, 2, .1, 2, .1],0);
-R = diag([1, 1],0);
-dx = [45, inf, 50, inf, inf, inf;
-      -45, -inf, -50, -inf, -inf, -inf]; %state constraints, positive and negative
+Q = diag([10, .01, 10, .01, 10, .01],0);
+R = diag([.01, .01],0);
+dx = [90, inf, 90, inf, 90, inf;
+      -90, -inf, -90, -inf, -90, -inf]; %state constraints, positive and negative
 du = [5, 5;
-      -1, -1]; %input constraints
+      -5, -5]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -25,8 +25,11 @@ u = u0;
 [A,B,g] = quanser_cont_sl(x,u); %Initial (A,B,g) pair
 Ad = eye(nx) + h*A;
 Bd = h*B;
-x_o = x;
-u_o = linsolve(B, -g - A*x);
+n = linsolve([A B], -g);
+x_o = n(1:nx);
+u_o = n(nx + 1:end);
+du_bar = du - repmat(u_o',2,1);
+dx_bar = dx - repmat(x_o',2,1);
 %% MPC solve
 for i = 1:N
     %% Update SL Model
@@ -34,15 +37,19 @@ for i = 1:N
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         Ad = eye(nx) + h*A;
         Bd = h*B;
-        x_o = x;
-        u_o = linsolve(B, -g - A*x);
+        n = linsolve([A B], -g);
+        x_o = n(1:nx);
+        u_o = n(nx + 1:end);
+        du_bar = du - repmat(u_o',2,1);
+        dx_bar = dx - repmat(x_o',2,1);
         fprintf('%d ', i);
         if mod(i,20*Np) == 0
             fprintf('\n');
         end
     end
     %% Get next command
-    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_sparse(Ad, Bd, Q, R, Nc, du, dx, x);
+    xbar = x - x_o;
+    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_sparse(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
