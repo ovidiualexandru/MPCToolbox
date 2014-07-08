@@ -47,8 +47,8 @@ for i = 1:N
     x = xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',1);
-quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',2);
+quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',3);
+quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',4);
 %% Clean-up
 rmpath('./quanser');
 rmpath('./util');
