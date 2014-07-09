@@ -5,7 +5,6 @@ nx = size(A,1); %number of states
 if isempty(xref)
     xref = zeros(nx,1);
 end
-
 %% QP definition
 
 ubx = dx(1,:)';

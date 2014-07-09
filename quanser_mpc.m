@@ -3,7 +3,7 @@ addpath('./quanser');
 addpath('./util');
 %% System initialization
 x0 = [30; 0; -5; 0; 40; 0]; %Initial state
-xref = [5; 0; 0; 0; 0; 0]; %Reference state 
+xref = [20; 0; 0; 0; 0; 0]; %Reference state 
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 2000; % samples
 h = 0.1; % s - sampling time

@@ -2,8 +2,9 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [30; 0; 5; 0; 40; 0]; %Initial state
+x0 = [30; 0; -5; 0; 40; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
+xref = [20; 0; 0; 0; 0; 0]; %Reference state 
 N = 1000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
@@ -13,8 +14,8 @@ Nc = 3;
 %% Cost matrices and constraints
 Q = diag([5, 1, 1, 1, 10, 1],0);
 R = diag([0.01, 0.01],0);
-dx = [60, inf, 45, inf, 180, inf;
-      -60, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
+dx = [90, inf, 45, inf, 180, inf;
+      -90, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
 du = [5, 5;
       0, 0]; %input constraints
 %% Solver initialization
@@ -44,7 +45,7 @@ for i = 1:N
     U(:,i) = u; % save inputs
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
-    x = xr + 0.1*rand(nx,1) + 0.1*rand(nx,1).*xr;
+    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',3);
