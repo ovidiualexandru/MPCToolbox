@@ -18,6 +18,10 @@ if nargin > 2
 else
     fignumber = 2;
 end
+quanser_phase_plot_g(X, figtitle, fignumber);
+end
+
+function quanser_phase_plot_g(X, figtitle, fignumber)
 %% Configuration
 titles = {'Elevation $\epsilon$'; 'Pitch $\theta$'; 'Travel $\phi$'};
 %% Figure initialization
@@ -43,4 +47,5 @@ for i = 1:3
     ylabel('Angular speed [deg/s]');
     title(titles{i},'Interpreter','latex');
     grid on
+end
 end
