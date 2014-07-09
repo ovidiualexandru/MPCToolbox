@@ -52,8 +52,7 @@ for i = 1:N
     U(:,i) = u; % save inputs
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
-    x = xr + 0.01.*rand(nx,1).*xr;
-%     x = xr;
+    x = xr + 0.1*rand(nx,1) + 0.1*rand(nx,1).*xr;
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'MPC Quanser Plot',1);
