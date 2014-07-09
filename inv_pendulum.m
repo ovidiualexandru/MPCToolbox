@@ -93,6 +93,3 @@ line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 axes('Position',[0.25 0.9 0.5 0.1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 titlestring = sprintf('Run with N=%d, Nc = %d',N,Nc);
 text(0.5, 1, ['\bf ' titlestring],'HorizontalAlignment','center','VerticalAlignment', 'top')
-%% Clean-up
-rmpath('./pendulum');
-rmpath('./util');
