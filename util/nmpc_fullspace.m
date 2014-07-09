@@ -1,4 +1,10 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, R, Nc, du, dx, x0)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref)
+%% Argument processing
+nu = size(du,2); %number of inputs
+nx = size(dx,2); %number of states
+if isempty(xref)
+    xref = zeros(nx,1);
+end
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
         C = zeros(size(z));
@@ -22,8 +28,6 @@ if ~isa(handle_nlmodeld, 'function_handle')
     error('handle_nlmodeld must be a function handle.');
 end
 %% QP definition
-nu = size(du,2); %number of inputs
-nx = size(dx,2); %number of states
 ubx = dx(1,:)';
 lbx = dx(2,:)';
 ubu = du(1,:)';
@@ -38,7 +42,10 @@ for i = 1:Nc-1
     %Add another element to the block diagonal matrices
     Q_hat = blkdiag(Q_hat, Qsmall);
 end
-q = zeros(size(Q_hat,1),1);
+uref = zeros(nu,1); %should uref be 0?
+zsmall = [ uref; xref];
+zref = repmat( zsmall, Nc,1);
+q = -Q_hat*zref;
 z0 = zeros(size(Q_hat,1),1);
 %% Nonlinear solver
 rel = version('-release');
