@@ -8,11 +8,12 @@ A = [ 1.0259     0.5040   0       0;
      -0.0247    -0.0006   0       1];
 B = [-0.0013; -0.0504; 0.0006; 0.025];
 x0 = [0.2; 0; 0; 0]; %Initial state
+xref = [0; 0; -0.1; 0];
 N = 150; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
 dist_k = 60;
-d(2, dist_k) = 0.30;
+d(2, dist_k) = 0.0;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
@@ -29,7 +30,7 @@ X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
 for i = 1:N
-    [ue, Xe,FVAL,EXITFLAG] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x);
+    [ue, Xe,FVAL,EXITFLAG] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x, xref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

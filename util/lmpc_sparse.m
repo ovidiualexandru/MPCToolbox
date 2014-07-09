@@ -1,7 +1,13 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x0)
-%% QP definition
+function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x0, xref)
+%% Argument processing
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
+if isempty(xref)
+    xref = zeros(nx,1);
+end
+
+%% QP definition
+
 ubx = dx(1,:)';
 lbx = dx(2,:)';
 ubu = du(1,:)';
@@ -28,7 +34,10 @@ for i = 1:Nc-1
     A_hat(lines_l: lines_u, cols_l: cols_u)= -A;
 end
 b_hat = [b_hat; repmat(bsmall, [Nc-1 1])];
-q = zeros(size(Q_hat,1),1);
+uref = zeros(nu,1); %should uref be 0?
+zsmall = [ uref; xref];
+zref = repmat( zsmall, Nc,1);
+q = -Q_hat*zref;
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
