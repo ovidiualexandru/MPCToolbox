@@ -16,6 +16,7 @@ R = diag([1, 1],0);
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
+xr = x0; % 'real' x
 u = u0;
 %% LQR solve
 for i = 1:N
@@ -37,9 +38,8 @@ for i = 1:N
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
     %% Send to plant
-    xr = quanser_disc_nl(x,u,h);
-    % x = xr + 0.1.*rand(nx,1).*xr;
-    x = xr;
+    xr = quanser_disc_nl(xr,u,h);
+    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
 dx = [inf, inf, inf, inf, inf, inf;

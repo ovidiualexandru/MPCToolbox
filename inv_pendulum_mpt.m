@@ -22,7 +22,14 @@ R = 0.01;
 dx = [0.2, inf, 1, inf;
       -0.2, -inf, -1, -inf]; %state constraints, positive and negative
 du = [5; -5]; %input constraints
-%% QP solve
+%% Solver initialization
+nu = size(B,2); %number of inputs
+nx = size(A,1); %number of states
+X = zeros(nx, N); %save all states, for plotting
+U = zeros(nu, N); %save all inputs
+x = x0;
+xr = x0; % 'real' x
+%% MPC Solve
 sys = LTISystem('A', A, 'B', B, 'Ts', 0.05); % check this?
 ctrl = MPCController(sys, Nc);
 ctrl.model.x.min = dx(2,:)';
@@ -31,17 +38,15 @@ ctrl.model.u.min = du(2,:)';
 ctrl.model.u.max = du(1,:)';
 ctrl.model.x.penalty = QuadFunction(Q);
 ctrl.model.u.penalty = QuadFunction(R);
-nu = size(B,2); %number of inputs
-nx = size(A,1); %number of states
-X = zeros(nx, N); %save all states, for plotting
-U = zeros(nu, N); %save all inputs
-x = x0;
 for i = 1:N
+    %% Get next command 
     u = ctrl.evaluate(x);
+    %% Data logging
     X(:,i) = x; %save current state
     U(:,i) = u;
-    x = A*x + B*u; %compute next state
-    x = x + 0.1.*rand(nx,1).*x + d(:,i); %add noise and disturbance
+    %% Send to plant
+    xr = A*xr + B*u + d(:,i);
+    x = xr + 0.00*rand(nx,1) + 0.00*rand(nx,1).*xr;
 end
 %% Plotting
 t = 0:N-1;

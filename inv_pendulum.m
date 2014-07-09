@@ -13,7 +13,7 @@ N = 150; % simulation steps
 Nc = 20; % control and prediction horizon
 d = zeros(4,N); %disturbance vector
 dist_k = 60;
-d(2, dist_k) = 0.0;
+d(2, dist_k) = 0.1;
 %% Cost matrices and constraints
 Q = [ 1      0   0     0; 
       0   0.01   0     0; 
@@ -23,23 +23,28 @@ R = 0.01;
 dx = [0.2, inf, inf, inf;
       -0.2, -inf, -inf, -inf]; %state constraints, positive and negative
 du = [inf; -inf]; %input constraints
-%% QP solve
+%% Solver initialization
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
+xr = x0; % 'real' x
+%% MPC Solve
 for i = 1:N
+    %% Get next command
     [ue, Xe,FVAL,EXITFLAG] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x, xref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');
     end
     u = ue(1); %use only the first command from predictions
+    %% Data logging
     X(:,i) = x; %save current state
     U(:,i) = u;
-    x = A*x + B*u; %compute next state
-    x = x + 0.0.*rand(nx,1).*x + d(:,i); %add noise and disturbance
+    %% Send to plant
+    xr = A*xr + B*u + d(:,i);
+    x = xr + 0.00*rand(nx,1) + 0.00*rand(nx,1).*xr;
 end
 %% Plotting
 t = 0:N-1;

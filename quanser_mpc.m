@@ -22,7 +22,7 @@ du = [5, 5;
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
-xr = x;
+xr = x0; % 'real' x
 u = u0;
 %% MPC solve
 for i = 1:N

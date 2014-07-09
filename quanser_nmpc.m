@@ -3,7 +3,6 @@ addpath('./quanser');
 addpath('./util');
 %% System initialization
 x0 = [30; 0; -5; 0; 40; 0]; %Initial state
-u0 = [2; 2]; % [Vf Vb] initial inputs
 xref = [20; 0; 0; 0; 0; 0]; %Reference state 
 N = 1000; % samples
 h = 0.1; % s - sampling time
@@ -22,8 +21,7 @@ du = [5, 5;
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
-xr = x;
-u = u0;
+xr = x0; % 'real' x
 %% MPC solve
 for i = 1:N
     %% Iteration printing
