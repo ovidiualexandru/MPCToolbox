@@ -13,26 +13,30 @@ function quanser_plot(X,U, varargin)
 %% Parameter processing
 nx = 6;
 nu = 2;
-if nargin > 1
+if nargin > 2
     dx = varargin{1};
 else
     dx = repmat([inf; -inf], 1, nx);
 end
-if nargin > 2
+if nargin > 3
     du = varargin{2};
 else
     du = repmat([inf; -inf], 1, nu);
 end
-if nargin > 3
+if nargin > 4
     figtitle = varargin{3};
 else
     figtitle = 'Quanser Phase-Plot';
 end
-if nargin > 4
+if nargin > 5
     fignumber = varargin{4};
 else
     fignumber = 1;
 end
+quanser_plot_g(X, U, dx, du, figtitle, fignumber);
+end
+
+function quanser_plot_g(X, U, dx, du, figtitle, fignumber)
 %% Configuration
 N = size(X,2);
 t = 1:N;
@@ -98,4 +102,5 @@ for i = 1:3
     xlabel('[k]');
     ylabel(ylabels{k+1});
     grid on
+end
 end
