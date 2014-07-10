@@ -21,12 +21,15 @@ du = [22, 22;
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
+FVAL = zeros(1, N); %save cost value
+TEVAL = zeros(1, N); %save calculation time
 x = x0;
 xr = x0; % 'real' x
 u = u0;
 %% MPC solve
 for i = 1:N
     %% Update SL Model
+    tic;
     if mod(i,Np) == 0 || i == 1
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         [x_o, u_o] = affine_eq(A,B,g);
@@ -51,13 +54,16 @@ for i = 1:N
     xbar = x - x_o;
     ubar = ctrl.evaluate(xbar);
     u = ubar + u_o;
+    teval = toc;
     %% Data logging
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
+    TEVAL(i) = teval;
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC-SL(MPT) Quanser Plot',5);
-quanser_phase_plot(X, 'MPC-SL(MPT) Quanser Phase-Plot',6);
+quanser_plot(X,U,dx, du,'MPC-SL(MPT) Quanser Plot',10);
+quanser_phase_plot(X, 'MPC-SL(MPT) Quanser Phase-Plot',11);
+plot_ft(FVAL, TEVAL, 'MPC-SL(MPT) Quanser Performance',12);

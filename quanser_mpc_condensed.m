@@ -21,12 +21,15 @@ du = [22, 22;
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
+FVAL = zeros(1, N); %save cost value
+TEVAL = zeros(1, N); %save calculation time
 x = x0;
 xr = x0; % 'real' x
 u = u0;
 %% MPC solve
 for i = 1:N
     %% Update SL Model
+    tic;
     if mod(i,Np) == 0 || i == 1
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         [x_o, u_o] = affine_eq(A,B,g);
@@ -41,20 +44,24 @@ for i = 1:N
     end
     %% Get next command
     xbar = x - x_o;
-    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
     end
     ubar = ue(:,1); %use only the first command in the sequence
     u = ubar + u_o;
+    teval = toc;
     %% Data logging
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
+    FVAL(i) = fval;
+    TEVAL(i) = teval;
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC-SL(condensed form) Quanser Plot',3);
-quanser_phase_plot(X, 'MPC-SL(condensed form) Quanser Phase-Plot',4);
+quanser_plot(X,U,dx, du,'MPC-SL(condensed form) Quanser Plot',7);
+quanser_phase_plot(X, 'MPC-SL(condensed form) Quanser Phase-Plot',8);
+plot_ft(FVAL, TEVAL, 'MPC-SL(condensed form) Quanser Performance',9);

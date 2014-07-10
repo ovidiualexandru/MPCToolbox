@@ -28,20 +28,26 @@ nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
+FVAL = zeros(1, N); %save cost value
+TEVAL = zeros(1, N); %save calculation time
 x = x0;
 xr = x0; % 'real' x
 %% MPC Solve
 for i = 1:N
     %% Get next command
-    [ue, Xe,FVAL,EXITFLAG] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x, xref);
+    tic;
+    [ue, Xe,fval,EXITFLAG] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x, xref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');
     end
     u = ue(1); %use only the first command from predictions
+    teval = toc;
     %% Data logging
     X(:,i) = x; %save current state
     U(:,i) = u;
+    FVAL(i) = fval;
+    TEVAL(i) = teval;
     %% Send to plant
     xr = A*xr + B*u + d(:,i);
     x = xr + 0.00*rand(nx,1) + 0.00*rand(nx,1).*xr;
@@ -98,3 +104,5 @@ line([dist_k;dist_k],get(gca,'YLim'), 'LineStyle', '--', 'Color', [0 1 0]);
 axes('Position',[0.25 0.9 0.5 0.1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 titlestring = sprintf('Run with N=%d, Nc = %d',N,Nc);
 text(0.5, 1, ['\bf ' titlestring],'HorizontalAlignment','center','VerticalAlignment', 'top')
+
+plot_ft(FVAL, TEVAL, 'LMPC(condensed) Inverted Pendulum Performance',figure);
