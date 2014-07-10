@@ -4,7 +4,8 @@ addpath('./util');
 %% System initialization
 x0 = [30; 0; -5; 0; 40; 0]; %Initial state
 xref = [20; 0; 0; 0; 0; 0]; %Reference state 
-N = 1000; % samples
+u0 = [2; 2]; % [Vf Vb] initial inputs
+N = 2000; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
@@ -22,22 +23,31 @@ X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
 x = x0;
 xr = x0; % 'real' x
+u = u0;
 %% MPC solve
 for i = 1:N
-    %% Iteration printing
-    if mod(i,Np) == 0
+    %% Update SL Model
+    if mod(i,Np) == 0 || i == 1
+        [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
+        [x_o, u_o] = affine_eq(A,B,g);
+        du_bar = du - repmat(u_o',2,1);
+        dx_bar = dx - repmat(x_o',2,1);
+        Ad = eye(nx) + h*A;
+        Bd = h*B;
         fprintf('%d ', i);
         if mod(i,20*Np) == 0
             fprintf('\n');
         end
     end
     %% Get next command
-    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref);
+    xbar = x - x_o;
+    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_sparse(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref);
     if EXITFLAG < 0
-        fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
-        error('Solver error');
+        fprintf('Iteration %d\n',i)
+        error('Quadprog error ');
     end
-    u = ue(:,1); %use only the first command in the sequence
+    ubar = ue(:,1); %use only the first command in the sequence
+    u = ubar + u_o;
     %% Data logging
     X(:,i) = x; % save states
     U(:,i) = u; % save inputs
@@ -46,5 +56,5 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',7);
-quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',8);
+quanser_plot(X,U,dx, du,'MPC-SL(sparse) Quanser Plot',1);
+quanser_phase_plot(X, 'MPC-SL(sparse) Quanser Phase-Plot',2);

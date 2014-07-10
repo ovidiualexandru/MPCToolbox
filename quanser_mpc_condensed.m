@@ -41,7 +41,7 @@ for i = 1:N
     end
     %% Get next command
     xbar = x - x_o;
-    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_sparse(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref);
+    [ue, Xe,FVAL,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
@@ -56,5 +56,5 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC Quanser Plot',1);
-quanser_phase_plot(X, 'MPC Quanser Phase-Plot',2);
+quanser_plot(X,U,dx, du,'MPC-SL(condensed form) Quanser Plot',3);
+quanser_phase_plot(X, 'MPC-SL(condensed form) Quanser Phase-Plot',4);
