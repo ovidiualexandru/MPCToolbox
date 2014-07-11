@@ -2,10 +2,10 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [15; 0; 10; 0; 40; 0]; %Initial state
-xref = [0; 0; 0; 0; 0; 0]; %Reference state 
+x0 = [20; 0; 10; 0; 15; 0]; %Initial state
+xref = [5; 0; 0; 0; 0; 0]; %Reference state 
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 1000; % samples
+N = 500; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
@@ -16,8 +16,8 @@ Q = diag([5, 1, 1, 1, 10, 1],0);
 R = diag([0.01, 0.01],0);
 dx = [30, inf, 45, inf, 180, inf;
       -30, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
-du = [22, 22;
-      -22, -22]; %input constraints
+du = [5, 5;
+      -5, -5]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
