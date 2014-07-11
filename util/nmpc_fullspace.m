@@ -7,7 +7,7 @@ if isempty(xref)
 end
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
-        C = zeros(size(z));
+        C = [];
         Xl = reshape(z, nu+nx,[]);
         ul = Xl(1:nu,:);
         Xl = Xl(nu+1:end,:);
