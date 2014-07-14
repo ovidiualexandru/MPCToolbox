@@ -1,12 +1,16 @@
 function quanser_phase_plot(X,varargin)
-%% Quanser phase plot
-% Call this for a nice phase plot for each state pair.
-% Examples: quanser_mpc, quanser_lqr
-% Parameter order:
-% - X: 6-by-N matrix with the state snapshots
-% - figtitle: figure title
-% - fignumber: figure number
+%QUANSER_PHASE_PLOT produces a nice phase plot figure for the Quanser 3-DOF
+%helicopter simulation.
+%   QUANSER_PHASE_PLOT(X, figtitle, fignumber) plot the simulation results
+%   in X into a figure. Produces a 2-by-3 subplot with the elevation-travel
+%   angles on the first line and each (state, state derivative) pair on the
+%   second line.
 %
+%   Arguments:
+%   - X: 6-by-N matrix with the state snapshots
+%   - figtitle: figure title. If omitted, defaults to 'Quanser Phase-Plot'
+%   - fignumber: figure number. If omitted, defaults to 2.
+
 %% Parameter processing
 if nargin > 1
     figtitle = varargin{1};

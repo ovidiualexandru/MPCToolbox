@@ -1,15 +1,19 @@
 function quanser_plot(X,U, varargin)
-%% Quanser simulation plot
-% Call this for a nice plot of the results from a simulation.
-% Examples: quanser_mpc, quanser_lqr
-% Parameter order:
-% - X: 6-by-N matrix with the state snapshots
-% - U: 2-by-N matrix of the input snapshots
-% - dx: 2-by-6 matrix with constraints on each state
-% - du: 2-by-2 matrix with constraints on each input. Only first is plotted
-% - figtitle: figure title
-% - fignumber: figure number
+%QUANSER_PLOT produces a nice figure for the Quanser 3-DOF simulation.
+%   QUANSER_PLOT(X, U, dx, du, figtitle, fignumber) plot the simulation
+%   results from X and U in figure <fignumber> with title <figtitle>. This
+%   function produces a 3-by-3 subplot with the inputs on the first line
+%   and each (state, state derivative) pair on each column.
 %
+%   Arguments:
+%   - X: 6-by-N matrix with the state snapshots
+%   - U: 2-by-N matrix of the input snapshots
+%   - dx: 2-by-6 matrix with constraints on each state. Can be omitted.
+%   - du: 2-by-2 matrix with constraints on each input. Only first
+%       constraint is plotted. Can be omitted.
+%   - figtitle: figure title. If omitted, defaults to 'Quanser Phase-Plot'
+%   - fignumber: figure number. If omitted, defaults to 1.
+
 %% Parameter processing
 nx = 6;
 nu = 2;

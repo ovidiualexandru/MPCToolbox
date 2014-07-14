@@ -1,9 +1,14 @@
 function p = quanser_params()
-%% *Get Quanser model parameters*
-% The model is taken from here: 
-% <https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf>
-% Output:
-% - p: vector containing the p1...p10 coefficients, used in page 3 and 5.
+%QUANSER_PARAMS returns the Quanser 3-DOF helicopter nonlinear model
+%parameters.
+%   p = quanser_params() return in vector p the 10 coefficients for the
+%   model.
+%
+%   Output arguments:
+%   - p: vector containing the p1 ... p10 coefficients, used in pages 3 
+%       and 5 in
+%https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf
+
 %% Model data
 Jepsilon = 0.86; %kg*m^2
 Jtheta = 0.044; %kg*m^2

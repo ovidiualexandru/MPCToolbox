@@ -1,4 +1,34 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref)
+%NMPC_FULLSPACE Calculate the input sequence and predicted output using
+%Nonlinear MPC fullspace (simultaneous) approach.
+%   [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, ...
+%       Q, R, Nc, du, dx, x0, xref). Calculate the inputs using the
+%       nonlinear (continous) model function <handle_nlmodel>, using sample
+%       time <h>.
+%
+%   Arguments:
+%   - handle_nlmodeld: the continous nonlinear model function
+%   - h: sampling time
+%   - Q,R: the weighting matrices in the cost function
+%   - Nc: the control horizon
+%   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
+%       matrix containing constraints for inputs. First line is lower
+%       bound, second is upper bound for each input. *dx* is a 2-by-nx
+%       matrix with constraints for states. If the input/state has no lower
+%       bound, set it's corresponding value to -Inf. Conversely, if the
+%       input/state has no upper bound, set to Inf. nu - number of inputs,
+%       nx - number of states.
+%   - x0: the current( initial) state of the system
+%   - xref: the desired( reference) state
+%   Output arguments:
+%   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
+%   - X: a nx-by-Nc matrix of predicted states.
+%   - FVAL: the object function value given by the numerical solver, 
+%       fmincon.
+%   - EXITFLAG: the exitflag from the solver. See 'help fmincon' for 
+%       details. EXITFLAG is > 0 if a solution has been found.
+%   - OUTPUT: the output from the solver. See 'help fmincon' for details.
+
 %% Argument processing
 nu = size(du,2); %number of inputs
 nx = size(dx,2); %number of states

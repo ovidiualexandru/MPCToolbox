@@ -1,6 +1,35 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x0, xref)
-%LMPC_CONDENSED Linear MPC in condensed form.
-%   Explanation soon to come
+%LMPC_CONDENSED Calculate the input sequence and predicted output using Linear
+%MPC condensed (sequential) formulation.
+%   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, ...
+%       du, dx, x0, xref). Calculate the inputs using MPC condensed
+%       formulation.
+%
+%   Arguments:
+%   - A,B: the state-space matrices describing the system dynamic
+%   - Q,R: the weighting matrices in the cost function
+%   - Nc: the control horizon
+%   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
+%       matrix containing constraints for inputs. First line is lower
+%       bound, second is upper bound for each input. *dx* is a 2-by-nx
+%       matrix with constraints for states. If the input/state has no lower
+%       bound, set it's corresponding value to -Inf. Conversely, if the
+%       input/state has no upper bound, set to Inf. nu - number of inputs,
+%       nx - number of states.
+%   - x0: the current( initial) state of the system
+%   - xref: the desired( reference) state
+%   Output arguments:
+%   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
+%   - X: a nu-by-Nc matrix of computed inputs, same as u.
+%   - FVAL: the object function value given by the numerical solver, 
+%       quadprog.
+%   - EXITFLAG: the exitflag from the solver. See 'help quadprog' for 
+%       details. EXITFLAG is > 0 if a solution has been found.
+%   - OUTPUT: the output from the solver. See 'help quadprog' for details.
+%
+%   Details for the sparse MPC formulation used can be found in 'Metode de
+%       optimizare numerica'(romanian) by prof. I. Necoara, pg 239.
+
 %% Argument processing
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states

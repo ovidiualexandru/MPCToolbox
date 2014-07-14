@@ -1,14 +1,21 @@
 function f = quanser_cont_nl(t, y)
-%% *Continous nonlinear model for the Quanser helicopter*
-% The model is taken from here: 
-% <https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf>
-% The state vector is defined ( <_d> meaning derived):
-% x = [epsilon epsilon_d theta theta_d phi phi_d]';
-% Parameters:
-% - t : time-instant (required by ode45), not used in function.
-% - y : an 8-by-1 vector with the initial state and inputs. y = [x0;u]
-% - f : the derived state, padded with zeros (assuming constant inputs). 
+%QUANSER_CONT_NL Continous nonlinear model for the Quanser 3-DOF
+%helicopter.
+%   f = QUANSER_CONT_NL(t, y) compute the states derivative, f using the
+%   initial state x0 and input u concatenated into vector y = [x0; u]
+%
+%   Arguments:
+%   - t : time-instant (required by ode45), not used in function.
+%   - y : an 8-by-1 vector with the initial state and inputs. y = [x0; u]
+%   Output arguments:
+%   - f : the derived state, padded with zeros (assuming constant inputs). 
 %       f = [xd; zeros(2,1)]; where xd = F + G*u
+%
+%   The model is taken from: 
+%https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf
+%   The state vector is defined ( <_d> meaning derived):
+%              x = [epsilon epsilon_d theta theta_d phi phi_d]';
+
 x0 = y(1:6);
 u = y(7:8);
 %% Model 

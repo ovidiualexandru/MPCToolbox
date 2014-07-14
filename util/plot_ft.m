@@ -1,7 +1,14 @@
 function plot_ft(FVAL, TEVAL, figtitle, fignumber)
 %PLOT_FT Plot FVAL and TEVAL for simulation
-%   Make a nice plot for FVAL (Cost function from solver) and TEVAL (time 
-%   needed to compute a command).
+%   PLOT_FT(FVAL, TEVAL, figtitle, fignumber) plots the values in FVAL
+%   using TEVAL as time vector in figure <fignumber> and the title in
+%   <figtitle>.
+%
+%   Arguments:
+%   - FVAL: vector containing values
+%   - TEVAL: time vector. Recommended: 1:length(FVAL)
+%   - figtitle: the figure title
+%   - fignumber: the figure number
 
 N = length(FVAL);
 t = 1:N;
