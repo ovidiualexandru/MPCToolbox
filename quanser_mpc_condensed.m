@@ -62,6 +62,6 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC-SL(condensed form) Quanser Plot',7);
-quanser_phase_plot(X, 'MPC-SL(condensed form) Quanser Phase-Plot',8);
+quanser_plot(X,U,dx, du,'MPC-SL(condensed form) Quanser Plot',7, xref);
+quanser_phase_plot(X, 'MPC-SL(condensed form) Quanser Phase-Plot',8, xref);
 plot_ft(FVAL, TEVAL, 'MPC-SL(condensed form) Quanser Performance',9);

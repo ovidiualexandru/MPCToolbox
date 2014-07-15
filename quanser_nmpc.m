@@ -2,8 +2,8 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [20; 0; 10; 0; 15; 0]; %Initial state
-xref = [5; 0; 0; 0; 0; 0]; %Reference state 
+x0 = [-20; 0; 10; 0; 15; 0]; %Initial state
+xref = [17; 0; 0; 0; 20; 0]; %Reference state 
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 500; % samples
 h = 0.1; % s - sampling time
@@ -54,6 +54,6 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13);
-quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14);
+quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13, xref);
+quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14, xref);
 plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);

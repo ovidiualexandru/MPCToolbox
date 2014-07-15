@@ -1,9 +1,10 @@
 function quanser_plot(X,U, varargin)
 %QUANSER_PLOT produces a nice figure for the Quanser 3-DOF simulation.
-%   QUANSER_PLOT(X, U, dx, du, figtitle, fignumber) plot the simulation
-%   results from X and U in figure <fignumber> with title <figtitle>. This
-%   function produces a 3-by-3 subplot with the inputs on the first line
-%   and each (state, state derivative) pair on each column.
+%   QUANSER_PLOT(X, U, dx, du, figtitle, fignumber, XREF) plot the 
+%   simulation results from X and U in figure <fignumber> with title 
+%   <figtitle> and reference state in XREF. This function produces a 3-by-3
+%   subplot with the inputs on the first line and each (state, state 
+%   derivative) pair on each column.
 %
 %   Arguments:
 %   - X: 6-by-N matrix with the state snapshots
@@ -13,10 +14,14 @@ function quanser_plot(X,U, varargin)
 %       constraint is plotted. Can be omitted.
 %   - figtitle: figure title. If omitted, defaults to 'Quanser Phase-Plot'
 %   - fignumber: figure number. If omitted, defaults to 1.
+%   - XREF: The reference state vector/matrix. If XREF is a 6-by-1 vector,
+%       the reference is taken as constant. Otherwise, XREF must be a
+%       6-by-N matrix.
 
 %% Parameter processing
 nx = 6;
 nu = 2;
+N = size(X,2);
 if nargin > 2
     dx = varargin{1};
 else
@@ -37,14 +42,22 @@ if nargin > 5
 else
     fignumber = 1;
 end
-quanser_plot_g(X, U, dx, du, figtitle, fignumber);
+XREF = NaN(6,N);
+if nargin > 6
+    XREF = varargin{5};
+    if size(XREF,2) == 1
+        XREF = repmat(XREF,1,N);
+    end
+end
+quanser_plot_g(X, U, dx, du, figtitle, fignumber, XREF);
 end
 
-function quanser_plot_g(X, U, dx, du, figtitle, fignumber)
+function quanser_plot_g(X, U, dx, du, figtitle, fignumber, XREF)
 %% Configuration
 N = size(X,2);
 t = 1:N;
 Sx = {'b-', 'r-', 'b-', 'r-', 'b-', 'r-'};
+Sxref = {'g:', 'g:', 'g:', 'g:', 'g:', 'g:'};
 Su = {'y--', 'c:'};
 titles = {'Elevation angle $\epsilon$'; 'Elevation speed $\dot{\epsilon}$';
     'Pitch angle $\theta$';'Pitch speed $\dot{\theta}$';
@@ -59,7 +72,7 @@ set(gcf, 'Name',figtitle);
 whitebg([0 0 0]);
 %% Plot inputs
 for i = 1:cols
-    %% Plot state
+    %% Plot inputs
     subplot(rows, cols, i);
     plot(t, U(1,:) ,Su{1}, t, U(2,:), Su{2});
     %% Constraint plotting
@@ -83,7 +96,7 @@ for i = 1:3
     pos = i + cols; %position in figure
     k = 2*i - 1; %state index
     subplot(rows, cols, pos );
-    plot(t, X(k,:) ,Sx{k});
+    plot(t, X(k,:) ,Sx{k}, t, XREF(k,:), Sxref{k});
     %% Constraint plotting
     rescaleYLim(gca, [dx(2,k) dx(1,k)]*1.1);
     %Upper bound
@@ -100,7 +113,7 @@ for i = 1:3
     end
     %% Plot secondary state - its derivative
     subplot(rows, cols, pos + cols);
-    plot(t, X(k+1,:) ,Sx{k+1});
+    plot(t, X(k+1,:) ,Sx{k+1}, t, XREF(k+1, :), Sxref{k+1});
     %% Constraint plotting
     rescaleYLim(gca, [dx(2,k+1) dx(1,k+1)]*1.1);
     %Upper bound
