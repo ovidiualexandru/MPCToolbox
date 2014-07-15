@@ -12,8 +12,8 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, 
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
 %   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
-%       matrix containing constraints for inputs. First line is lower
-%       bound, second is upper bound for each input. *dx* is a 2-by-nx
+%       matrix containing constraints for inputs. First line is upper
+%       bound, second is lower bound for each input. *dx* is a 2-by-nx
 %       matrix with constraints for states. If the input/state has no lower
 %       bound, set it's corresponding value to -Inf. Conversely, if the
 %       input/state has no upper bound, set to Inf. nu - number of inputs,
