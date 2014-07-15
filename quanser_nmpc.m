@@ -3,7 +3,6 @@ addpath('./quanser');
 addpath('./util');
 %% System initialization
 x0 = [-20; 0; 10; 0; 15; 0]; %Initial state
-xref = [17; 0; 0; 0; 20; 0]; %Reference state 
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 500; % samples
 h = 0.1; % s - sampling time
@@ -11,6 +10,12 @@ nu = 2;
 nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
+%% Reference stae
+XREF = zeros(6, N);
+xref1 = [5; 0; 10; 0; 15; 0];
+xref2 = [-5; 0; -10; 0; -15; 0];
+XREF(:, 101:200) = repmat(xref1,1,100);
+XREF(:, 201:300) = repmat(xref2, 1, 100);
 %% Cost matrices and constraints
 Q = diag([5, 1, 1, 1, 10, 1],0);
 R = diag([0.01, 0.01],0);
@@ -37,7 +42,7 @@ for i = 1:N
         end
     end
     %% Get next command
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, XREF(:,i));
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');
@@ -54,6 +59,6 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13, xref);
-quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14, xref);
+quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13, XREF);
+quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14, XREF);
 plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);
