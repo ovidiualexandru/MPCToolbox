@@ -1,4 +1,5 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x0, xref)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
+    du, dx, x0, xref)
 %LMPC_SPARSE Calculate the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
@@ -9,13 +10,13 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, du, dx, x0
 %   - A,B: the state-space matrices describing the system dynamic
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
-%   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
-%       matrix containing constraints for inputs. First line is upper
-%       bound, second is lower bound for each input. *dx* is a 2-by-nx
-%       matrix with constraints for states. If the input/state has no lower
-%       bound, set it's corresponding value to -Inf. Conversely, if the
-%       input/state has no upper bound, set to Inf. nu - number of inputs,
-%       nx - number of states.
+%   - du, dx: the constraint vectors for inputs and states. *du* is a 
+%       2-by-numatrix containing constraints for inputs. First line is 
+%       upper bound, second is lower bound for each input. *dx* is a 
+%       2-by-nx matrix with constraints for states. If the input/state has 
+%       no lower bound, set it's corresponding value to -Inf. Conversely, 
+%       if the input/state has no upper bound, set to Inf. 
+%       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
 %   Output arguments:
@@ -72,12 +73,16 @@ q = -Q_hat*zref;
 rel = version('-release');
 rel = rel(1:4); %just the year
 if strcmp(rel,'2011')
-    options = optimset('Algorithm', 'interior-point-convex', 'Display', 'off'); % Matlab 2011
+    % Matlab 2011
+    options = optimset(...
+        'Algorithm', 'interior-point-convex', 'Display', 'off'); 
 else
+    %Matlab 2013
     options = optimoptions('quadprog', ...
-        'Algorithm', 'interior-point-convex', 'Display', 'off'); %Matlab 2013
+        'Algorithm', 'interior-point-convex', 'Display', 'off'); 
 end
-[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat,LB,UB,[], options);
+[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat, ...
+    LB,UB,[], options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);

@@ -1,4 +1,5 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
+    handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref)
 %NMPC_FULLSPACE Calculate the input sequence and predicted output using
 %Nonlinear MPC fullspace (simultaneous) approach.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, ...
@@ -11,13 +12,13 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, Q, 
 %   - h: sampling time
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
-%   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
-%       matrix containing constraints for inputs. First line is upper
-%       bound, second is lower bound for each input. *dx* is a 2-by-nx
-%       matrix with constraints for states. If the input/state has no lower
-%       bound, set it's corresponding value to -Inf. Conversely, if the
-%       input/state has no upper bound, set to Inf. nu - number of inputs,
-%       nx - number of states.
+%   - du, dx: the constraint vectors for inputs and states. *du* is a 
+%       2-by-nu matrix containing constraints for inputs. First line is 
+%       upper bound, second is lower bound for each input. *dx* is a 
+%       2-by-nx matrix with constraints for states. If the input/state has 
+%       no lower bound, set it's corresponding value to -Inf. Conversely, 
+%       if the input/state has no upper bound, set to Inf. 
+%       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
 %   Output arguments:
@@ -47,7 +48,7 @@ end
             b = Xl(:,i);
             x = handle_nlmodeld(x, ul(:,i), h);
             dif = b - x; %x_{k+1} - f(x_k)
-            ceq = [zeros(nu, 1); dif]; %append zeros because inputs have no eq constraints
+            ceq = [zeros(nu, 1); dif]; %inputs have no eq constraints
             idx_start = (i-1)*(nx+nu)+1;
             idx_end = i*(nx+nu);
             Ceq(idx_start:idx_end) = ceq;
@@ -86,7 +87,8 @@ else
     options = optimoptions('fmincon', ...
         'Algorithm', 'sqp', 'Display', 'off'); %Matlab 2013
 end
-[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], [],[],[],LB,UB, @nonlconfunc, options);
+[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], ...
+    [], [], [], LB, UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);

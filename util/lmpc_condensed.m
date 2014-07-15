@@ -1,6 +1,7 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x0, xref)
-%LMPC_CONDENSED Calculate the input sequence and predicted output using Linear
-%MPC condensed (sequential) formulation.
+function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
+    du, dx, x0, xref)
+%LMPC_CONDENSED Calculate the input sequence and predicted output using
+%Linear MPC condensed (sequential) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, ...
 %       du, dx, x0, xref). Calculate the inputs using MPC condensed
 %       formulation.
@@ -9,13 +10,13 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, du, dx,
 %   - A,B: the state-space matrices describing the system dynamic
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
-%   - du, dx: the constraint vectors for inputs and states. *du* is a 2-by-nu
-%       matrix containing constraints for inputs. First line is upper
-%       bound, second is lower bound for each input. *dx* is a 2-by-nx
-%       matrix with constraints for states. If the input/state has no lower
-%       bound, set it's corresponding value to -Inf. Conversely, if the
-%       input/state has no upper bound, set to Inf. nu - number of inputs,
-%       nx - number of states.
+%   - du, dx: the constraint vectors for inputs and states. *du* is a 
+%       2-by-nu matrix containing constraints for inputs. First line is
+%       upper bound, second is lower bound for each input. *dx* is a 
+%       2-by-nx matrix with constraints for states. If the input/state has 
+%       no lower bound, set it's corresponding value to -Inf. Conversely, 
+%       if the input/state has no upper bound, set to Inf. 
+%       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
 %   Output arguments:
@@ -95,12 +96,16 @@ Q_hat = Rbar + ABbar'*Qbar*ABbar;
 rel = version('-release');
 rel = rel(1:4); %just the year
 if strcmp(rel,'2011')
-    options = optimset('Algorithm', 'active-set', 'Display', 'off'); % Matlab 2011
+    % Matlab 2011
+    options = optimset(...
+        'Algorithm', 'active-set', 'Display', 'off');
 else
+    %Matlab 2013
     options = optimoptions('quadprog', ...
-        'Algorithm', 'active-set', 'Display', 'off'); %Matlab 2013
+        'Algorithm', 'active-set', 'Display', 'off'); 
 end
-[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, C_hat, d_hat, [], [], [], [], [], options);
+[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, C_hat, d_hat, [], [], ...
+    [], [], [], options);
 %% Return variables
 X = reshape(Z, nu,[]);
 u = X(1:nu,:);

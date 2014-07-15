@@ -13,7 +13,7 @@ N = 50; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 5; %SL horizon i.e. how many steps until a new affine term is calculated
+Np = 5; %SL horizon i.e. how many steps until a new affine term is computed
 %% Input signal shape
 U = ones(nu, N);
 % u(:, 1:30) = repmat([3; 3],1,30);
@@ -119,7 +119,8 @@ for i = 1:3
     ylabel(ylabels{k});
     grid on 
     if i == 1
-        legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', 'Location', 'Best');
+        legend('NL ode45', 'NL euler', 'SL c2d', 'SL euler', ...
+            'Location', 'Best');
     end
     %Plot secondary state - its derivative
     subplot(rows, cols, pos + cols);

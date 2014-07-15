@@ -64,8 +64,10 @@ for i = 1:cols
     plot(t, U(1,:) ,Su{1}, t, U(2,:), Su{2});
     %% Constraint plotting
     rescaleYLim(gca, [du(2,1) du(1,1)]*1.1);
-    line([0;N],[du(1,1);du(1,1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-    line([0;N],[du(2,1);du(2,1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+    %Upper bound
+    line([0;N],[du(1,1);du(1,1)], 'LineStyle', '--', 'Color', [1 0 0]);
+    %Lower bound
+    line([0;N],[du(2,1);du(2,1)], 'LineStyle', '--', 'Color', [1 0 0]);
     %% Title and labels
     xlabel('samples [k]');
     ylabel('[volts]');
@@ -84,8 +86,10 @@ for i = 1:3
     plot(t, X(k,:) ,Sx{k});
     %% Constraint plotting
     rescaleYLim(gca, [dx(2,k) dx(1,k)]*1.1);
-    line([0;N],[dx(1,k);dx(1,k)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-    line([0;N],[dx(2,k);dx(2,k)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+    %Upper bound
+    line([0;N],[dx(1,k);dx(1,k)], 'LineStyle', '--', 'Color', [1 0 0]);
+    %Lower bound
+    line([0;N],[dx(2,k);dx(2,k)], 'LineStyle', '--', 'Color', [1 0 0]);
     %% Title and labels
     title(titles{k},'Interpreter','latex');
     xlabel('[k]');
@@ -99,8 +103,10 @@ for i = 1:3
     plot(t, X(k+1,:) ,Sx{k+1});
     %% Constraint plotting
     rescaleYLim(gca, [dx(2,k+1) dx(1,k+1)]*1.1);
-    line([0;N],[dx(1,k+1);dx(1,k+1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Upper bound
-    line([0;N],[dx(2,k+1);dx(2,k+1)], 'LineStyle', '--', 'Color', [1 0 0]); %%Lower bound
+    %Upper bound
+    line([0;N],[dx(1,k+1);dx(1,k+1)], 'LineStyle', '--', 'Color', [1 0 0]);
+    %Lower bound
+    line([0;N],[dx(2,k+1);dx(2,k+1)], 'LineStyle', '--', 'Color', [1 0 0]);
     %% Title and labels
     title(titles{k+1},'Interpreter','latex');
     xlabel('[k]');

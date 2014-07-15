@@ -32,7 +32,8 @@ deltah = atan(Le/Lh);
 %% Return coefficients
 p = zeros(10,1);
 p(1) = ( -(Mf + Mb) * g * La + Mc * g * Lc) / Jepsilon;
-p(2) = ( -(Mf + Mb) * g * La * tan(deltaa) + Mc * g * Lc * tan(deltac) ) / Jepsilon;
+p(2) = ( -(Mf + Mb) * g * La * tan(deltaa) + Mc * g * Lc * tan(deltac) )...
+    / Jepsilon;
 p(3) = -niu_epsilon / Jepsilon;
 p(4) = Km * La / Jepsilon;
 p(5) = (-Mf + Mb) * g * Lh / Jtheta;
