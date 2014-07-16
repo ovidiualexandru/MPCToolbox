@@ -72,14 +72,18 @@ q = -Q_hat*zref;
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
-if strcmp(rel,'2011')
-    % Matlab 2011
-    options = optimset(...
-        'Algorithm', 'interior-point-convex', 'Display', 'off'); 
-else
-    %Matlab 2013
-    options = optimoptions('quadprog', ...
-        'Algorithm', 'interior-point-convex', 'Display', 'off'); 
+relnum = str2double(rel);
+switch relnum
+    case 2010
+        options = optimset;
+    case 2011
+        options = optimset(...
+            'Algorithm', 'interior-point-convex', 'Display', 'off');
+    case 2013
+        options = optimoptions('quadprog', ...
+            'Algorithm', 'interior-point-convex', 'Display', 'off');
+    otherwise
+        error('Can''t set solver options for this version of Matlab');
 end
 [Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat, ...
     LB,UB,[], options);

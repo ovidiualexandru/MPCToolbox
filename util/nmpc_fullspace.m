@@ -81,11 +81,18 @@ z0 = zeros(size(Q_hat,1),1);
 %% Nonlinear solver
 rel = version('-release');
 rel = rel(1:4); %just the year
-if strcmp(rel,'2011')
-    options = optimset('Algorithm', 'sqp', 'Display', 'off'); % Matlab 2011
-else
-    options = optimoptions('fmincon', ...
-        'Algorithm', 'sqp', 'Display', 'off'); %Matlab 2013
+relnum = str2double(rel);
+switch relnum
+    case 2010
+        options = optimset;
+    case 2011
+        options = optimset(...
+            'Algorithm', 'sqp', 'Display', 'off');
+    case 2013
+        options = optimoptions('fmincon', ...
+            'Algorithm', 'sqp', 'Display', 'off');
+    otherwise
+        error('Can''t set solver options for this version of Matlab');
 end
 [Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], ...
     [], [], [], LB, UB, @nonlconfunc, options);

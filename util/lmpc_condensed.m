@@ -95,14 +95,18 @@ Q_hat = Rbar + ABbar'*Qbar*ABbar;
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
-if strcmp(rel,'2011')
-    % Matlab 2011
-    options = optimset(...
-        'Algorithm', 'active-set', 'Display', 'off');
-else
-    %Matlab 2013
-    options = optimoptions('quadprog', ...
-        'Algorithm', 'active-set', 'Display', 'off'); 
+relnum = str2double(rel);
+switch relnum
+    case 2010
+        options = optimset;
+    case 2011
+        options = optimset(...
+            'Algorithm', 'active-set', 'Display', 'off');
+    case 2013
+        options = optimoptions('quadprog', ...
+            'Algorithm', 'active-set', 'Display', 'off');
+    otherwise
+        error('Can''t set solver options for this version of Matlab');
 end
 [Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, C_hat, d_hat, [], [], ...
     [], [], [], options);
@@ -110,4 +114,3 @@ end
 X = reshape(Z, nu,[]);
 u = X(1:nu,:);
 end
-
