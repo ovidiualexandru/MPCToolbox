@@ -2,7 +2,7 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [20; 0; 10; 0; 15; 0]; %Initial state
+x0 = [20; 0; 0; 0; 0; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 500; % samples
 h = 0.1; % s - sampling time
@@ -12,17 +12,17 @@ Np = 3; % control and prediction horizon
 Nc = 3;
 %% Reference stae
 XREF = zeros(6, N);
-xref1 = [5; 0; 10; 0; 15; 0];
-xref2 = [-5; 0; -10; 0; -15; 0];
-XREF(:, 101:200) = repmat(xref1,1,100);
-XREF(:, 201:300) = repmat(xref2, 1, 100);
+xref1 = [-5; 0; 0; 0; 0; 0];
+xref2 = [25; 0; 0; 0; 0; 0];
+XREF(:, 1:200) = repmat(xref1,1,200);
+XREF(:, 201:350) = repmat(xref2, 1, 150);
 %% Cost matrices and constraints
-Q = diag([5, 1, 1, 1, 10, 1],0);
+Q = diag([10, 1, 1, 1, 1, 1],0);
 R = diag([0.01, 0.01],0);
 dx = [30, inf, 45, inf, 180, inf;
       -30, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
-du = [5, 5;
-      -5, -5]; %input constraints
+du = [22, 22;
+      -22, -22]; %input constraints
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
