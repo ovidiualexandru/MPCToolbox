@@ -98,7 +98,8 @@ rel = rel(1:4); %just the year
 relnum = str2double(rel);
 switch relnum
     case 2010
-        options = optimset;
+        options = optimset(...
+            'Display', 'off', 'Diagnostics', 'off', 'LargeScale', 'off');
     case 2011
         options = optimset(...
             'Algorithm', 'active-set', 'Display', 'off');
