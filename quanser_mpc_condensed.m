@@ -2,7 +2,7 @@ clear
 addpath('./quanser');
 addpath('./util');
 %% System initialization
-x0 = [20; 0; 0; 0; 0; 0]; %Initial state
+x0 = [5; 0; 0; 0; 0; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
 N = 500; % samples
 h = 0.1; % s - sampling time
@@ -13,14 +13,14 @@ Nc = 3;
 %% Reference stae
 XREF = zeros(6, N);
 xref1 = [-5; 0; 0; 0; 0; 0];
-xref2 = [25; 0; 0; 0; 0; 0];
-XREF(:, 1:200) = repmat(xref1,1,200);
+xref2 = [5; 0; 20; 0; 0; 0];
+XREF(:, 101:200) = repmat(xref1,1,100);
 XREF(:, 201:350) = repmat(xref2, 1, 150);
 %% Cost matrices and constraints
-Q = diag([10, 1, 1, 1, 1, 1],0);
-R = diag([0.01, 0.01],0);
-dx = [30, inf, 45, inf, 180, inf;
-      -30, -inf, -45, -inf, -180, -inf]; %state constraints, positive and negative
+Q = diag([20, 1, 2, 1, 2, 1],0);
+R = diag([.1, .1],0);
+dx = [30, inf, 90, inf, 180, inf;
+      -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative
 du = [22, 22;
       -22, -22]; %input constraints
 %% Solver initialization
