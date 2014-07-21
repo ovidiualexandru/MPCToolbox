@@ -8,7 +8,7 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
 %       time <h>.
 %
 %   Arguments:
-%   - handle_nlmodeld: the continous nonlinear model function
+%   - handle_nlmodeld: the discrete nonlinear model function
 %   - h: sampling time
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
@@ -80,7 +80,7 @@ end
 zsmall = [ uref; xref];
 zref = repmat( zsmall, Nc,1);
 q = -Q_hat*zref;
-z0 = zeros(size(Q_hat,1),1);
+z0 = repmat([uref; xref], Nc,1);
 %% Nonlinear solver
 rel = version('-release');
 rel = rel(1:4); %just the year
@@ -97,7 +97,7 @@ switch relnum
     otherwise
         error('Can''t set solver options for this version of Matlab');
 end
-[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) z'*Q_hat*z + q'*z, z0, [], ...
+[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) 0.5*z'*Q_hat*z + q'*z, z0, [], ...
     [], [], [], LB, UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
