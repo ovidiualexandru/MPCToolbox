@@ -1,5 +1,5 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-    du, dx, x0, xref)
+    du, dx, x0, xref, uref)
 %LMPC_SPARSE Calculate the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
@@ -19,6 +19,7 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
 %       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
+%   - uref: the reference input (stabilizing input)
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nx-by-Nc matrix of predicted states.
@@ -37,8 +38,10 @@ nx = size(A,1); %number of states
 if isempty(xref)
     xref = zeros(nx,1);
 end
+if isempty(uref)
+    uref = zeros(nu,1);
+end
 %% QP definition
-
 ubx = dx(1,:)';
 lbx = dx(2,:)';
 ubu = du(1,:)';
@@ -65,7 +68,6 @@ for i = 1:Nc-1
     A_hat(lines_l: lines_u, cols_l: cols_u)= -A;
 end
 b_hat = [b_hat; repmat(bsmall, [Nc-1 1])];
-uref = zeros(nu,1); %should uref be 0?
 zsmall = [ uref; xref];
 zref = repmat( zsmall, Nc,1);
 q = -Q_hat*zref;

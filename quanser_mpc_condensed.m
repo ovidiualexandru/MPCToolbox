@@ -16,6 +16,7 @@ xref1 = [0; 0; 0; 0; 0; 0];
 xref2 = [20; 0; 0; 0; 0; 0];
 XREF(:, 101:200) = repmat(xref1, 1, 100);
 XREF(:, 201:350) = repmat(xref2, 1, 150);
+uref = [1.8; 1.8];
 %% Cost matrices and constraints
 Q = diag([2, .1, 2, .1, 2, .1],0);
 R = diag([.01, .01],0);
@@ -49,7 +50,8 @@ for i = 1:N
     end
     %% Get next command
     xbar = x - x_o;
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i));
+    urefbar = uref - u_o;
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i), urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');

@@ -1,5 +1,5 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
-    du, dx, x0, xref)
+    du, dx, x0, xref, uref)
 %LMPC_CONDENSED Calculate the input sequence and predicted output using
 %Linear MPC condensed (sequential) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, ...
@@ -19,6 +19,7 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
 %       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
+%   - uref: the reference input (stabilizing input)
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nu-by-Nc matrix of computed inputs, same as u.
@@ -36,6 +37,9 @@ nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 if isempty(xref)
     xref = zeros(nx,1);
+end
+if isempty(uref)
+    uref = zeros(nu,1);
 end
 %% QP definition
 du(2,:) = -du(2,:); %convert negative constraints to positive
@@ -87,7 +91,6 @@ for i = 1:Nc
     Rbar = blkdiag(Rbar, R);
 end
 %% Final
-uref = zeros(nu,1); %should uref be 0?
 xrefbar = repmat(xref, Nc, 1);
 zrefbar = repmat(uref, Nc, 1);
 q = ABbar'*Qbar*Ap*x0 - ABbar'*Qbar*xrefbar - Rbar*zrefbar;
