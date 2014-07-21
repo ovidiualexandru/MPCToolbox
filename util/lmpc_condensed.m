@@ -1,6 +1,6 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
     du, dx, x0, xref, uref)
-%LMPC_CONDENSED Calculate the input sequence and predicted output using
+%LMPC_CONDENSED Compute the input sequence and predicted output using
 %Linear MPC condensed (sequential) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, ...
 %       du, dx, x0, xref). Calculate the inputs using MPC condensed

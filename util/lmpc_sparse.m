@@ -1,14 +1,14 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
     du, dx, x0, xref, uref)
-%LMPC_SPARSE Calculate the input sequence and predicted output using Linear
+%LMPC_SPARSE Compute the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
 %       du, dx, x0, xref). Calculate the inputs using MPC sparse
 %       formulation.
 %
 %   Arguments:
-%   - A,B: the state-space matrices describing the system dynamic
-%   - Q,R: the weighting matrices in the cost function
+%   - A, B: the state-space matrices describing the system dynamic
+%   - Q, R: the weighting matrices in the cost function
 %   - Nc: the control horizon
 %   - du, dx: the constraint vectors for inputs and states. *du* is a 
 %       2-by-numatrix containing constraints for inputs. First line is 

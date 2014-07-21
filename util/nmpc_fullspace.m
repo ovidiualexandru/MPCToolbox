@@ -1,6 +1,6 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
     handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref, uref)
-%NMPC_FULLSPACE Calculate the input sequence and predicted output using
+%NMPC_FULLSPACE Compute the input sequence and predicted output using
 %Nonlinear MPC fullspace (simultaneous) approach.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, ...
 %       Q, R, Nc, du, dx, x0, xref). Calculate the inputs using the
