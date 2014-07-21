@@ -1,5 +1,5 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
-    handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref)
+    handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref, uref)
 %NMPC_FULLSPACE Calculate the input sequence and predicted output using
 %Nonlinear MPC fullspace (simultaneous) approach.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, ...
@@ -21,6 +21,7 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
 %       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
 %   - xref: the desired( reference) state
+%   - uref: the reference input (stabilizing input)
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nx-by-Nc matrix of predicted states.
@@ -35,6 +36,12 @@ nu = size(du,2); %number of inputs
 nx = size(dx,2); %number of states
 if isempty(xref)
     xref = zeros(nx,1);
+end
+if isempty(uref)
+    uref = zeros(nu,1);
+end
+if ~isa(handle_nlmodeld, 'function_handle')
+    error('handle_nlmodeld must be a function handle.');
 end
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
@@ -54,10 +61,6 @@ end
             Ceq(idx_start:idx_end) = ceq;
         end
     end
-%% Argument processing
-if ~isa(handle_nlmodeld, 'function_handle')
-    error('handle_nlmodeld must be a function handle.');
-end
 %% QP definition
 ubx = dx(1,:)';
 lbx = dx(2,:)';
@@ -73,7 +76,7 @@ for i = 1:Nc-1
     %Add another element to the block diagonal matrices
     Q_hat = blkdiag(Q_hat, Qsmall);
 end
-uref = zeros(nu,1); %should uref be 0?
+% uref = zeros(nu,1); %should uref be 0?
 zsmall = [ uref; xref];
 zref = repmat( zsmall, Nc,1);
 q = -Q_hat*zref;

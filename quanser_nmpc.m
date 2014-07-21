@@ -12,13 +12,14 @@ Np = 3; % control and prediction horizon
 Nc = 3;
 %% Reference stae
 XREF = zeros(6, N);
-xref1 = [-5; 0; 0; 0; 0; 0];
-xref2 = [5; 0; 20; 0; 0; 0];
+xref1 = [0; 0; 0; 0; 0; 0];
+xref2 = [25; 0; 0; 0; 0; 0];
 XREF(:, 101:200) = repmat(xref1,1,100);
 XREF(:, 201:350) = repmat(xref2, 1, 150);
+uref = [1.8; 1.8];
 %% Cost matrices and constraints
-Q = diag([20, 1, 2, 1, 2, 1],0);
-R = diag([.1, .1],0);
+Q = diag([5, .1, 2, .1, 2, .1],0);
+R = diag([.01, .01],0);
 dx = [30, inf, 90, inf, 180, inf;
       -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative
 du = [22, 22;
@@ -42,7 +43,7 @@ for i = 1:N
         end
     end
     %% Get next command
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, XREF(:,i));
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, XREF(:,i), uref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');
