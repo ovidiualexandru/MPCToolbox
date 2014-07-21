@@ -13,12 +13,12 @@ Nc = 3;
 %% Reference stae
 XREF = zeros(6, N);
 xref1 = [0; 0; 0; 0; 0; 0];
-xref2 = [25; 0; 0; 0; 0; 0];
-XREF(:, 101:200) = repmat(xref1,1,100);
+xref2 = [20; 0; 0; 0; 0; 0];
+XREF(:, 101:200) = repmat(xref1, 1, 100);
 XREF(:, 201:350) = repmat(xref2, 1, 150);
 uref = [1.8; 1.8];
 %% Cost matrices and constraints
-Q = diag([5, .1, 2, .1, 2, .1],0);
+Q = diag([2, .1, 2, .1, 2, .1],0);
 R = diag([.01, .01],0);
 dx = [30, inf, 90, inf, 180, inf;
       -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative

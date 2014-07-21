@@ -12,13 +12,13 @@ Np = 3; % control and prediction horizon
 Nc = 3;
 %% Reference stae
 XREF = zeros(6, N);
-xref1 = [-5; 0; 0; 0; 0; 0];
-xref2 = [5; 0; 20; 0; 0; 0];
-XREF(:, 101:200) = repmat(xref1,1,100);
+xref1 = [0; 0; 0; 0; 0; 0];
+xref2 = [20; 0; 0; 0; 0; 0];
+XREF(:, 101:200) = repmat(xref1, 1, 100);
 XREF(:, 201:350) = repmat(xref2, 1, 150);
 %% Cost matrices and constraints
-Q = diag([20, 1, 2, 1, 2, 1],0);
-R = diag([.1, .1],0);
+Q = diag([2, .1, 2, .1, 2, .1],0);
+R = diag([.01, .01],0);
 dx = [30, inf, 90, inf, 180, inf;
       -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative
 du = [22, 22;
