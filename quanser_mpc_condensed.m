@@ -10,18 +10,20 @@ nu = 2;
 nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
-%% Reference stae
+%% Reference state
 XREF = zeros(6, N);
-xref1 = [0; 0; 0; 0; 0; 0];
-xref2 = [20; 0; 0; 0; 0; 0];
+xref1 = [20; 0; 0; 0; 0; 0];
+xref2 = [20; 0; 25; 0; 0; 0];
+xref3 = [0; 0; -25; 0; 0; 0];
 XREF(:, 101:200) = repmat(xref1, 1, 100);
-XREF(:, 201:350) = repmat(xref2, 1, 150);
+XREF(:, 201:300) = repmat(xref2, 1, 100);
+XREF(:, 301:350) = repmat(xref3, 1, 50);
 uref = [1.8; 1.8];
 %% Cost matrices and constraints
-Q = diag([2, .1, 2, .1, 2, .1],0);
+Q = diag([2, .1, 1, .1, .1, .1],0);
 R = diag([.01, .01],0);
-dx = [30, inf, 90, inf, 180, inf;
-      -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative
+dx = [30, inf, 90, inf, inf, inf;
+      -30, -inf, -90, -inf, -inf, -inf]; %state constraints, positive and negative
 du = [22, 22;
       -22, -22]; %input constraints
 %% Solver initialization
