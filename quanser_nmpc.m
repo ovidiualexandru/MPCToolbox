@@ -8,8 +8,8 @@ N = 500; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 3; % control and prediction horizon
-Nc = 3;
+Np = 10; % control and prediction horizon
+Nc = 10;
 %% Reference state
 XREF = zeros(6, N);
 xref1 = [20; 0; 0; 0; 0; 0];

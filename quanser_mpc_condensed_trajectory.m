@@ -50,8 +50,8 @@ for i = 1:N
         idif = N - i;
     end
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
-    xref = XREF(:,i:i+idif);
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref, urefbar);
+    xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');

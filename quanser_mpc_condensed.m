@@ -52,8 +52,13 @@ for i = 1:N
     end
     %% Get next command
     xbar = x - x_o;
+    idif = Nc - 1;
+    if i + Nc > N
+        idif = N - i;
+    end
     urefbar = uref - u_o;
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i), urefbar);
+    xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
