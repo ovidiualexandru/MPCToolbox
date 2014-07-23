@@ -45,8 +45,13 @@ for i = 1:N
     end
     %% Get next command
     xbar = x - x_o;
-    urefbar = UREF(:,i) - u_o;
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i), urefbar);
+    idif = Nc - 1;
+    if i + Nc > N
+        idif = N - i;
+    end
+    urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
+    xref = XREF(:,i:i+idif);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xref, urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');
@@ -61,7 +66,7 @@ for i = 1:N
     TEVAL(i) = teval;
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
-    x = xr + 0.1*rand(nx,1) + 0.5*rand(nx,1).*xr;
+    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'MPC-SL(condensed form) with trajectory Quanser Plot',16, XREF);

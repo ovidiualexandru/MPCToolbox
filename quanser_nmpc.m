@@ -45,7 +45,12 @@ for i = 1:N
         end
     end
     %% Get next command
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, XREF(:,i), uref);
+    idif = Nc - 1;
+    if i + Nc > N
+        idif = N - i;
+    end
+    xref = XREF(:,i:i+idif);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

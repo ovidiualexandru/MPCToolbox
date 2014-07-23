@@ -18,8 +18,10 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
 %       if the input/state has no upper bound, set to Inf. 
 %       nu - number of inputs, nx - number of states.
 %   - x0: the current( initial) state of the system
-%   - xref: the desired( reference) state
-%   - uref: the reference input (stabilizing input)
+%   - xref: the desired( reference) state. Must have nx lines, but can have
+%       number of columns in the range [1, Nc].
+%   - uref: the reference input (stabilizing input). Must have nu lines,
+%       but can have number of columns in the range [1, Nc]
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nu-by-Nc matrix of computed inputs, same as u.
@@ -36,10 +38,20 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
 if isempty(xref)
-    xref = zeros(nx,1);
+    xref = zeros(nx, Nc);
 end
 if isempty(uref)
-    uref = zeros(nu,1);
+    uref = zeros(nu, Nc);
+end
+difx = Nc - size(xref,2);
+difu = Nc - size(uref, 2);
+% If xref does not have enough columns, append the last column difx times
+if difx > 0
+    xref = [xref, repmat(xref(:,end), [1 difx])];
+end
+% For uref same as for xref above
+if difu > 0
+    uref = [uref, repmat(uref(:,end), [1 difu])];
 end
 %% QP definition
 du(2,:) = -du(2,:); %convert negative constraints to positive
@@ -91,8 +103,8 @@ for i = 1:Nc
     Rbar = blkdiag(Rbar, R);
 end
 %% Final
-xrefbar = repmat(xref, Nc, 1);
-zrefbar = repmat(uref, Nc, 1);
+xrefbar = xref(:);
+zrefbar = uref(:);
 q = ABbar'*Qbar*Ap*x0 - ABbar'*Qbar*xrefbar - Rbar*zrefbar;
 Q_hat = Rbar + ABbar'*Qbar*ABbar;
 %% QP solver
