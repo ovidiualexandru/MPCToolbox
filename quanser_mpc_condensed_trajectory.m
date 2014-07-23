@@ -11,14 +11,7 @@ nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
 %% Reference state
-XREF = zeros(6, N);
-xref1 = [20; 0; 0; 0; 0; 0];
-xref2 = [20; 0; 25; 0; 0; 0];
-xref3 = [0; 0; -25; 0; 0; 0];
-XREF(:, 101:200) = repmat(xref1, 1, 100);
-XREF(:, 201:300) = repmat(xref2, 1, 100);
-XREF(:, 301:350) = repmat(xref3, 1, 50);
-uref = [1.8; 1.8];
+load('trajectory.mat'); %load XREF and UREF into workspace
 %% Cost matrices and constraints
 Q = diag([2, .1, 1, .1, .1, .1],0);
 R = diag([.01, .01],0);
@@ -36,21 +29,30 @@ xr = x0; % 'real' x
 u = u0;
 %% MPC solve
 for i = 1:N
-    %% Iteration printing
+    %% Update SL Model
     tic;
-    if mod(i,Np) == 0
+    if mod(i,Np) == 0 || i == 1
+        [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
+        [x_o, u_o] = affine_eq(A,B,g);
+        du_bar = du - repmat(u_o',2,1);
+        dx_bar = dx - repmat(x_o',2,1);
+        Ad = eye(nx) + h*A;
+        Bd = h*B;
         fprintf('%d ', i);
         if mod(i,20*Np) == 0
             fprintf('\n');
         end
     end
     %% Get next command
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, XREF(:,i), uref);
+    xbar = x - x_o;
+    urefbar = UREF(:,i) - u_o;
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i), urefbar);
     if EXITFLAG < 0
-        fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
-        error('Solver error');
+        fprintf('Iteration %d\n',i)
+        error('Quadprog error ');
     end
-    u = ue(:,1); %use only the first command in the sequence
+    ubar = ue(:,1); %use only the first command in the sequence
+    u = ubar + u_o;
     teval = toc;
     %% Data logging
     X(:,i) = x; % save states
@@ -59,15 +61,9 @@ for i = 1:N
     TEVAL(i) = teval;
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
-    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
+    x = xr + 0.1*rand(nx,1) + 0.5*rand(nx,1).*xr;
 end
 %% Plotting
-quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13, XREF);
-quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14, XREF);
-plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);
-%% Trajectory save
-clear XREF UREF
-XREF = X;
-UREF = U;
-save('trajectory.mat','XREF','UREF');
-clear XREF UREF
+quanser_plot(X,U,dx, du,'MPC-SL(condensed form) with trajectory Quanser Plot',16, XREF);
+quanser_phase_plot(X, 'MPC-SL(condensed form) with trajectory Quanser Phase-Plot',17, XREF);
+plot_ft(FVAL, TEVAL, 'MPC-SL(condensed form) with trajectory Quanser Performance',18);
