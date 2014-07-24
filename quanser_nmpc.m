@@ -20,10 +20,10 @@ XREF(:, 201:300) = repmat(xref2, 1, 100);
 XREF(:, 301:350) = repmat(xref3, 1, 50);
 uref = [1.8; 1.8];
 %% Cost matrices and constraints
-Q = diag([2, .1, 1, .1, .1, .1],0);
+Q = diag([1, .1, .5, .1, .1, .1],0);
 R = diag([.01, .01],0);
-dx = [30, inf, 90, inf, inf, inf;
-      -30, -inf, -90, -inf, -inf, -inf]; %state constraints, positive and negative
+dx = [30, 50, 90, 50, inf, inf;
+      -30, -50, -90, -50, -inf, -inf]; %state constraints, positive and negative
 du = [22, 22;
       -22, -22]; %input constraints
 %% Solver initialization
@@ -74,5 +74,5 @@ plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);
 clear XREF UREF
 XREF = X;
 UREF = U;
-save('trajectory.mat','XREF','UREF');
+save('trajectory_calm.mat','XREF','UREF');
 clear XREF UREF

@@ -11,10 +11,10 @@ nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
 %% Reference state
-load('trajectory.mat'); %load XREF and UREF into workspace
+load('trajectory_calm.mat'); %load XREF and UREF into workspace
 %% Cost matrices and constraints
-Q = diag([2, .1, 1, .1, .1, .1],0);
-R = diag([.01, .01],0);
+Q = diag([.1, .1, .1, .1, .1, .1],0);
+R = diag([1, 1],0);
 dx = [30, inf, 90, inf, inf, inf;
       -30, -inf, -90, -inf, -inf, -inf]; %state constraints, positive and negative
 du = [22, 22;
@@ -66,7 +66,7 @@ for i = 1:N
     TEVAL(i) = teval;
     %% Send to plant
     xr = quanser_disc_nl(xr,u,h);
-    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
+    x = xr + 0.2*rand(nx,1) + 0.01*rand(nx,1).*xr;
 end
 %% Plotting
 quanser_plot(X,U,dx, du,'MPC-SL(condensed form) with trajectory Quanser Plot',16, XREF);
