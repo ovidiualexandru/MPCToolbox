@@ -52,7 +52,7 @@ for i = 1:N
         @quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
-        error('Solver error');
+        error('Solver error \n');
     end
     u = ue(:,1); %use only the first command in the sequence
     teval = toc;
@@ -65,6 +65,7 @@ for i = 1:N
     xr = quanser_disc_nl(xr,u,h);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
+fprintf('\n');
 %% Plotting
 quanser_plot(X,U,dx, du,'Nonlinear-MPC Quanser Plot',13, XREF);
 quanser_phase_plot(X, 'Nonlinear-MPC Quanser Phase-Plot',14, XREF);

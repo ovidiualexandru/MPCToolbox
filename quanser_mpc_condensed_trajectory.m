@@ -60,7 +60,7 @@ for i = 1:N
         Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
-        error('Quadprog error ');
+        error('Solver error \n');
     end
     ubar = ue(:,1); %use only the first command in the sequence
     u = ubar + u_o;
@@ -74,6 +74,7 @@ for i = 1:N
     xr = quanser_disc_nl(xr,u,h);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
+fprintf('\n');
 %% Plotting
 quanser_plot(X,U,dx, du,...
     'MPC-SL(condensed form) with trajectory Quanser Plot',16, XREF);
