@@ -10,8 +10,8 @@ u0 = [2; 2]; % [Vf Vb] initial inputs
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 3; % control and prediction horizon
-Nc = 3;
+L = 3; %Simulation and linear model update rate
+Nc = 3; %Control and prediction horizon
 %% Reference state
 load('references/traj1.mat'); %load XREF and UREF into workspace
 N = size(XREF,2); % Simulation size
@@ -34,7 +34,7 @@ u = u0;
 for i = 1:N
     %% Update SL Model
     tic;
-    if mod(i,Np) == 0 || i == 1
+    if mod(i,L) == 0 || i == 1
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         [x_o, u_o] = affine_eq(A,B,g);
         du_bar = du - repmat(u_o',2,1);
@@ -42,7 +42,7 @@ for i = 1:N
         Ad = eye(nx) + h*A;
         Bd = h*B;
         fprintf('%d ', i);
-        if mod(i,20*Np) == 0
+        if mod(i,20*L) == 0
             fprintf('\n');
         end
     end

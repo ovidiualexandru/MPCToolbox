@@ -9,7 +9,7 @@ N = 500; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 3; % control and prediction horizon
+L = 3; %Simulation and linear model update rate
 %% Cost matrices
 Q = diag([1, .01, 1, .01, 1, .01],0);
 R = diag([1, 1],0);
@@ -25,12 +25,12 @@ u = u0;
 for i = 1:N
     %% Update SL Model
     tic;
-    if mod(i,Np) == 0 || i == 1
+    if mod(i,L) == 0 || i == 1
         [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
         [x_o, u_o] = affine_eq(A,B,g);
         fprintf('%d ', i);
-        if mod(i,20*Np) == 0
+        if mod(i,20*L) == 0
             fprintf('\n');
         end
     end

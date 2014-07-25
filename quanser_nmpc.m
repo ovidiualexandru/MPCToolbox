@@ -9,8 +9,8 @@ u0 = [2; 2]; % [Vf Vb] initial inputs
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-Np = 10; % control and prediction horizon
-Nc = 10;
+L = 10; %Simulation progress update rate
+Nc = 10; %Control and prediction horizon
 %% Reference state
 load('references/ref1.mat'); %load XREF and UREF into workspace
 N = size(XREF,2); % Simulation size
@@ -33,9 +33,9 @@ u = u0;
 for i = 1:N
     %% Iteration printing
     tic;
-    if mod(i,Np) == 0
+    if mod(i,L) == 0
         fprintf('%d ', i);
-        if mod(i,20*Np) == 0
+        if mod(i,20*L) == 0
             fprintf('\n');
         end
     end
