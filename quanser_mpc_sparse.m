@@ -17,10 +17,12 @@ N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
 R = diag([.01, .01],0);
-dx = [30, 50, 90, 50, inf, inf;
-      -30, -50, -90, -50, -inf, -inf]; %state constraints, positive and negative
-du = [22, 22;
-      -22, -22]; %input constraints
+%state constraints, positive and negative
+dx = [ 30,  50,  90,  50,  inf,  inf;
+      -30, -50, -90, -50, -inf, -inf];
+%input constraints
+du = [ 22,  22;
+      -22, -22];
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -53,7 +55,8 @@ for i = 1:N
     end
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
     xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, XREF(:,i), urefbar);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(...
+        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Quadprog error ');

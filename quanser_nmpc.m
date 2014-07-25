@@ -17,10 +17,12 @@ N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
 R = diag([.01, .01],0);
-dx = [30, 50, 90, 50, inf, inf;
-      -30, -50, -90, -50, -inf, -inf]; %state constraints, positive and negative
-du = [22, 22;
-      -22, -22]; %input constraints
+%state constraints, positive and negative
+dx = [ 30,  50,  90,  50,  inf,  inf;
+      -30, -50, -90, -50, -inf, -inf];
+%input constraints
+du = [ 22,  22;
+      -22, -22];
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -46,7 +48,8 @@ for i = 1:N
     end
     uref = UREF(:,i:i+idif);
     xref = XREF(:,i:i+idif); % Get only as many samples as possible
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(...
+        @quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

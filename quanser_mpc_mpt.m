@@ -17,10 +17,12 @@ xref = [0; 0; 0; 0; 0; 0];
 %% Cost matrices and constraints
 Q = diag([20, 1, 2, 1, 2, 1],0);
 R = diag([.1, .1],0);
-dx = [30, inf, 90, inf, 180, inf;
-      -30, -inf, -90, -inf, -180, -inf]; %state constraints, positive and negative
-du = [22, 22;
-      -22, -22]; %input constraints
+%state constraints, positive and negative
+dx = [ 30,  50,  90,  50,  inf,  inf;
+      -30, -50, -90, -50, -inf, -inf];
+%input constraints
+du = [ 22,  22;
+      -22, -22];
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs

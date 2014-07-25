@@ -48,10 +48,12 @@ for i = 1:N
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
-dx = [inf, inf, inf, inf, inf, inf;
-      -inf, -inf, -inf, -inf, -inf, -inf]; %state constraints, positive and negative
-du = [inf, inf;
-      -inf, -inf]; %input constraints
+%state constraints, positive and negative
+dx = [ inf,  inf,  inf,  inf,  inf,  inf;
+      -inf, -inf, -inf, -inf, -inf, -inf];
+%input constraints
+du = [ inf,  inf;
+      -inf, -inf];
 quanser_plot(X,U,dx,du,'LQR Quanser Plot',4);
 quanser_phase_plot(X, 'LQR Quanser Phase-Plot',5);
 plot_ft(FVAL, TEVAL, 'LQR Quanser Performance', 6);
