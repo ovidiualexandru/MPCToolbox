@@ -37,11 +37,13 @@ TEVAL = zeros(1, N); %save calculation time
 x = x0;
 xr = x0; % 'real' x
 %% MPC Solve
+ue = []; %input estimated solution
+Xe = []; %state estimated solution
 for i = 1:N
     %% Get next command
     tic;
     [ue, Xe,fval,EXITFLAG] = lmpc_sparse(...
-        A, B, Q, R, Nc, du, dx, x, xref, []);
+        A, B, Q, R, Nc, du, dx, x, xref, [], Xe, ue);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

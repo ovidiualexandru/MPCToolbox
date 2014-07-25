@@ -1,10 +1,10 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
-    du, dx, x0, xref, uref)
+    du, dx, x0, xref, uref, uprev)
 %LMPC_CONDENSED Compute the input sequence and predicted output using
 %Linear MPC condensed (sequential) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc, ...
-%       du, dx, x0, xref). Calculate the inputs using MPC condensed
-%       formulation.
+%       du, dx, x0, xref, uref, uprev). Compute the inputs using MPC
+%       condensed formulation.
 %
 %   Arguments:
 %   - A,B: the state-space matrices describing the system dynamic
@@ -22,6 +22,9 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
 %       number of columns in the range [1, Nc].
 %   - uref: the reference input (stabilizing input). Must have nu lines,
 %       but can have number of columns in the range [1, Nc]
+%   - uprev: the previously obtained input solution. This will be used as
+%       a starting point for the algorithm. Can be an empty array if there 
+%       is no previous solution, or the u obtained at a previous step.
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nu-by-Nc matrix of computed inputs, same as u.
@@ -52,6 +55,12 @@ end
 % For uref same as for xref above
 if difu > 0
     uref = [uref, repmat(uref(:,end), [1 difu])];
+end
+if isempty(uprev)
+    %if there is no previous solution, use the reference as a start point
+    uprev = uref;
+else
+    uprev = [uprev(:,1:end-1), uref(:,end)]; %shift the previous solution
 end
 %% QP definition
 du(2,:) = -du(2,:); %convert negative constraints to positive
@@ -107,6 +116,7 @@ xrefbar = xref(:);
 zrefbar = uref(:);
 q = ABbar'*Qbar*Ap*x0 - ABbar'*Qbar*xrefbar - Rbar*zrefbar;
 Q_hat = Rbar + ABbar'*Qbar*ABbar;
+z0 = uprev(:);
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
@@ -125,7 +135,7 @@ switch relnum
         error('Can''t set solver options for this version of Matlab');
 end
 [Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, C_hat, d_hat, [], [], ...
-    [], [], [], options);
+    [], [], z0, options);
 %% Return variables
 X = reshape(Z, nu,[]);
 u = X(1:nu,:);

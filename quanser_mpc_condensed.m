@@ -32,6 +32,7 @@ x = x0;
 xr = x0; % 'real' x
 u = u0;
 %% MPC solve
+ue = []; %input estimated solution
 for i = 1:N
     %% Update SL Model
     tic;
@@ -56,7 +57,7 @@ for i = 1:N
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
     xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
     [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(...
-        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
+        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar, ue);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Solver error \n');

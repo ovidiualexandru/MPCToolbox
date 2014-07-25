@@ -12,11 +12,11 @@ nx = 6;
 L = 3; %Simulation and linear model update rate
 Nc = 3; %Control and prediction horizon
 %% Reference state
-load('references/ref1.mat'); %load XREF and UREF into workspace
+load('references/traj1.mat'); %load XREF and UREF into workspace
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
-R = diag([.01, .01],0);
+R = diag([1, 1],0);
 %state constraints, positive and negative
 dx = [ 30,  50,  90,  50,  inf,  inf;
       -30, -50, -90, -50, -inf, -inf];
@@ -32,6 +32,8 @@ x = x0;
 xr = x0; % 'real' x
 u = u0;
 %% MPC solve
+ue = []; %input estimated solution
+Xe = []; %state estimated solution
 for i = 1:N
     %% Update SL Model
     tic;
@@ -56,7 +58,7 @@ for i = 1:N
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
     xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
     [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(...
-        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar);
+        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar, Xe,ue);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Solver error \n');

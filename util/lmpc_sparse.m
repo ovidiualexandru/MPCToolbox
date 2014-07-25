@@ -1,10 +1,10 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-    du, dx, x0, xref, uref)
+    du, dx, x0, xref, uref, Xprev, uprev)
 %LMPC_SPARSE Compute the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-%       du, dx, x0, xref). Calculate the inputs using MPC sparse
-%       formulation.
+%       du, dx, x0, xref, uref, Xprev, uprev). Compute the inputs using MPC
+%       sparse formulation.
 %
 %   Arguments:
 %   - A, B: the state-space matrices describing the system dynamic
@@ -22,6 +22,12 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
 %       number of columns in the range [1, Nc].
 %   - uref: the reference input (stabilizing input). Must have nu lines,
 %       but can have number of columns in the range [1, Nc]
+%   - Xprev: the previously obtained state prediction. This will be used as
+%       a starting point for the algorithm, along with uprev. Can be an 
+%       empty array if there is no previous solution.
+%   - uprev: the previously obtained input solution. This will be used as
+%       a starting point for the algorithm. Can be an empty array if there 
+%       is no previous solution.
 %   Output arguments:
 %   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
 %   - X: a nx-by-Nc matrix of predicted states.
@@ -53,6 +59,19 @@ end
 if difu > 0
     uref = [uref, repmat(uref(:,end), [1 difu])];
 end
+if isempty(Xprev)
+    %if there is no previous solution, use the reference as a start point
+    Xprev = xref;
+else
+    Xprev = [Xprev(:,1:end-1), xref(:,end)]; %shift the previous solution
+end
+if isempty(uprev)
+    %if there is no previous solution, use the reference as a start point
+    uprev = uref;
+else
+    uprev = [uprev(:,1:end-1), uref(:,end)]; %shift the previous solution
+end
+Zprev = [uprev; Xprev];
 %% QP definition
 ubx = dx(1,:)';
 lbx = dx(2,:)';
@@ -83,6 +102,7 @@ b_hat = [b_hat; repmat(bsmall, [Nc-1 1])];
 zsmall = [ uref; xref];
 zref = zsmall(:);
 q = -Q_hat*zref;
+z0 = Zprev(:);
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
@@ -101,7 +121,7 @@ switch relnum
         error('Can''t set solver options for this version of Matlab');
 end
 [Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat, ...
-    LB,UB,[], options);
+    LB,UB, z0, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);

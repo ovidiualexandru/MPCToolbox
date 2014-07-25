@@ -9,7 +9,7 @@ u0 = [2; 2]; % [Vf Vb] initial inputs
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-L = 10; %Simulation progress update rate
+L = 1; %Simulation progress update rate
 Nc = 10; %Control and prediction horizon
 %% Reference state
 load('references/ref1.mat'); %load XREF and UREF into workspace
@@ -32,6 +32,8 @@ x = x0;
 xr = x0; % 'real' x
 u = u0;
 %% MPC solve
+ue = []; %input estimated solution
+Xe = []; %state estimated solution
 for i = 1:N
     %% Iteration printing
     tic;
@@ -49,7 +51,7 @@ for i = 1:N
     uref = UREF(:,i:i+idif);
     xref = XREF(:,i:i+idif); % Get only as many samples as possible
     [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(...
-        @quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
+        @quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref, Xe,ue);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error \n');
@@ -74,4 +76,4 @@ plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);
 clear XREF UREF
 XREF = X;
 UREF = U;
-save('reference_trajectory/traj1.mat','XREF','UREF','-v7');
+save('references/traj1.mat','XREF','UREF','-v7');
