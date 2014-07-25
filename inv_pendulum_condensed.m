@@ -36,7 +36,7 @@ xr = x0; % 'real' x
 for i = 1:N
     %% Get next command
     tic;
-    [ue, Xe,fval,EXITFLAG] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x, xref);
+    [ue, Xe,fval,EXITFLAG] = lmpc_condensed(A, B, Q, R, Nc, du, dx, x, xref, []);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');
