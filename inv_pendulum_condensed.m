@@ -1,3 +1,5 @@
+%INV_PENDULUM_CONDENSED Run the inverted pendulum simluation with a
+%condensed MPC formulation.
 clear
 addpath('./pendulum');
 addpath('./util');

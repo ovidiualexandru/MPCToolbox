@@ -1,3 +1,4 @@
+%QUANSER_LQR Run the Quanser 3-DOF helicopter simulation with a LQR.
 clear
 addpath('./quanser');
 addpath('./util');

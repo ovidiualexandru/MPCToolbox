@@ -1,3 +1,6 @@
+%QUANSER_MPC_CONDENSED_TRAJECTORY Run the Quanser 3-DOF helicopter
+%simulation with a condensed MPC formulation and a trajectory generated
+%from simulation.
 clear
 addpath('./quanser');
 addpath('./util');

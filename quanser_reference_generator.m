@@ -1,3 +1,5 @@
+%QUANSER_REFERENCE_GENERATOR Generate a reference path using the Simulink
+%model 'reference_generator.mdl'
 %% Define model specfic data
 N = 600; % samples
 nx = 6; % states

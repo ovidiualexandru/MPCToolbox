@@ -1,3 +1,5 @@
+%QUANSER_MPC_CONDENSED Run the Quanser 3-DOF helicopter simulation with a
+%condensed MPC formulation.
 clear
 addpath('./quanser');
 addpath('./util');

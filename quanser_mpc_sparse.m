@@ -1,3 +1,5 @@
+%QUANSER_MPC_SPARSE Run the Quanser 3-DOF helicopter simulation with a
+%sparse MPC formulation.
 clear
 addpath('./quanser');
 addpath('./util');

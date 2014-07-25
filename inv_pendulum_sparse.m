@@ -1,3 +1,5 @@
+%INV_PENDULUM_SPARSE Run the inverted pendulum simluation with a sparse MPC
+%formulation.
 clear
 addpath('./pendulum');
 addpath('./util');

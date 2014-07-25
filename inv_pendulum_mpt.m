@@ -1,3 +1,5 @@
+%INV_PENDULUM_MPT Run the inverted pendulum simluation with an MPT MPC
+%formulation.
 clear
 addpath('./pendulum');
 addpath('./util');

@@ -1,3 +1,5 @@
+%QUANSER_NMPC Run the Quanser 3-DOF helicopter simulation with a
+%Nonlinear-MPC formulation
 clear
 addpath('./quanser');
 addpath('./util');
