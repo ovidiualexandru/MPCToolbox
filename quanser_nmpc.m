@@ -4,21 +4,14 @@ addpath('./util');
 %% System initialization
 x0 = [5; 0; 0; 0; 0; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 500; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 Np = 10; % control and prediction horizon
 Nc = 10;
 %% Reference state
-XREF = zeros(6, N);
-xref1 = [20; 0; 0; 0; 0; 0];
-xref2 = [20; 0; 25; 0; 0; 0];
-xref3 = [0; 0; -25; 0; 0; 0];
-XREF(:, 101:200) = repmat(xref1, 1, 100);
-XREF(:, 201:300) = repmat(xref2, 1, 100);
-XREF(:, 301:350) = repmat(xref3, 1, 50);
-uref = [1.8; 1.8];
+load('references/ref1.mat'); %load XREF and UREF into workspace
+N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
 R = diag([.01, .01],0);
@@ -49,7 +42,8 @@ for i = 1:N
     if i + Nc > N
         idif = N - i;
     end
-    xref = XREF(:,i:i+idif);
+    uref = UREF(:,i:i+idif);
+    xref = XREF(:,i:i+idif); % Get only as many samples as possible
     [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(@quanser_disc_nl_euler, h, Q, R, Nc, du, dx, x, xref, uref);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
@@ -74,5 +68,4 @@ plot_ft(FVAL, TEVAL, 'Nonlinear-MPC Quanser Performance',15);
 clear XREF UREF
 XREF = X;
 UREF = U;
-save('trajectory_calm.mat','XREF','UREF');
-clear XREF UREF
+save('reference_trajectory/traj1.mat','XREF','UREF','-v7');

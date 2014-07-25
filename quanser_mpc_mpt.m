@@ -4,13 +4,13 @@ addpath('./util');
 %% System initialization
 x0 = [5; 0; 0; 0; 0; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 500; % samples
+N = 600; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 Np = 3; % control and prediction horizon
 Nc = 3;
-%% Reference stae
+%% Reference state
 xref = [0; 0; 0; 0; 0; 0];
 %% Cost matrices and constraints
 Q = diag([20, 1, 2, 1, 2, 1],0);
