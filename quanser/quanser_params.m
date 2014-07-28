@@ -1,31 +1,116 @@
-function p = quanser_params()
+function p = quanser_params(param)
 %QUANSER_PARAMS returns the Quanser 3-DOF helicopter nonlinear model
 %parameters.
-%   p = quanser_params() return in vector p the 10 coefficients for the
-%   model.
+%   p = QUANSER_PARAMS() returns in vector p the 10 coefficients for the 
+%   model using default values.
 %
+%   p = QUANSER_PARAMS(param) returns the coefficients using the parameters
+%   stored in the fiels of the param structure.
+%
+%   Input arguments:
+%   - param: structure containing the model parameters as fields. These 
+%       parameters are enumerated below. If the structure does not have one
+%       of these fields, the default value for that field is used.
+%       param.Jepsilon: Moment of inertia about the elevation axis. 
+%           Default value: 0.86 kg*m^2
+%       param.Jtheta: Moment of inertia about the pitch axis. 
+%           Default value: 0.044 kg*m^2
+%       param.Jphi: Moment of inertia about the travel axis.
+%           Default value: 0.82 kg*m^2
+%       param.La: Distance from the pivot point to the helicopter body.
+%           Default value: 0.62 m
+%       param.Lc: Distance from the pivot point to the counter-weight.
+%           Default value: 0.44 m
+%       param.Ld: Length of pendulum for the elevation axis.
+%           Default value: 0.05 m
+%       param.Le: Length of pendulum for the pitch axis.
+%           Default value: 0.02 m
+%       param.Lh: Distance from the pitch axis to either motor.
+%           Default value: 0.177 m
+%       param.Mf: Mass of the front section of the helicopter.
+%           Default value: 0.69 kg
+%       param.Mb: Mass of the rear section.
+%           Default value: 0.69 kg
+%       param.Mc: Mass of the counter-weight.
+%           Default value: 1.69 kg
+%       param.Km: The voltage-force gain.
+%           Default value: 0.5 N/V
+%       param.niu_epsilon: Coefficient of viscous friction - elevation.
+%           Default value: 0.001 kg*m^2/s
+%       param.niu_theta: Coefficient of viscous friction - pitch.
+%           Default value: 0.001 kg*m^2/s
+%       param.niu_phi: Coefficient of viscous friction - travel.
+%           Default value: 0.005 kg*m^2/s
 %   Output arguments:
-%   - p: vector containing the p1 ... p10 coefficients, used in pages 3 
-%       and 5 in
+%   - p: a 10-by-1 vector containing the p1 ... p10 coefficients, used in 
+%       pages 3 and 5 in
 %https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf
 
+%% Argument processing
+if nargin == 0
+    param = [];
+end
 %% Model data
-Jepsilon = 0.86; %kg*m^2
-Jtheta = 0.044; %kg*m^2
-Jphi = 0.82; %kg*m^2
-La = 0.62; %m
-Lc = 0.44; %m
-Ld = 0.05; %m
-Le = 0.02; %m
-Lh = 0.177; %m
-Mf = 0.69; %kg
-Mb = 0.69; %kg
-Mc = 1.69; %kg
-Km = 0.5; %N/V
+Jepsilon = 0.86; %[kg*m^2] Moment of inertia about the elevation axis
+Jtheta = 0.044; %[kg*m^2] Moment of inertia about the pitch axis
+Jphi = 0.82; %%[kg*m^2] Moment of inertia about the travel axis
+La = 0.62; %[m] Distance from the pivot point to the helicopter body
+Lc = 0.44; %[m] Distance from the pivot point to the counter-weight
+Ld = 0.05; %[m] Length of pendulum for the elevation axis
+Le = 0.02; %[m] Length of pendulum for the pitch axis
+Lh = 0.177; %[m] Distance from the pitch axis to either motor
+Mf = 0.69; %[kg] Mass of the front section of the helicopter
+Mb = 0.69; %[kg] Mass of the rear section
+Mc = 1.69; %[kg] Mass of the counter-weight
+Km = 0.5; %[N/V]
+niu_epsilon = 0.001;%[kg*m^2/s] Coefficient of viscous friction - elevation
+niu_theta = 0.001; %[kg*m^2/s] Coefficient of viscous friction - pitch
+niu_phi = 0.005; %[kg*m^2/s] Coefficient of viscous friction - travel
+%Check if default values need to be changed
+if isfield(param,'Jtheta') && ~isempty(param.Jtheta)
+    Jtheta = param.Jtheta;
+end
+if isfield(param,'Jphi') && ~isempty(param.Jphi)
+    Jphi = param.Jphi;
+end
+if isfield(param,'La') && ~isempty(param.La)
+    La = param.La;
+end
+if isfield(param,'Lc') && ~isempty(param.Lc)
+    Lc = param.Lc;
+end
+if isfield(param,'Ld') && ~isempty(param.Ld)
+    Ld = param.Ld;
+end
+if isfield(param,'Le') && ~isempty(param.Le)
+    Le = param.Le;
+end
+if isfield(param,'Lh') && ~isempty(param.Lh)
+    Lh = param.Lh;
+end
+if isfield(param,'Mf') && ~isempty(param.Mf)
+    Mf = param.Mf;
+end
+if isfield(param,'Mb') && ~isempty(param.Mb)
+    Mb = param.Mb;
+end
+if isfield(param,'Mc') && ~isempty(param.Mc)
+    Mc = param.Mc;
+end
+if isfield(param,'Km') && ~isempty(param.Km)
+    Km = param.Km;
+end
+if isfield(param,'niu_epsilon') && ~isempty(param.niu_epsilon)
+    niu_epsilon = param.niu_epsilon;
+end
+if isfield(param,'niu_theta') && ~isempty(param.niu_theta)
+    niu_theta = param.niu_theta;
+end
+if isfield(param,'niu_phi') && ~isempty(param.niu_phi)
+    niu_phi = param.niu_phi;
+end
+%Fixed values
 g = 9.81; %m/s^2;
-niu_epsilon = 0.001; %kg*m^2/s
-niu_theta = 0.001; %kg*m^2/s
-niu_phi = 0.005; %kg*m^2/s
 deltaa = atan((Ld+Le)/La);
 deltac = atan(Ld/Lc);
 deltah = atan(Le/Lh);
