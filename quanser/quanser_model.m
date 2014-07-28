@@ -1,7 +1,28 @@
 function [handle_nl_model, handle_sl_model] = quanser_model(param)
-%QUANSER_MODEL Get the NL and SL continous model for the Quanser
-%   This will be explained
-
+%QUANSER_MODEL Get the NL and SL continous model for the Quanser function
+%handles.
+%   [handle_nl_model, handle_sl_model] = QUANSER_MODEL() Gets the nonlinear
+%   (NL) and Successive Linearization (SL) nominal continous models as 
+%   function handles.
+%
+%   [handle_nl_model, handle_sl_model] = QUANSER_MODEL(param) Gets the 
+%   nonlinear (NL) and Successive Linearization (SL) continous models as 
+%   function handles, using the structure param for calculations. The
+%   structure will be used as parameter internally for the quanser_param 
+%   function. For more information, type:
+%       help quanser_params
+%
+%   Input arguments:
+%       - param: Structure defining the model parameters. If omitted,
+%           default values will be used
+%   Output arguments:
+%       - handle_nl_model: function handle for the Nonlinear model. This
+%           computes a new state derivative. For more information, type:
+%           help quanser_model>nl
+%       - handle_sl_model: function handle for the SL model. Call the
+%           handle every time the linear model needs to be updated. For
+%           more information, type:
+%           help quanser_model>sl
 if nargin == 0
     p = quanser_params();
 else
@@ -11,14 +32,14 @@ end
     function f = nl(t, y)
         %NL Continous nonlinear model for the Quanser 3-DOF
         %helicopter.
-        %   f = QUANSER_CONT_NL(t, y) compute the states derivative, f using the
+        %   f = NL(t, y) compute the states derivative, f using the
         %   initial state x0 and input u concatenated into vector y = [x0; u]
         %
         %   Arguments:
-        %   - t : time-instant (required by ode45), not used in function.
-        %   - y : an 8-by-1 vector with the initial state and inputs. y = [x0; u]
+        %   - t: time-instant (required by ode45), not used in function.
+        %   - y:an 8-by-1 vector with the initial state and inputs. y = [x0; u]
         %   Output arguments:
-        %   - f : the derived state, padded with zeros (assuming constant inputs).
+        %   - f: the derived state, padded with zeros (assuming constant inputs).
         %       f = [xd; zeros(2,1)]; where xd = F + G*u
         %
         %   The model is taken from:
@@ -58,7 +79,7 @@ end
     function [A,B,g] = sl(x0, u)
         %SL Continous Successive liniarization model for the Quanser
         %3-DOF model.
-        %   [A,B,g] = QUANSER_CONT_SL(x0, u) gets the liniarized model pair (A,B,g)
+        %   [A,B,g] = SL(x0, u) gets the liniarized model pair (A,B,g)
         %   from initial state x0 and input u.
         %
         %   Arguments:
@@ -69,13 +90,12 @@ end
         %   - g : the affine term in the linear system dynamic:
         %                       x_dot = A*x + B*u + g, where
         %                      g = f(x0,u0) - A*x0 - B*u0, and
-        %      f(x0,u0) - x_dot from the NL contionous model (quanser_cont_nl)
+        %      f(x0,u0) - x_dot from the NL contionous model
         %
         %   The model is taken from:
         %https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf
         %   The state vector is defined ( <_d> meaning derived):
         %              x = [epsilon epsilon_d theta theta_d phi phi_d]';
-        %   Notes: must have quanser_cont_nl function in PATH.
         
         %% Model params
         epsilon = x0(1);
@@ -95,7 +115,8 @@ end
         a44 = p(7);
         a63 = p(10) * cos(theta*pi/180) * (Vf+Vb);
         a66 = p(9);
-        A = [ 0  , 1  , 0  , 0  , 0  , 0  ;
+        A = [
+            0  , 1  , 0  , 0  , 0  , 0  ;
             a21, a22, a23, 0  , 0  , 0  ;
             0  , 0  , 0  , 1  , 0  , 0  ;
             0  , 0  , a43, a44, 0  , 0  ;
