@@ -1,5 +1,5 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
-    handle_nlmodeld, h, Q, R, Nc, du, dx, x0, xref, uref, Xprev, uprev)
+    handle_nlmodeld, Q, R, Nc, du, dx, x0, xref, uref, Xprev, uprev)
 %NMPC_FULLSPACE Compute the input sequence and predicted output using
 %Nonlinear MPC fullspace (simultaneous) approach.
 %   [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(handle_nlmodeld, h, ...
@@ -9,7 +9,6 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
 %
 %   Arguments:
 %   - handle_nlmodeld: the discrete nonlinear model function
-%   - h: sampling time
 %   - Q,R: the weighting matrices in the cost function
 %   - Nc: the control horizon
 %   - du, dx: the constraint vectors for inputs and states. *du* is a 
@@ -84,7 +83,7 @@ end
         Ceq = zeros(size(z));
         for i = 1:Nc
             b = Xl(:,i);
-            x = handle_nlmodeld(x, ul(:,i), h);
+            x = handle_nlmodeld(x, ul(:,i));
             dif = b - x; %x_{k+1} - f(x_k)
             ceq = [zeros(nu, 1); dif]; %inputs have no eq constraints
             idx_start = (i-1)*(nx+nu)+1;

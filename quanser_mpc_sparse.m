@@ -45,7 +45,7 @@ sim_param.niu_phi = []; %Default value: 0.005 kg*m^2/s
 
 [mpc_nl,mpc_sl] = quanser_model(mpc_param); %continous model for MPC pred.
 [sim_nl_c, ~] = quanser_model(sim_param); %continous model for simulation
-sim_nl_d = nonlinear_c2d(sim_nl_c); %discrete nonlinear simulation function
+sim_nl_d = nonlinear_c2d(sim_nl_c, h); %discrete nonlinear simulation function
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -95,7 +95,7 @@ for i = 1:N
     FVAL(i) = fval;
     TEVAL(i) = teval;
     %% Send to plant
-    xr = sim_nl_d(xr,u,h);
+    xr = sim_nl_d(xr,u);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 fprintf('\n');

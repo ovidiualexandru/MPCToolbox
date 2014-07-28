@@ -44,9 +44,9 @@ sim_param.niu_theta = []; %Default value: 0.001 kg*m^2/s
 sim_param.niu_phi = []; %Default value: 0.005 kg*m^2/s
 
 [mpc_nl_c,mpc_sl] = quanser_model(mpc_param); %cont. model for MPC pred.
-mpc_nl_d = nonlinear_c2d(mpc_nl_c); %discrete nonlinear simulation function
+mpc_nl_d = nonlinear_c2d(mpc_nl_c, h); %discrete nonlinear simulation function
 [sim_nl_c, ~] = quanser_model(sim_param); %continous model for simulation
-sim_nl_d = nonlinear_c2d(sim_nl_c); %discrete nonlinear simulation function
+sim_nl_d = nonlinear_c2d(sim_nl_c, h); %discrete nonlinear simulation function
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -75,7 +75,7 @@ for i = 1:N
     uref = UREF(:,i:i+idif);
     xref = XREF(:,i:i+idif); % Get only as many samples as possible
     [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(...
-        mpc_nl_d, h, Q, R, Nc, du, dx, x, xref, uref, Xe,ue);
+        mpc_nl_d, Q, R, Nc, du, dx, x, xref, uref, Xe,ue);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error \n');
@@ -88,7 +88,7 @@ for i = 1:N
     FVAL(i) = fval;
     TEVAL(i) = teval;
     %% Send to plant
-    xr = sim_nl_d(xr,u,h);
+    xr = sim_nl_d(xr,u);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 fprintf('\n');
