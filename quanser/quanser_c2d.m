@@ -1,5 +1,5 @@
-function [h_disc_nl_euler, h_disc_nl] = quanser_discrete(handle_cont_nl)
-%QUANSER_DISCRETE Discretize nonlinear Quanser model
+function [h_disc_nl_euler, h_disc_nl] = quanser_c2d(handle_nl_model)
+%QUANSER_C2D Discretize nonlinear Quanser model
 %   Explanation soon to come
 
     function x = disc_nl(x0,u,h)
@@ -15,8 +15,7 @@ function [h_disc_nl_euler, h_disc_nl] = quanser_discrete(handle_cont_nl)
         %   Output arguments:
         %   - x: the new state
         %   Notes: must have quanser_cont_nl function in PATH.
-        
-        [~, Yout] = ode45(handle_cont_nl, [0 h], [x0; u]); %f(xk, uk)
+        [~, Yout] = ode45(handle_nl_model, [0 h], [x0; u]); %f(xk, uk)
         x = Yout(end, 1:6)'; %get new real state
     end
 
@@ -32,12 +31,10 @@ function [h_disc_nl_euler, h_disc_nl] = quanser_discrete(handle_cont_nl)
         %   - h: the simulation time, or timestep. Must be a scalar.
         %   Output arguments:
         %   - x: the new state
-        
-        f = handle_cont_nl([],[x0; u]);
+        f = handle_nl_model([],[x0; u]);
         xd = f(1:6);
         x = x0 + h*xd;
     end
 h_disc_nl_euler = @disc_nl_euler;
 h_disc_nl = @disc_nl;
 end
-

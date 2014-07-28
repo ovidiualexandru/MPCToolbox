@@ -1,88 +1,15 @@
-function [handle_nl_model, handle_sl_model] = quanser_model(parameters)
+function [handle_nl_model, handle_sl_model] = quanser_model(param)
 %QUANSER_MODEL Get the NL and SL continous model for the Quanser
 %   This will be explained
 
-%% Model data
-% Set default values
-Jepsilon = 0.86; %kg*m^2
-Jtheta = 0.044; %kg*m^2
-Jphi = 0.82; %kg*m^2
-La = 0.62; %m
-Lc = 0.44; %m
-Ld = 0.05; %m
-Le = 0.02; %m
-Lh = 0.177; %m
-Mf = 0.69; %kg
-Mb = 0.69; %kg
-Mc = 1.69; %kg
-Km = 0.5; %N/V
-niu_epsilon = 0.001; %kg*m^2/s
-niu_theta = 0.001; %kg*m^2/s
-niu_phi = 0.005; %kg*m^2/s
-%Check if default values need to be changed
-if isfield(parameters,'Jtheta') && ~isempty(parameters.Jtheta)
-    Jtheta = parameters.Jtheta;
+if nargin == 0
+    p = quanser_params();
+else
+    p = quanser_params(param);
 end
-if isfield(parameters,'Jphi') && ~isempty(parameters.Jphi)
-    Jphi = parameters.Jphi;
-end
-if isfield(parameters,'La') && ~isempty(parameters.La)
-    La = parameters.La;
-end
-if isfield(parameters,'Lc') && ~isempty(parameters.Lc)
-    Lc = parameters.Lc;
-end
-if isfield(parameters,'Ld') && ~isempty(parameters.Ld)
-    Ld = parameters.Ld;
-end
-if isfield(parameters,'Le') && ~isempty(parameters.Le)
-    Le = parameters.Le;
-end
-if isfield(parameters,'Lh') && ~isempty(parameters.Lh)
-    Lh = parameters.Lh;
-end
-if isfield(parameters,'Mf') && ~isempty(parameters.Mf)
-    Mf = parameters.Mf;
-end
-if isfield(parameters,'Mb') && ~isempty(parameters.Mb)
-    Mb = parameters.Mb;
-end
-if isfield(parameters,'Mc') && ~isempty(parameters.Mc)
-    Mc = parameters.Mc;
-end
-if isfield(parameters,'Km') && ~isempty(parameters.Km)
-    Km = parameters.Km;
-end
-if isfield(parameters,'niu_epsilon') && ~isempty(parameters.niu_epsilon)
-    niu_epsilon = parameters.niu_epsilon;
-end
-if isfield(parameters,'niu_theta') && ~isempty(parameters.niu_theta)
-    niu_theta = parameters.niu_theta;
-end
-if isfield(parameters,'niu_phi') && ~isempty(parameters.niu_phi)
-    niu_phi = parameters.niu_phi;
-end
-%Fixed values
-g = 9.81; %m/s^2;
-deltaa = atan((Ld+Le)/La);
-deltac = atan(Ld/Lc);
-deltah = atan(Le/Lh);
-%% Compute coefficients
-p = zeros(10,1);
-p(1) = ( -(Mf + Mb) * g * La + Mc * g * Lc) / Jepsilon;
-p(2) = ( -(Mf + Mb) * g * La * tan(deltaa) + Mc * g * Lc * tan(deltac) )...
-    / Jepsilon;
-p(3) = -niu_epsilon / Jepsilon;
-p(4) = Km * La / Jepsilon;
-p(5) = (-Mf + Mb) * g * Lh / Jtheta;
-p(6) = -(Mf + Mb) * g * Lh * tan(deltah) / Jtheta;
-p(7) = -niu_theta / Jtheta;
-p(8) = Km * Lh / Jtheta;
-p(9) = -niu_phi / Jphi;
-p(10) = -Km * La / Jphi;
 %% Nonlinear function
     function f = nl(t, y)
-        %QUANSER_CONT_NL Continous nonlinear model for the Quanser 3-DOF
+        %NL Continous nonlinear model for the Quanser 3-DOF
         %helicopter.
         %   f = QUANSER_CONT_NL(t, y) compute the states derivative, f using the
         %   initial state x0 and input u concatenated into vector y = [x0; u]
@@ -129,7 +56,7 @@ p(10) = -Km * La / Jphi;
     end
 %% SL function
     function [A,B,g] = sl(x0, u)
-        %SL_MODEL Continous Successive liniarization model for the Quanser
+        %SL Continous Successive liniarization model for the Quanser
         %3-DOF model.
         %   [A,B,g] = QUANSER_CONT_SL(x0, u) gets the liniarized model pair (A,B,g)
         %   from initial state x0 and input u.
