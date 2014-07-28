@@ -37,7 +37,7 @@ end
         %
         %   Arguments:
         %   - t: time-instant (required by ode45), not used in function.
-        %   - y:an 8-by-1 vector with the initial state and inputs. y = [x0; u]
+        %   - y: an 8-by-1 vector with the initial state and inputs. y = [x0; u]
         %   Output arguments:
         %   - f: the derived state, padded with zeros (assuming constant inputs).
         %       f = [xd; zeros(2,1)]; where xd = F + G*u
@@ -106,7 +106,6 @@ end
         phi_d = x0(6);
         Vf = u(1);
         Vb = u(2);
-        p = quanser_params();
         %% Model matrices
         a21 = -p(1) * sin(epsilon*pi/180) + p(2) * cos(epsilon*pi/180);
         a22 = p(3);

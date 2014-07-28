@@ -5,14 +5,37 @@ addpath('./util');
 %% System initialization
 x0 = [20; 0; 10; 0; 15; 0]; %Initial state
 u0 = [2; 2]; % [Vf Vb] initial inputs
-N = 500; % samples
+N = 600; % samples
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 L = 3; %Simulation and linear model update rate
 %% Cost matrices
 Q = diag([1, .01, 1, .01, 1, .01],0);
-R = diag([1, 1],0);
+R = diag([.01, .01],0);
+%% Model generation
+% Set model coefficients. Leave empty for default value
+mpc_param= []; % Use nominal model
+
+sim_param.Jepsilon = []; %Default value: 0.86 kg*m^2
+sim_param.Jtheta = []; %Default value: 0.044 kg*m^2
+sim_param.Jphi = []; %Default value: 0.82 kg*m^2
+sim_param.La = []; %Default value: 0.62 m
+sim_param.Lc = []; %Default value: 0.44 m
+sim_param.Ld = []; %Default value: 0.05 m
+sim_param.Le = []; %Default value: 0.02 m
+sim_param.Lh = []; %Default value: 0.177 m
+sim_param.Mf = []; %Default value: 0.69 kg
+sim_param.Mb = []; %Default value: 0.69 kg
+sim_param.Mc = []; %Default value: 1.69 kg
+sim_param.Km = []; %Default value: 0.5 N/V
+sim_param.niu_epsilon = []; %Default value: 0.001 kg*m^2/s
+sim_param.niu_theta = []; %Default value: 0.001 kg*m^2/s
+sim_param.niu_phi = []; %Default value: 0.005 kg*m^2/s
+
+[mpc_nl,mpc_sl] = quanser_model(mpc_param); %continous model for MPC pred.
+[sim_nl_c, ~] = quanser_model(sim_param); %continous model for simulation
+sim_nl_d = nonlinear_c2d(sim_nl_c); %discrete nonlinear simulation function
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -26,7 +49,7 @@ for i = 1:N
     %% Update SL Model
     tic;
     if mod(i,L) == 0 || i == 1
-        [A,B,g] = quanser_cont_sl(x,u); %recalculate (A,B,g)
+        [A,B,g] = mpc_sl(x,u); %recalculate (A,B,g)
         K = lqr(A,B,Q,R,0);
         [x_o, u_o] = affine_eq(A,B,g);
         fprintf('%d ', i);
@@ -44,7 +67,7 @@ for i = 1:N
     U(:,i) = u; % save inputs
     TEVAL(i) = teval;
     %% Send to plant
-    xr = quanser_disc_nl(xr,u,h);
+    xr = sim_nl_d(xr,u,h);
     x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
 end
 %% Plotting
