@@ -44,9 +44,12 @@ sim_param.niu_epsilon = []; %Default value: 0.001 kg*m^2/s
 sim_param.niu_theta = []; %Default value: 0.001 kg*m^2/s
 sim_param.niu_phi = []; %Default value: 0.005 kg*m^2/s
 
-[mpc_nl,mpc_sl] = quanser_model(mpc_param); %continous model for MPC pred.
-[sim_nl_c, ~] = quanser_model(sim_param); %continous model for simulation
-sim_nl_d = nonlinear_c2d(sim_nl_c, h); %discrete nonlinear simulation function
+%Get MPC continous model
+[mpc_nl_c,mpc_sl] = quanser_model(mpc_param); 
+%Get simulation continous model
+[sim_nl_c, ~] = quanser_model(sim_param);
+%Get simulation discrete model
+sim_nl_d = nonlinear_c2d(sim_nl_c, h, 'euler');
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
