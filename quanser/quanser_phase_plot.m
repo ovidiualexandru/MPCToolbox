@@ -1,18 +1,19 @@
 function quanser_phase_plot(X,varargin)
 %QUANSER_PHASE_PLOT produces a nice phase plot figure for the Quanser 3-DOF
 %helicopter simulation.
-%   QUANSER_PHASE_PLOT(X, figtitle, fignumber) plot the simulation results
+%
+%   QUANSER_PHASE_PLOT(X, FIGTITLE, FIGNUMBER) plots the simulation results
 %   in X into a figure. Produces a 2-by-3 subplot with the elevation-travel
 %   angles on the first line and each (state, state derivative) pair on the
-%   second line.
+%   second line, using figure FIGNUMBER and with title FIGTITLE.
 %
-%   Arguments:
+%   Input arguments:
 %   - X: 6-by-N matrix with the state snapshots
 %   - figtitle: figure title. If omitted, defaults to 'Quanser Phase-Plot'
 %   - fignumber: figure number. If omitted, defaults to 2.
 %   - XREF: The reference state vector/matrix. If XREF is a 6-by-1 vector,
-%       the reference is taken as constant. Otherwise, XREF must be a
-%       6-by-N matrix.
+%   the reference is taken as constant. Otherwise, XREF must be a 6-by-N
+%   matrix.
 
 %% Parameter processing
 N = size(X,2);

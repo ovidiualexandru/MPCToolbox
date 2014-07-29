@@ -1,14 +1,14 @@
 function plot_ft(FVAL, TEVAL, figtitle, fignumber)
 %PLOT_FT Plot FVAL and TEVAL for simulation
-%   PLOT_FT(FVAL, TEVAL, figtitle, fignumber) plots the values in FVAL 
-%   using TEVAL as time vector in figure <fignumber> and the title in
-%   <figtitle>.
 %
-%   Arguments:
-%   - FVAL: vector containing values
-%   - TEVAL: time vector. Recommended: 1:length(FVAL)
-%   - figtitle: the figure title
-%   - fignumber: the figure number
+%   PLOT_FT(FVAL, TEVAL, FIGTITLE, FIGNUMBER) plots the values in FVAL 
+%   and TEVAL in figure FIGNUMBER and the title in FIGTITLE.
+%
+%   Input arguments:
+%   - FVAL: vector containing values, usually from the objective function.
+%   - TEVAL: vector containing the evaluation time for each value in FVAL.
+%   - FIGTITLE: the figure title.
+%   - FIGNUMBER: the figure number.
 
 N = length(FVAL);
 t = 1:N;

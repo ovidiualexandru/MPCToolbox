@@ -1,22 +1,23 @@
 function quanser_plot(X,U, varargin)
 %QUANSER_PLOT produces a nice figure for the Quanser 3-DOF simulation.
-%   QUANSER_PLOT(X, U, dx, du, figtitle, fignumber, XREF) plot the 
-%   simulation results from X and U in figure <fignumber> with title 
-%   <figtitle> and reference state in XREF. This function produces a 3-by-3
-%   subplot with the inputs on the first line and each (state, state 
-%   derivative) pair on each column.
 %
-%   Arguments:
+%   QUANSER_PLOT(X, U, DX, DU, FIGTITLE, FIGNUMBER, XREF) plots the
+%   simulation results from X and U in figure FIGNUMBER with title FIGTITLE
+%   and reference state in XREF. This function produces a 3-by-3 subplot
+%   with the inputs on the first line and each (state, state derivative)
+%   pair on each column.
+%
+%   Input arguments:
 %   - X: 6-by-N matrix with the state snapshots
 %   - U: 2-by-N matrix of the input snapshots
-%   - dx: 2-by-6 matrix with constraints on each state. Can be omitted.
-%   - du: 2-by-2 matrix with constraints on each input. Only first
-%       constraint is plotted. Can be omitted.
-%   - figtitle: figure title. If omitted, defaults to 'Quanser Phase-Plot'
-%   - fignumber: figure number. If omitted, defaults to 1.
+%   - DX: 2-by-6 matrix with constraints on each state. Can be omitted.
+%   - DU: 2-by-2 matrix with constraints on each input. Only first
+%   constraint is plotted. Can be omitted.
+%   - FIGTITLE: figure title. If omitted, defaults to 'Quanser Phase-Plot'
+%   - FIGNUMBER: figure number. If omitted, defaults to 1.
 %   - XREF: The reference state vector/matrix. If XREF is a 6-by-1 vector,
-%       the reference is taken as constant. Otherwise, XREF must be a
-%       6-by-N matrix.
+%   the reference is taken as constant. Otherwise, XREF must be a 6-by-N
+%   matrix.
 
 %% Parameter processing
 nx = 6;

@@ -1,49 +1,51 @@
 function p = quanser_params(param)
 %QUANSER_PARAMS returns the Quanser 3-DOF helicopter nonlinear model
 %parameters.
-%   p = QUANSER_PARAMS() returns in vector p the 10 coefficients for the 
+%
+%   P = QUANSER_PARAMS() returns in vector P the 10 coefficients for the 
 %   model using default values.
 %
-%   p = QUANSER_PARAMS(param) returns the coefficients using the parameters
-%   stored in the fiels of the param structure.
+%   P = QUANSER_PARAMS(PARAM) returns in vector P the 10 coefficients for
+%   the model using the fields in structure PARAM.
 %
 %   Input arguments:
-%   - param: structure containing the model parameters as fields. These 
-%       parameters are enumerated below. If the structure does not have one
-%       of these fields, the default value for that field is used.
-%       param.Jepsilon: Moment of inertia about the elevation axis. 
-%           Default value: 0.86 kg*m^2
-%       param.Jtheta: Moment of inertia about the pitch axis. 
-%           Default value: 0.044 kg*m^2
-%       param.Jphi: Moment of inertia about the travel axis.
-%           Default value: 0.82 kg*m^2
-%       param.La: Distance from the pivot point to the helicopter body.
-%           Default value: 0.62 m
-%       param.Lc: Distance from the pivot point to the counter-weight.
-%           Default value: 0.44 m
-%       param.Ld: Length of pendulum for the elevation axis.
-%           Default value: 0.05 m
-%       param.Le: Length of pendulum for the pitch axis.
-%           Default value: 0.02 m
-%       param.Lh: Distance from the pitch axis to either motor.
-%           Default value: 0.177 m
-%       param.Mf: Mass of the front section of the helicopter.
-%           Default value: 0.69 kg
-%       param.Mb: Mass of the rear section.
-%           Default value: 0.69 kg
-%       param.Mc: Mass of the counter-weight.
-%           Default value: 1.69 kg
-%       param.Km: The voltage-force gain.
-%           Default value: 0.5 N/V
-%       param.niu_epsilon: Coefficient of viscous friction - elevation.
-%           Default value: 0.001 kg*m^2/s
-%       param.niu_theta: Coefficient of viscous friction - pitch.
-%           Default value: 0.001 kg*m^2/s
-%       param.niu_phi: Coefficient of viscous friction - travel.
-%           Default value: 0.005 kg*m^2/s
+%   - PARAM: structure containing the model parameters as fields. These 
+%   parameters are enumerated below. If the structure does not have one of
+%   these fields, the default value for that field is used.
+%   PARAM.Jepsilon: Moment of inertia about the elevation axis.
+%       Default value: 0.86 kg*m^2
+%   PARAM.Jtheta: Moment of inertia about the pitch axis. 
+%       Default value: 0.044 kg*m^2
+%   PARAM.Jphi: Moment of inertia about the travel axis.
+%       Default value: 0.82 kg*m^2
+%   PARAM.La: Distance from the pivot point to the helicopter body.
+%       Default value: 0.62 m
+%   PARAM.Lc: Distance from the pivot point to the counter-weight.
+%       Default value: 0.44 m
+%   PARAM.Ld: Length of pendulum for the elevation axis.
+%       Default value: 0.05 m
+%   PARAM.Le: Length of pendulum for the pitch axis.
+%       Default value: 0.02 m
+%   PARAM.Lh: Distance from the pitch axis to either motor.
+%       Default value: 0.177 m
+%   PARAM.Mf: Mass of the front section of the helicopter.
+%       Default value: 0.69 kg
+%   PARAM.Mb: Mass of the rear section.
+%       Default value: 0.69 kg
+%   PARAM.Mc: Mass of the counter-weight.
+%       Default value: 1.69 kg
+%   PARAM.Km: The voltage-force gain.
+%       Default value: 0.5 N/V
+%   PARAM.niu_epsilon: Coefficient of viscous friction - elevation.
+%       Default value: 0.001 kg*m^2/s
+%   PARAM.niu_theta: Coefficient of viscous friction - pitch.
+%       Default value: 0.001 kg*m^2/s
+%   PARAM.niu_phi: Coefficient of viscous friction - travel.
+%       Default value: 0.005 kg*m^2/s
+%
 %   Output arguments:
-%   - p: a 10-by-1 vector containing the p1 ... p10 coefficients, used in 
-%       pages 3 and 5 in
+%   - P: a 10-by-1 vector containing the p1..p10 coefficients, used in 
+%   pages 3 and 5 in
 %https://www.dropbox.com/s/lvvh5a2w9qkb2ll/chp_10.1007_978-94-007-6516-0_11.pdf
 
 %% Argument processing

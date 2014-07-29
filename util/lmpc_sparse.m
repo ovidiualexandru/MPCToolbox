@@ -2,43 +2,52 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
     du, dx, x0, xref, uref, Xprev, uprev)
 %LMPC_SPARSE Compute the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
-%   [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-%       du, dx, x0, xref, uref, Xprev, uprev). Compute the inputs using MPC
-%       sparse formulation.
 %
-%   Arguments:
+%   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_SPARSE(A, B, Q, R, Nc, DU, DX,...
+%   X0, XREF, UREF, XPREV, UPREV). Compute the input sequence U for the 
+%   model described by the model (A,B) using MPC sparse formulation, Nc as
+%   a control and prediction horizon, weighting matrices Q and R. DU and DX
+%   describe the constraints for the inputs and states, X0 is the starting
+%   state, XREF is the state trajectory, UREF is the input trajectory and
+%   UPREV contains the last solution, used for a 'warm start'. The input
+%   sequence is returned in U, the predicted states in X.FVAL, EXITFLAG and
+%   OUTPUT are returned by quadprog internally. See 'help quadprog' for
+%   details.
+%
+%   Input arguments:
 %   - A, B: the state-space matrices describing the system dynamic
 %   - Q, R: the weighting matrices in the cost function
 %   - Nc: the control horizon
-%   - du, dx: the constraint vectors for inputs and states. *du* is a 
-%       2-by-numatrix containing constraints for inputs. First line is 
-%       upper bound, second is lower bound for each input. *dx* is a 
-%       2-by-nx matrix with constraints for states. If the input/state has 
-%       no lower bound, set it's corresponding value to -Inf. Conversely, 
-%       if the input/state has no upper bound, set to Inf. 
+%   - DU, DX: the constraint vectors for inputs and states. DU is a 2-by-nu
+%   matrix containing constraints for inputs. First line is upper bound,
+%   second is lower bound for each input. DX is a 2-by-nx matrix with
+%   constraints for states. If the input/state has no lower bound, set it's
+%   corresponding value to -Inf. Conversely, if the input/state has no
+%   upper bound, set to Inf. 
 %       nu - number of inputs, nx - number of states.
-%   - x0: the current( initial) state of the system
-%   - xref: the desired( reference) state. Must have nx lines, but can have
-%       number of columns in the range [1, Nc].
-%   - uref: the reference input (stabilizing input). Must have nu lines,
-%       but can have number of columns in the range [1, Nc]
-%   - Xprev: the previously obtained state prediction. This will be used as
-%       a starting point for the algorithm, along with uprev. Can be an 
-%       empty array if there is no previous solution.
-%   - uprev: the previously obtained input solution. This will be used as
-%       a starting point for the algorithm. Can be an empty array if there 
-%       is no previous solution.
+%   - X0: the current( initial) state of the system
+%   - XREF: the desired( reference) state. Must have nx lines, but can have
+%   number of columns in the range [1, Nc].
+%   - UREF: the reference input (stabilizing input). Must have nu lines,
+%   but can have number of columns in the range [1, Nc]
+%   - XPREV: the previously obtained state prediction. This will be used as
+%   a starting point for the algorithm, along with uprev. Can be an empty
+%   array if there is no previous solution.
+%   - UPREV: the previously obtained input solution. This will be used as a
+%   starting point for the algorithm. Can be an empty array if there is no
+%   previous solution.
+%
 %   Output arguments:
-%   - u: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
+%   - U: a nu-by-Nc matrix of computed inputs. U(:,1) must be used.
 %   - X: a nx-by-Nc matrix of predicted states.
 %   - FVAL: the object function value given by the numerical solver, 
-%       quadprog.
+%   quadprog.
 %   - EXITFLAG: the exitflag from the solver. See 'help quadprog' for 
-%       details. EXITFLAG is > 0 if a solution has been found.
+%   details. EXITFLAG is > 0 if a solution has been found.
 %   - OUTPUT: the output from the solver. See 'help quadprog' for details.
 %
 %   Details for the sparse MPC formulation used can be found in 'Metode de
-%       optimizare numerica'(romanian) by prof. I. Necoara, pg 237.
+%   optimizare numerica'(romanian) by prof. I. Necoara, pg 237.
 
 %% Argument processing
 nu = size(B,2); %number of inputs
