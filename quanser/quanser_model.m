@@ -1,29 +1,28 @@
-function [handle_nl_model, handle_sl_model] = quanser_model(param)
-%QUANSER_MODEL Get the NL and SL continous model for the Quanser function
-%handles.
-%   [HANDLE_NL_MODEL, HANDLE_SL_MODEL] = QUANSER_MODEL() Gets the nonlinear
-%   (NL) and Successive Linearization (SL) nominal continous models as 
-%   function handles.
+function handle_model = quanser_model(type, param)
+%QUANSER_MODEL Get the NL or SL continous model for the Quanser as a
+%function handle.
 %
-%   [HANDLE_NL_MODEL, HANDLE_SL_MODEL] = QUANSER_MODEL(PARAM) Gets the 
-%   nonlinear (NL) and Successive Linearization (SL) continous models as 
-%   function handles, using the structure PARAM for calculations. The
-%   structure will be used as parameter internally for the quanser_param 
-%   function. For more information, type:
-%       help quanser_params
+%   HANDLE_MODEL = QUANSER_MODEL(TYPE) Gets the (nominal) continous model
+%   function handle HANDLE_MODEL as a Nonlinear (NL) model or Successive
+%   Liniarization (SL) model for the Quanser 3-DOF helicopter.
+%
+%   HANDLE_MODEL = QUANSER_MODEL(TYPE, PARAM) Sets the model to the fields
+%   of PARAM, which is used as a parameter for quanser_params. For more
+%   information, type help quanser_params
 %
 %   Input arguments:
-%   - param: Structure defining the model parameters. If omitted, default
-%   values will be used
+%   - TYPE: the model type. Accepted values:
+%   'nl'    Gets the Nonlinear Model. This computes a new state derivative.
+%           For more information, type help quanser_model>nl
+%   'sl'    Gets the SL Model. Call the handle every time the linear model
+%           needs to be updated. For more information, type:
+%           help quanser_model>sl
+%   - PARAM: Structure defining the model parameters. If omitted, default
+%   values will be used for the model.
 %
 %   Output arguments:
-%   - handle_nl_model: function handle for the Nonlinear model. This
-%   computes a new state derivative. For more information, type:
-%   help quanser_model>nl
-%   - handle_sl_model: function handle for the SL model. Call the handle
-%   every time the linear model needs to be updated. For more information,
-%   type: help quanser_model>sl
-if nargin == 0
+%   - HANDLE_MODEL: The returned function handle.
+if nargin == 1
     p = quanser_params();
 else
     p = quanser_params(param);
@@ -137,6 +136,12 @@ end
         g = xd - A*x0 - B*u;
     end
 %% Return handles
-handle_nl_model = @nl;
-handle_sl_model = @sl;
+switch type
+    case 'nl'
+        handle_model = @nl;
+    case 'sl'
+        handle_model = @sl;
+    otherwise
+        error('Invalid type supplied. Please try ''nl'' or ''sl''')
+end
 end

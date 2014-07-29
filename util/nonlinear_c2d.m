@@ -29,7 +29,7 @@ function h_disc = nonlinear_c2d(handle_nl_model, Ts, method)
 %
 %   Output arguments:
 %   - h_disc: the nonlinear discrete function handle.
-    function x = disc_euler(x0,u)help 
+    function x = disc_euler(x0,u)
 %DISC_EULER Discrete Nonlinear Model with Euler discretization
 %
 %   X = DISC_EULER(X0,U) returns the state X starting from initial state X0
