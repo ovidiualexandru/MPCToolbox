@@ -17,7 +17,7 @@ load('references/traj1.mat'); %load XREF and UREF into workspace
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
-R = diag([1, 1],0);
+R = diag([.01, .01],0);
 %state constraints, positive and negative
 dx = [ 30,  50,  90,  50,  inf,  inf;
       -30, -50, -90, -50, -inf, -inf];
@@ -28,21 +28,21 @@ du = [ 22,  22;
 % Set model coefficients. Leave empty for default value
 mpc_param= []; % Use nominal model
 
-sim_param.Jepsilon = []; %Default value: 0.86 kg*m^2
-sim_param.Jtheta = []; %Default value: 0.044 kg*m^2
-sim_param.Jphi = []; %Default value: 0.82 kg*m^2
+sim_param.Jepsilon = 0.92; %Default value: 0.86 kg*m^2
+sim_param.Jtheta = 0.05; %Default value: 0.044 kg*m^2
+sim_param.Jphi = 0.7; %Default value: 0.82 kg*m^2
 sim_param.La = []; %Default value: 0.62 m
 sim_param.Lc = []; %Default value: 0.44 m
 sim_param.Ld = []; %Default value: 0.05 m
 sim_param.Le = []; %Default value: 0.02 m
 sim_param.Lh = []; %Default value: 0.177 m
-sim_param.Mf = []; %Default value: 0.69 kg
-sim_param.Mb = []; %Default value: 0.69 kg
-sim_param.Mc = []; %Default value: 1.69 kg
+sim_param.Mf = 0.71; %Default value: 0.69 kg
+sim_param.Mb = 0.71; %Default value: 0.69 kg
+sim_param.Mc = 1.71; %Default value: 1.69 kg
 sim_param.Km = []; %Default value: 0.5 N/V
-sim_param.niu_epsilon = []; %Default value: 0.001 kg*m^2/s
-sim_param.niu_theta = []; %Default value: 0.001 kg*m^2/s
-sim_param.niu_phi = []; %Default value: 0.005 kg*m^2/s
+sim_param.niu_epsilon = 0.003; %Default value: 0.001 kg*m^2/s
+sim_param.niu_theta = 0.003; %Default value: 0.001 kg*m^2/s
+sim_param.niu_phi = 0.010; %Default value: 0.005 kg*m^2/s
 
 %Get MPC continous model
 mpc_sl = quanser_model('sl', mpc_param); 
