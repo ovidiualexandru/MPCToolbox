@@ -9,14 +9,26 @@ u0 = [2; 2]; % [Vf Vb] initial inputs
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
-L = 3; %Simulation and linear model update rate
-Nc = 3; %Control and prediction horizon
+L = 3; % Simulation progress update rate
+Nc = 3; % Control and prediction horizon
+cx = 0.0; % Internal disturbance variance
+ca = 0.0; % Measurement additional white noise variance
+cm = 0.0; % Measurement multiplicative white noise variance
+title = 'MPC-SL(condensed form)';
 %% Reference state
-load('references/traj1.mat'); %load XREF and UREF into workspace
+savefilename = 'simulations/sim2sparse.mat';
+loadfilename = 'references/traj2.mat';
+load(loadfilename); %load XREF and UREF into workspace
+% If the file is a 'path' file (not a trajectory file), set the path as a
+% reference
+if ~exist('XREF','var')
+    XREF = XPATH;
+    UREF = UPATH;
+end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
 Q = diag([1, .1, .5, .1, .1, .1],0);
-R = diag([1, 1],0);
+R = diag([.01, .01],0);
 %state constraints, positive and negative
 dx = [ 30,  50,  90,  50,  inf,  inf;
       -30, -50, -90, -50, -inf, -inf];
@@ -98,11 +110,34 @@ for i = 1:N
     FVAL(i) = fval;
     TEVAL(i) = teval;
     %% Send to plant
-    xr = sim_nl_d(xr,u);
-    x = xr + 0.0*rand(nx,1) + 0.0*rand(nx,1).*xr;
+    xr = sim_nl_d(xr,u) + cx*rand(nx,1);
+    x = xr + ca*rand(nx,1) + cm*rand(nx,1).*xr;
 end
 fprintf('\n');
 %% Plotting
-quanser_plot(X,U,dx, du,'MPC-SL(sparse) Quanser Plot',1, XREF);
-quanser_phase_plot(X, 'MPC-SL(sparse) Quanser Phase-Plot',2, XREF);
-plot_ft(FVAL, TEVAL, 'MPC-SL(sparse) Quanser Performance',3);
+quanser_plot(X, U, dx, du,[title ' Quanser Plot'], 1, XREF);
+quanser_phase_plot(X, [title ' Quanser Phase-Plot'], 2, XREF);
+plot_ft(FVAL, TEVAL, [title ' Quanser Performance'], 3);
+%% Save data
+simout = struct;
+simout.X = X;
+simout.U = U;
+simout.XREF = XREF;
+simout.UREF = UREF;
+simout.XPATH = XPATH;
+simout.UPATH = UPATH;
+simout.h = h;
+simout.L = L;
+simout.Nc = Nc;
+simout.Q = Q;
+simout.R = R;
+simout.dx = dx;
+simout.du = du;
+simout.cx = cx;
+simout.ca = ca;
+simout.cm = cm;
+simout.mpcparam = mpc_param;
+simout.simparam = sim_param;
+simout.date = datestr(now);
+simout.notes = title;
+save(savefilename, 'simout', '-v7');

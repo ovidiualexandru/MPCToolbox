@@ -1,5 +1,6 @@
 %QUANSER_MPC_MPT Run the Quanser 3-DOF helicopter simulation with a MPT MPC
 %formulation.
+% This si obsolete 
 clear
 addpath('./quanser');
 addpath('./util');
