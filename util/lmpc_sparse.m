@@ -1,18 +1,18 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-    du, dx, x0, xref, uref, Xprev, uprev)
+    du, dx, Gu, pu, Gx, px, x0, xref, uref, Xprev, uprev)
 %LMPC_SPARSE Compute the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %
 %   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_SPARSE(A, B, Q, R, Nc, DU, DX,...
-%   X0, XREF, UREF, XPREV, UPREV). Compute the input sequence U for the 
-%   model described by the model (A,B) using MPC sparse formulation, Nc as
-%   a control and prediction horizon, weighting matrices Q and R. DU and DX
-%   describe the constraints for the inputs and states, X0 is the starting
-%   state, XREF is the state trajectory, UREF is the input trajectory and
-%   UPREV contains the last solution, used for a 'warm start'. The input
-%   sequence is returned in U, the predicted states in X.FVAL, EXITFLAG and
-%   OUTPUT are returned by quadprog internally. See 'help quadprog' for
-%   details.
+%   GU, PU, GX, PX, X0, XREF, UREF, XPREV, UPREV). Compute the input 
+%   sequence U for the model described by the model (A,B) using MPC sparse 
+%   formulation, Nc as a control and prediction horizon, weighting matrices
+%   Q and R. DU and DX describe the constraints for the inputs and states, 
+%   X0 is the starting state, XREF is the state trajectory, UREF is the 
+%   input trajectory and UPREV contains the last solution, used for a 'warm
+%   start'. The input sequence is returned in U, the predicted states in X.
+%   FVAL, EXITFLAG and OUTPUT are returned by quadprog internally. See 
+%   'help quadprog' for details.
 %
 %   Input arguments:
 %   - A, B: the state-space matrices describing the system dynamic
@@ -25,6 +25,16 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
 %   corresponding value to -Inf. Conversely, if the input/state has no
 %   upper bound, set to Inf. 
 %       nu - number of inputs, nx - number of states.
+%   - GU, PU: constraint matrix and vector for inputs. GU is a nru-by-nu
+%   matrix of combinations of constraints on the inputs and PU is a nru
+%   vector. If there are no constraints, can be an empty matrix.
+%       nru - number of constraints on the combinations of inputs
+%       GU*u <= PU
+%   - GX, PX: constraint matrix and vector for states. GX is a nrx-by-nx
+%   matrix of combinations of constraints on the inputs and PU is a nrx
+%   vector. If there are no constraints, can be an empty matrix.
+%       nrx - number of constraints on the combinations of inputs
+%       GX*x <= PX
 %   - X0: the current( initial) state of the system
 %   - XREF: the desired( reference) state. Must have nx lines, but can have
 %   number of columns in the range [1, Nc].
@@ -112,6 +122,22 @@ zsmall = [ uref; xref];
 zref = zsmall(:);
 q = -Q_hat*zref;
 z0 = Zprev(:);
+%% Gbar, pbar
+if isempty(Gu)
+    Gu = zeros(1, nu);
+    pu = 0;
+end
+if isempty(Gx)
+    Gx = zeros(1, nx);
+    px = 0;
+end
+Gbar = [];
+Gbarsmall = blkdiag(Gu, Gx);
+for i = 1:Nc
+    Gbar = blkdiag(Gbar, Gbarsmall);
+end
+pbarsmall = [pu; px];
+pbar = repmat(pbarsmall, [Nc 1]);
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
@@ -129,7 +155,7 @@ switch relnum
     otherwise
         error('Can''t set solver options for this version of Matlab');
 end
-[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, [], [], A_hat, b_hat, ...
+[Z,FVAL,EXITFLAG, OUTPUT] = quadprog(Q_hat, q, Gbar, pbar, A_hat, b_hat, ...
     LB,UB, z0, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);

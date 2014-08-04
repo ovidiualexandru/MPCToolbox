@@ -43,7 +43,7 @@ for i = 1:N
     %% Get next command
     tic;
     [ue, Xe,fval,EXITFLAG] = lmpc_sparse(...
-        A, B, Q, R, Nc, du, dx, x, xref, [], Xe, ue);
+        A, B, Q, R, Nc, du, dx, [], [], [], [], x, xref, [], Xe, ue);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

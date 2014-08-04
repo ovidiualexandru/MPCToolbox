@@ -14,7 +14,7 @@ Nc = 3; % Control and prediction horizon
 cx = 0.0; % Internal disturbance variance
 ca = 0.0; % Measurement additional white noise variance
 cm = 0.0; % Measurement multiplicative white noise variance
-title = 'MPC-SL(condensed form)';
+title = 'MPC-SL(sparse form)';
 %% Reference state
 savefilename = 'simulations/sim2sparse.mat';
 loadfilename = 'references/traj2.mat';
@@ -27,7 +27,7 @@ if ~exist('XREF','var')
 end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
-Q = diag([1, .1, .5, .1, .1, .1],0);
+Q = diag([1, .1, .001, .001, .1, .1],0);
 R = diag([.01, .01],0);
 %state constraints, positive and negative
 dx = [ 30,  50,  90,  50,  inf,  inf;
@@ -96,7 +96,7 @@ for i = 1:N
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
     xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
     [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(...
-        Ad, Bd, Q, R, Nc, du_bar, dx_bar, xbar, xrefbar, urefbar, Xe,ue);
+        Ad, Bd, Q, R, Nc, du_bar, dx_bar, [], [], [], [], xbar, xrefbar, urefbar, Xe,ue);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Solver error \n');

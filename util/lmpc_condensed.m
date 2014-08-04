@@ -1,15 +1,15 @@
 function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
-    du, dx, x0, xref, uref, uprev)
+    du, dx, Gu, pu, Gx, px, x0, xref, uref, uprev)
 %LMPC_CONDENSED Compute the input sequence and predicted output using
 %Linear MPC condensed (sequential) formulation.
 %
-%   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_CONDENSED(A, B, Q, R, Nc, ...
-%   DU, DX, X0, XREF, UREF, UPREV). Compute the input sequence U for the 
-%   model described by the model (A,B) using MPC condensed formulation, Nc 
-%   as a control and prediction horizon, weighting matrices Q and R. DU and
-%   DX describe the constraints for the inputs and states, X0 is the 
-%   starting state, XREF is the state trajectory, UREF is the input 
-%   trajectory and UPREV contains the last solution, used for a 'warm 
+%   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_CONDENSED(A, B, Q, R, Nc, DU, DX,
+%   GU, PU, GX, PX, X0, XREF, UREF, UPREV). Compute the input sequence U 
+%   for the model described by the model (A,B) using MPC condensed 
+%   formulation, Nc as a control and prediction horizon, weighting matrices
+%   Q and R. DU and DX describe the constraints for the inputs and states, 
+%   X0 is the starting state, XREF is the state trajectory, UREF is the 
+%   input trajectory and UPREV contains the last solution, used for a 'warm 
 %   start'. The input sequence is returned in U, the predicted states in X.
 %   FVAL, EXITFLAG and OUTPUT are returned by quadprog internally. See 
 %   'help quadprog' for details.
@@ -25,6 +25,16 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(A, B, Q, R, Nc,...
 %   corresponding value to -Inf. Conversely, if the input/state has no
 %   upper bound, set to Inf. 
 %       nu - number of inputs, nx - number of states.
+%   - GU, PU: constraint matrix and vector for inputs. GU is a nru-by-nu
+%   matrix of combinations of constraints on the inputs and PU is a nru
+%   vector. If there are no constraints, can be an empty matrix.
+%       nru - number of constraints on the combinations of inputs
+%       GU*u <= PU
+%   - GX, PX: constraint matrix and vector for states. GX is a nrx-by-nx
+%   matrix of combinations of constraints on the inputs and PU is a nrx
+%   vector. If there are no constraints, can be an empty matrix.
+%       nrx - number of constraints on the combinations of inputs
+%       GX*x <= PX
 %   - X0: the current( initial) state of the system
 %   - XREF: the desired( reference) state. Must have nx lines, but can have
 %   number of columns in the range [1, Nc].
@@ -100,6 +110,25 @@ for i = 1:Nc
     Ap = [Ap; Apsmall]; % Ap = [Ap A^i]
     Apsmall = Apsmall * A;
 end
+%% Gbar and pbar
+Gubar = [];
+Gxbar = [];
+for i = 1:Nc
+    Gubar = blkdiag(Gubar, Gu);
+    Gxbar = blkdiag(Gxbar, Gx);
+end
+pubar = repmat(pu, [Nc 1]);
+pxbar = repmat(px, [Nc 1]);
+Gxbarhat = [];
+if ~isempty(Gxbar)
+    Gxbarhat = Gxbar * ABbar;
+end
+pxbarhat = [];
+if ~isempty(pxbarhat)
+    pxbarhat = pxbar - Ap*x0;
+end
+Gbar = blkdiag(Gubar, Gxbarhat);
+pbar = [pubar; pxbarhat];
 %% Cz
 Cxbar = [];
 Cz2 = [];
@@ -111,8 +140,8 @@ Cz1 = Cxbar*ABbar;
 dxbar = repmat(dx,[Nc 1]);
 dz1 = dxbar - Cxbar*Ap*x0;
 dz2 = repmat(du,[Nc 1]);
-C_hat = [Cz1; Cz2];
-d_hat = [dz1; dz2];
+C_hat = [Cz1; Cz2; Gbar];
+d_hat = [dz1; dz2; pbar];
 %% Qbar, Rbar
 Qbar = [];
 Rbar = [];
