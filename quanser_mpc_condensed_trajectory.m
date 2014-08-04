@@ -17,7 +17,7 @@ ca = 0.0; % Measurement additional white noise variance
 cm = 0.0; % Measurement multiplicative white noise variance
 title = 'MPC-SL(condensed form)';
 %% Reference state
-savefilename = 'simulations/sim2traj.mat';
+savefilename = 'simulations/sim2traj_qr_alt.mat';
 loadfilename = 'references/traj2.mat';
 load(loadfilename); %load XREF and UREF into workspace
 % If the file is a 'path' file (not a trajectory file), set the path as a
@@ -28,7 +28,7 @@ if ~exist('XREF','var')
 end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
-Q = diag([1, .1, 1, .1, .1, .1],0);
+Q = diag([1, .1, .001, .001, .1, .1],0);
 R = diag([.01, .01],0);
 %state constraints, positive and negative
 dx = [ 30,  50,  90,  50,  inf,  inf;
