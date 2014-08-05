@@ -1,42 +1,64 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
-    handle_nlmodeld, Q, R, Nc, du, dx, x0, xref, uref, Xprev, uprev)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(problem)
 %NMPC_FULLSPACE Compute the input sequence and predicted output using
 %Nonlinear MPC fullspace (simultaneous) approach.
 %
-%   [U, X, FVAL, EXITFLAG, OUTPUT] = NMPC_FULLSPACE(HANDLE_NLMODEL, Q, ...
-%   R, Nc, DU, DX, X0, XREF, UREF, XPREV, UPREV). Compute the input
-%   sequence U for the model described by the discrete nonlinear model in
-%   function handle HANDLE_NLMODEL using Nonlinear-MPC fullspace
-%   formulation, Nc as a control and prediction horizon and weighting
-%   matrices Q and R. DU and DX describe the constraints for the inputs and
-%   states, X0 is the starting state, XREF is the state trajectory, UREF is
-%   the input trajectory, XPREV and UPREV contain the last solution, used
-%   for a 'warm start'. The input sequence is returned in U, the predicted
-%   states in X. FVAL, EXITFLAG and OUTPUT are returned by fmincon
-%   internally. See 'help fmincon' for details.
+%   [U, X, FVAL, EXITFLAG, OUTPUT] = NMPC_FULLSPACE(PROBLEM). Compute the
+%   input sequence using a simultaneous Non-Linear MPC formulation over Nc
+%   samples for the nonlinear discrete system fd(x,u) with (Q,R) as weight
+%   matrices, starting from state x0 and constraints on inputs desribed by
+%   du and on states by dx. The fields of PROBLEM are described below. Some
+%   fields are mandatory, others are optional. The optional fields can be
+%   omitted or set to empty array.
+%   Mathematical formulation of the problem:
 %
-%   Input arguments:
-%   - handle_nlmodeld: the discrete nonlinear model function
-%   - Q,R: the weighting matrices in the cost function
-%   - Nc: the control horizon
-%   - DU, DX: the constraint vectors for inputs and states. DU is a 2-by-nu
+%              Nc-1
+%              --
+%              \
+%          min /   (x - xref )'Q(x - xref ) + (u - uref )'R(u - uref )
+%           u  --    k      k     k      k      k      k     k      k
+%              k=0
+%                         s.t.:
+%                             x(k+1) = fd(x(k), u(k))
+%                             ul < u(k) < uu (input bounds)
+%                             xl < x(k) < xu (state bounds)
+%                             Gu*u(k) <= pu
+%                             Gx*x(k) <= px, and
+%                             du = [ul'; uu']
+%                             dx = [xl'; xu']
+%
+%   Mandatory fields:
+%   - fd: the discrete nonlinear model function handle
+%   - Q,R: the weighting matrices in the cost function.
+%   - Nc: the control horizon.
+%   - x0: the current( initial) state of the system.
+%   - du, dx: the constraint vectors for inputs and states. du is a 2-by-nu
 %   matrix containing constraints for inputs. First line is upper bound,
-%   second is lower bound for each input. DX is a 2-by-nx matrix with
+%   second is lower bound for each input. dx is a 2-by-nx matrix with
 %   constraints for states. If the input/state has no lower bound, set it's
 %   corresponding value to -Inf. Conversely, if the input/state has no
-%   upper bound, set to Inf. 
+%   upper bound, set to Inf.
 %       nu - number of inputs, nx - number of states.
-%   - X0: the current( initial) state of the system
-%   - XREF: the desired( reference) state. Must have nx lines, but can have
+%
+%   Optional fields:
+%   - xref: the desired( reference) state. Must have nx lines, but can have
 %   number of columns in the range [1, Nc].
-%   - UREF: the reference input (stabilizing input). Must have nu lines,
-%   but can have number of columns in the range [1, Nc]
-%   - XPREV: the previously obtained state prediction. This will be used as
-%   a starting point for the algorithm, along with uprev. Can be an empty
-%   array if there is no previous solution.
-%   - UPREV: the previously obtained input solution. This will be used as
-%   a starting point for the algorithm. Can be an empty array if there is
-%   no previous solution.
+%   - uref: the reference input (stabilizing input). Must have nu lines,
+%   but can have number of columns in the range [1, Nc].
+%   - xprev: the previously obtained state prediction. This will be used as
+%   a starting point for the algorithm, along with uprev.
+%   - uprev: the previously obtained input solution. This will be used to 
+%   'warm start' the algorithm. This should be the u obtained at a previous 
+%   step.
+%   - Gx, px: constraint matrix and vector for states. Gx is a nrx-by-nx
+%   matrix of combinations of constraints on the inputs and pu is a nrx
+%   vector.
+%       nrx - number of constraints on the combinations of inputs
+%       Gx*x <= px
+%   - Gu, pu: constraint matrix and vector for inputs. Gu is a nru-by-nu
+%   matrix of combinations of constraints on the inputs and pu is a nru
+%   vector.
+%       nru - number of constraints on the combinations of inputs
+%       Gu*u <= pu
 %
 %   Output arguments:
 %   - U: a nu-by-Nc matrix of computed inputs. U(:,1) must be used.
@@ -47,6 +69,57 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(...
 %       details. EXITFLAG is > 0 if a solution has been found.
 %   - OUTPUT: the output from the solver. See 'help fmincon' for details.
 
+%% Extract parameters from struct
+% Required fields
+handle_nlmodeld = problem.fd;
+Q = problem.Q;
+R = problem.R;
+Nc = problem.Nc;
+du = problem.du;
+dx = problem.dx;
+x0 = problem.x0;
+% Optional fields: references and previous solutions
+if isfield(problem, 'xref')
+    xref = problem.xref;
+else
+    xref = [];
+end
+if isfield(problem,'uref')
+    uref = problem.uref;
+else
+    uref = [];
+end
+if isfield(problem, 'xprev')
+    Xprev = problem.xprev;
+else
+    Xprev = [];
+end
+if isfield(problem, 'uprev')
+    uprev = problem.uprev;
+else
+    uprev = [];
+end
+% Optional fields: inputs/states combination constraints
+if isfield(problem, 'Gx')
+    Gx = problem.Gx;
+else
+    Gx = [];
+end
+if isfield(problem, 'px')
+    px = problem.px;
+else
+    px = [];
+end
+if isfield(problem, 'Gu')
+    Gu = problem.Gu;
+else
+    Gu = [];
+end
+if isfield(problem, 'pu')
+    pu = problem.pu;
+else
+    pu = [];
+end
 %% Argument processing
 nu = size(du,2); %number of inputs
 nx = size(dx,2); %number of states
@@ -80,7 +153,7 @@ else
 end
 Zprev = [uprev; Xprev];
 if ~isa(handle_nlmodeld, 'function_handle')
-    error('handle_nlmodeld must be a function handle.');
+    error('fd must be a function handle.');
 end
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
@@ -119,6 +192,22 @@ zsmall = [ uref; xref];
 zref = zsmall(:);
 q = -Q_hat*zref;
 z0 = Zprev(:);
+%% Gbar, pbar
+if isempty(Gu)
+    Gu = zeros(1, nu);
+    pu = 0;
+end
+if isempty(Gx)
+    Gx = zeros(1, nx);
+    px = 0;
+end
+Gbar = [];
+Gbarsmall = blkdiag(Gu, Gx);
+for i = 1:Nc
+    Gbar = blkdiag(Gbar, Gbarsmall);
+end
+pbarsmall = [pu; px];
+pbar = repmat(pbarsmall, [Nc 1]);
 %% Nonlinear solver
 rel = version('-release');
 rel = rel(1:4); %just the year
@@ -135,8 +224,8 @@ switch relnum
     otherwise
         error('Can''t set solver options for this version of Matlab');
 end
-[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) 0.5*z'*Q_hat*z + q'*z, z0, [],...
-    [], [], [], LB, UB, @nonlconfunc, options);
+[Z ,FVAL,EXITFLAG, OUTPUT] = fmincon(@(z) 0.5*z'*Q_hat*z + q'*z, z0, ...
+    Gbar, pbar, [], [], LB, UB, @nonlconfunc, options);
 %% Return variables
 X = reshape(Z, nu+nx,[]);
 u = X(1:nu,:);

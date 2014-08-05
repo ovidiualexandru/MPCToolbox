@@ -63,6 +63,16 @@ mpc_nl_d = nonlinear_c2d(mpc_nl_c, h, 'euler');
 sim_nl_c = quanser_model('nl', sim_param);
 %Get simulation discrete model
 sim_nl_d = nonlinear_c2d(sim_nl_c, h, 'euler');
+%% Problem initialization
+% Fields not defined here are not fixed and are defined below
+problem = struct;
+problem.fd = sim_nl_d;
+problem.Q = Q;
+problem.R = R;
+problem.Nc = Nc;
+problem.du = du;
+problem.dx = dx;
+problem.x0 = x0;
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -90,8 +100,12 @@ for i = 1:N
     end
     uref = UREF(:,i:i+idif);
     xref = XREF(:,i:i+idif); % Get only as many samples as possible
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(...
-        mpc_nl_d, Q, R, Nc, du, dx, x, xref, uref, Xe,ue);
+    problem.uref = uref;
+    problem.xref = xref;
+    problem.uprev = ue;
+    problem.xprev = Xe;
+    problem.x0 = x;
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = nmpc_fullspace(problem);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error \n');
