@@ -27,6 +27,17 @@ dx = [ 0.2,  inf,  inf,  inf;
       -0.2, -inf, -inf, -inf];
 %input constraints
 du = [inf; -inf]; 
+%% Problem initialization
+% Fields not defined here are not fixed and are defined below
+problem = struct;
+problem.A = A;
+problem.B = B;
+problem.dx = dx;
+problem.du = du;
+problem.Q = Q;
+problem.R = R;
+problem.Nc = Nc;
+problem.xref = xref;
 %% Solver initialization
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states
@@ -42,8 +53,9 @@ Xe = []; %state estimated solution
 for i = 1:N
     %% Get next command
     tic;
-    [ue, Xe,fval,EXITFLAG] = lmpc_sparse(...
-        A, B, Q, R, Nc, du, dx, [], [], [], [], x, xref, [], Xe, ue);
+    problem.x0 = x;
+    problem.uprev = ue;
+    [ue, Xe,fval,EXITFLAG] = lmpc_sparse(problem);
     if EXITFLAG < 0
         fprintf('Iteration: %d, EXITFLAG: %d\n',i, EXITFLAG)
         error('Solver error');

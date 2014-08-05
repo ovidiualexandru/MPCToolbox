@@ -1,64 +1,129 @@
-function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(A, B, Q, R, Nc, ...
-    du, dx, Gu, pu, Gx, px, x0, xref, uref, Xprev, uprev)
+function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(problem)
 %LMPC_SPARSE Compute the input sequence and predicted output using Linear
 %MPC sparse (simultaneous) formulation.
 %
-%   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_SPARSE(A, B, Q, R, Nc, DU, DX,...
-%   GU, PU, GX, PX, X0, XREF, UREF, XPREV, UPREV). Compute the input 
-%   sequence U for the model described by the model (A,B) using MPC sparse 
-%   formulation, Nc as a control and prediction horizon, weighting matrices
-%   Q and R. DU and DX describe the constraints for the inputs and states, 
-%   X0 is the starting state, XREF is the state trajectory, UREF is the 
-%   input trajectory and UPREV contains the last solution, used for a 'warm
-%   start'. The input sequence is returned in U, the predicted states in X.
-%   FVAL, EXITFLAG and OUTPUT are returned by quadprog internally. See 
-%   'help quadprog' for details.
+%   [U, X, FVAL, EXITFLAG, OUTPUT] = LMPC_SPARSE(PROBLEM). Compute the
+%   input sequence using a simultaneous Linear MPC formulation over Nc
+%   samples for the linear system pair (A,B) with (Q,R) as weighting
+%   matrices, starting from state x0 and constraints on inputs desribed by
+%   du and on states by dx. The fields of PROBLEM are described below. Some
+%   fields are mandatory, others are optional. The optional fields can be
+%   omitted or set to empty array.
+%   Mathematical formulation of the problem:
 %
-%   Input arguments:
-%   - A, B: the state-space matrices describing the system dynamic
-%   - Q, R: the weighting matrices in the cost function
-%   - Nc: the control horizon
-%   - DU, DX: the constraint vectors for inputs and states. DU is a 2-by-nu
+%              Nc-1
+%              --
+%              \
+%          min /   (x - xref )'Q(x - xref ) + (u - uref )'R(u - uref )
+%           u  --    k      k     k      k      k      k     k      k
+%              k=0
+%                         s.t.:
+%                             x(k+1) = A*x(k) + B*u(k)
+%                             ul < u(k) < uu (input bounds)
+%                             xl < x(k) < xu (state bounds)
+%                             Gu*u(k) <= pu
+%                             Gx*x(k) <= px, and
+%                             du = [ul'; uu']
+%                             dx = [xl'; xu']
+%
+%   Mandatory fields:
+%   - A,B: the state-space matrices describing the system dynamic.
+%   - Q,R: the weighting matrices in the cost function.
+%   - Nc: the control horizon.
+%   - x0: the current( initial) state of the system.
+%   - du, dx: the constraint vectors for inputs and states. du is a 2-by-nu
 %   matrix containing constraints for inputs. First line is upper bound,
-%   second is lower bound for each input. DX is a 2-by-nx matrix with
+%   second is lower bound for each input. dx is a 2-by-nx matrix with
 %   constraints for states. If the input/state has no lower bound, set it's
 %   corresponding value to -Inf. Conversely, if the input/state has no
-%   upper bound, set to Inf. 
+%   upper bound, set to Inf.
 %       nu - number of inputs, nx - number of states.
-%   - GU, PU: constraint matrix and vector for inputs. GU is a nru-by-nu
-%   matrix of combinations of constraints on the inputs and PU is a nru
-%   vector. If there are no constraints, can be an empty matrix.
-%       nru - number of constraints on the combinations of inputs
-%       GU*u <= PU
-%   - GX, PX: constraint matrix and vector for states. GX is a nrx-by-nx
-%   matrix of combinations of constraints on the inputs and PU is a nrx
-%   vector. If there are no constraints, can be an empty matrix.
-%       nrx - number of constraints on the combinations of inputs
-%       GX*x <= PX
-%   - X0: the current( initial) state of the system
-%   - XREF: the desired( reference) state. Must have nx lines, but can have
+%
+%   Optional fields:
+%   - xref: the desired( reference) state. Must have nx lines, but can have
 %   number of columns in the range [1, Nc].
-%   - UREF: the reference input (stabilizing input). Must have nu lines,
-%   but can have number of columns in the range [1, Nc]
-%   - XPREV: the previously obtained state prediction. This will be used as
-%   a starting point for the algorithm, along with uprev. Can be an empty
-%   array if there is no previous solution.
-%   - UPREV: the previously obtained input solution. This will be used as a
-%   starting point for the algorithm. Can be an empty array if there is no
-%   previous solution.
+%   - uref: the reference input (stabilizing input). Must have nu lines,
+%   but can have number of columns in the range [1, Nc].
+%   - xprev: the previously obtained state prediction. This will be used as
+%   a starting point for the algorithm, along with uprev.
+%   - uprev: the previously obtained input solution. This will be used to 
+%   'warm start' the algorithm. This should be the u obtained at a previous 
+%   step.
+%   - Gx, px: constraint matrix and vector for states. Gx is a nrx-by-nx
+%   matrix of combinations of constraints on the inputs and pu is a nrx
+%   vector.
+%       nrx - number of constraints on the combinations of inputs
+%       Gx*x <= px
+%   - Gu, pu: constraint matrix and vector for inputs. Gu is a nru-by-nu
+%   matrix of combinations of constraints on the inputs and pu is a nru
+%   vector.
+%       nru - number of constraints on the combinations of inputs
+%       Gu*u <= pu
 %
 %   Output arguments:
-%   - U: a nu-by-Nc matrix of computed inputs. U(:,1) must be used.
-%   - X: a nx-by-Nc matrix of predicted states.
-%   - FVAL: the object function value given by the numerical solver, 
+%   - U: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
+%   - X: a nu-by-Nc matrix of computed inputs, same as u.
+%   - FVAL: the object function value given by the numerical solver,
 %   quadprog.
-%   - EXITFLAG: the exitflag from the solver. See 'help quadprog' for 
+%   - EXITFLAG: the exitflag from the solver. See 'help quadprog' for
 %   details. EXITFLAG is > 0 if a solution has been found.
 %   - OUTPUT: the output from the solver. See 'help quadprog' for details.
 %
 %   Details for the sparse MPC formulation used can be found in 'Metode de
-%   optimizare numerica'(romanian) by prof. I. Necoara, pg 237.
+%   optimizare numerica'(romanian) by prof. I. Necoara, pg 239.
 
+%% Extract parameters from struct
+% Required fields
+A = problem.A;
+B = problem.B;
+Q = problem.Q;
+R = problem.R;
+Nc = problem.Nc;
+du = problem.du;
+dx = problem.dx;
+x0 = problem.x0;
+% Optional fields: references and previous solutions
+if isfield(problem, 'xref')
+    xref = problem.xref;
+else
+    xref = [];
+end
+if isfield(problem,'uref')
+    uref = problem.uref;
+else
+    uref = [];
+end
+if isfield(problem, 'xprev')
+    Xprev = problem.xprev;
+else
+    Xprev = [];
+end
+if isfield(problem, 'uprev')
+    uprev = problem.uprev;
+else
+    uprev = [];
+end
+% Optional fields: inputs/states combination constraints
+if isfield(problem, 'Gx')
+    Gx = problem.Gx;
+else
+    Gx = [];
+end
+if isfield(problem, 'px')
+    px = problem.px;
+else
+    px = [];
+end
+if isfield(problem, 'Gu')
+    Gu = problem.Gu;
+else
+    Gu = [];
+end
+if isfield(problem, 'pu')
+    pu = problem.pu;
+else
+    pu = [];
+end
 %% Argument processing
 nu = size(B,2); %number of inputs
 nx = size(A,1); %number of states

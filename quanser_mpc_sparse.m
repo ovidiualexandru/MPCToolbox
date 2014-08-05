@@ -61,6 +61,12 @@ mpc_sl = quanser_model('sl', mpc_param);
 sim_nl_c = quanser_model('nl', sim_param);
 %Get simulation discrete model
 sim_nl_d = nonlinear_c2d(sim_nl_c, h, 'euler');
+%% Problem initialization
+% Fields not defined here are not fixed and are defined below
+problem = struct;
+problem.Q = Q;
+problem.R = R;
+problem.Nc = Nc;
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs
@@ -82,6 +88,10 @@ for i = 1:N
         dx_bar = dx - repmat(x_o',2,1);
         Ad = eye(nx) + h*A;
         Bd = h*B;
+        problem.A = Ad;
+        problem.B = Bd;
+        problem.du = du_bar;
+        problem.dx = dx_bar;
         fprintf('%d ', i);
         if mod(i,20*L) == 0
             fprintf('\n');
@@ -95,8 +105,11 @@ for i = 1:N
     end
     urefbar = UREF(:,i:i+idif) - repmat(u_o,[1 idif+1]);
     xrefbar = XREF(:,i:i+idif) - repmat(x_o,[1 idif+1]);
-    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(...
-        Ad, Bd, Q, R, Nc, du_bar, dx_bar, [], [], [], [], xbar, xrefbar, urefbar, Xe,ue);
+    problem.uref = urefbar;
+    problem.xref = xrefbar;
+    problem.uprev = ue;
+    problem.x0 = xbar;
+    [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_sparse(problem);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
         error('Solver error \n');
