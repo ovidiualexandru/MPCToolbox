@@ -50,7 +50,7 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(problem)
 %   - Gx, px: constraint matrix and vector for states. Gx is a nrx-by-nx
 %   matrix of combinations of constraints on the inputs and pu is a nrx
 %   vector.
-%       nrx - number of constraints on the combinations of inputs
+%       nrx - number of constraints on the combinations of states
 %       Gx*x <= px
 %   - Gu, pu: constraint matrix and vector for inputs. Gu is a nru-by-nu
 %   matrix of combinations of constraints on the inputs and pu is a nru
