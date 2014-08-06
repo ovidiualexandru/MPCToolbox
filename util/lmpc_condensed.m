@@ -47,16 +47,24 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_condensed(problem)
 %   - uprev: the previously obtained input solution. This will be used to 
 %   'warm start' the algorithm. This should be the u obtained at a previous 
 %   step.
-%   - Gx, px: constraint matrix and vector for states. Gx is a nrx-by-nx
-%   matrix of combinations of constraints on the inputs and pu is a nrx
-%   vector.
-%       nrx - number of constraints on the combinations of inputs
-%       Gx*x <= px
-%   - Gu, pu: constraint matrix and vector for inputs. Gu is a nru-by-nu
-%   matrix of combinations of constraints on the inputs and pu is a nru
-%   vector.
+%   - Gx, px: constraint cell arrays or matrix for states. If Gx is a cell
+%   array it must be of length Nc and comprised of nrxi-by-nx matrices and
+%   px must be a Nc element cell array of nrxi element vectors. If Gx is a
+%   matrix, is must be of size nrx-by-nx and px a nrx length vector. The
+%   matrices of Gx describe constraints on combinations of states.
+%       nrx - number of constraints on the combinations of states
+%       nrxi - number of constraints on the combinations of states at
+%       prediction i, where i is in [1, Nc].
+%       Gx(i)*x(i) <= px(i)
+%   - Gu, pu: constraint cell arrays or matrix for inputs. If Gu is a cell
+%   array it must be of length Nc and comprised of nrui-by-nu matrices and
+%   pu must be a Nc element cell array of nrui element vectors. If Gu is a
+%   matrix, is must be of size nru-by-nu and pu a nru length vector. The
+%   matrices of Gu describe constraints on combinations of states.
 %       nru - number of constraints on the combinations of inputs
-%       Gu*u <= pu
+%       nrui - number of constraints on the combinations of inputs at
+%       prediction i, where i is in [1, Nc].
+%       Gu(i)*u(i) <= pu(i)
 %
 %   Output arguments:
 %   - U: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
@@ -173,13 +181,41 @@ for i = 1:Nc
 end
 %% Gbar and pbar
 Gubar = [];
+pubar = [];
 Gxbar = [];
-for i = 1:Nc
-    Gubar = blkdiag(Gubar, Gu);
-    Gxbar = blkdiag(Gxbar, Gx);
+pxbar = [];
+if ~iscell(Gu)
+    %transform to a Nc cell array
+    Gu = repmat({Gu},[Nc 1]);
+    pu = repmat({pu},[Nc 1]);
 end
-pubar = repmat(pu, [Nc 1]);
-pxbar = repmat(px, [Nc 1]);
+if ~iscell(Gx)
+    %transform to a Nc cell array
+    Gx = repmat({Gx},[Nc 1]); 
+    px = repmat({px},[Nc 1]);
+end
+for i = 1:Nc
+    %Append the next constraint, if it is empty there will be no change
+    Gui = Gu{i};
+    nrui = size(Gui, 1);
+    if ~isempty(Gui)
+        Guibar = [ zeros(nrui, (i-1)*nu), Gui, zeros(nrui, (Nc-i)*nu)];
+    else
+        Guibar = [];
+    end
+    Gubar = [Gubar; Guibar];
+    pubar = [pubar; pu{i}];
+    
+    Gxi = Gx{i};
+    nrxi = size(Gxi, 1);
+    if ~isempty(Gxi)
+        Gxibar = [ zeros(nrxi, (i-1)*nx), Gxi, zeros(nrxi, (Nc-i)*nx)];
+    else
+        Gxibar = [];
+    end
+    Gxbar = [Gxbar; Gxibar];
+    pxbar = [pxbar; px{i}];
+end
 Gxbarhat = [];
 if ~isempty(Gxbar)
     Gxbarhat = Gxbar * ABbar;
