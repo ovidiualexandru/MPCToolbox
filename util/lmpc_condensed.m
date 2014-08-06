@@ -185,10 +185,10 @@ if ~isempty(Gxbar)
     Gxbarhat = Gxbar * ABbar;
 end
 pxbarhat = [];
-if ~isempty(pxbarhat)
-    pxbarhat = pxbar - Ap*x0;
+if ~isempty(pxbar)
+    pxbarhat = pxbar - Gxbar*Ap*x0;
 end
-Gbar = blkdiag(Gubar, Gxbarhat);
+Gbar = [Gubar; Gxbarhat];
 pbar = [pubar; pxbarhat];
 %% Cz
 Cxbar = [];
