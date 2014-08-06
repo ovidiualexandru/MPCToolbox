@@ -59,6 +59,12 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = lmpc_sparse(problem)
 %   vector.
 %       nru - number of constraints on the combinations of inputs
 %       Gu*u <= pu
+%   - Gpec, ppec: constraint matrix and vector for the Persistent Exciting
+%   Condition (PEC). These are constraints for the inputs that apply only
+%   for the first prediction in the horizon. This does not guarantee the
+%   PEC, but help can be used to implement it by applying the constraints
+%   on the first input in the sequence. In all other aspects, is the same
+%   as Gu and pu.
 %
 %   Output arguments:
 %   - U: a nu-by-Nc matrix of computed inputs. u(:,1) must be used.
@@ -123,6 +129,16 @@ if isfield(problem, 'pu')
     pu = problem.pu;
 else
     pu = [];
+end
+if isfield(problem, 'Gpec')
+    Gpec = problem.Gpec;
+else
+    Gpec = [];
+end
+if isfield(problem, 'ppec')
+    ppec = problem.ppec;
+else
+    ppec = [];
 end
 %% Argument processing
 nu = size(B,2); %number of inputs
@@ -203,6 +219,13 @@ for i = 1:Nc
 end
 pbarsmall = [pu; px];
 pbar = repmat(pbarsmall, [Nc 1]);
+if ~isempty(Gpec)
+    % Add the pec constraint
+    nru = size(Gu,1);
+    Gbarpec = padarray(Gpec,[0 ((Nc-1)*nu+Nc*nx)], 0, 'post'); %zero-pad
+    Gbar = [Gbar(1:nru,:); Gbarpec; Gbar(nru+1:end,:)];
+    pbar = [pbar(1:nru,:); ppec; pbar(nru+1:end,:)];
+end
 %% QP solver
 rel = version('-release');
 rel = rel(1:4); %just the year
