@@ -49,24 +49,16 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(problem)
 %   - uprev: the previously obtained input solution. This will be used to 
 %   'warm start' the algorithm. This should be the u obtained at a previous 
 %   step.
-%   - Gx, px: constraint cell arrays or matrix for states. If Gx is a cell
-%   array it must be of length Nc and comprised of nrxi-by-nx matrices and
-%   px must be a Nc element cell array of nrxi element vectors. If Gx is a
-%   matrix, is must be of size nrx-by-nx and px a nrx length vector. The
-%   matrices of Gx describe constraints on combinations of states.
-%       nrx - number of constraints on the combinations of states
-%       nrxi - number of constraints on the combinations of states at
-%       prediction i, where i is in [1, Nc].
-%       Gx(i)*x(i) <= px(i)
-%   - Gu, pu: constraint cell arrays or matrix for inputs. If Gu is a cell
-%   array it must be of length Nc and comprised of nrui-by-nu matrices and
-%   pu must be a Nc element cell array of nrui element vectors. If Gu is a
-%   matrix, is must be of size nru-by-nu and pu a nru length vector. The
-%   matrices of Gu describe constraints on combinations of states.
+%   - Gx, px: constraint matrix and vector for states. Gx is a nrx-by-nx
+%   matrix of combinations of constraints on the inputs and pu is a nrx
+%   vector.
+%       nrx - number of constraints on the combinations of inputs
+%       Gx*x <= px
+%   - Gu, pu: constraint matrix and vector for inputs. Gu is a nru-by-nu
+%   matrix of combinations of constraints on the inputs and pu is a nru
+%   vector.
 %       nru - number of constraints on the combinations of inputs
-%       nrui - number of constraints on the combinations of inputs at
-%       prediction i, where i is in [1, Nc].
-%       Gu(i)*u(i) <= pu(i)
+%       Gu*u <= pu
 %   - fcu: nonlinear constraints on inputs. Is a function handle that
 %   takes an input vector and returns a nu-by-1 vector with the constraint
 %   values. Calling: cu = fcu(u). The constraints should be formulated so
@@ -235,38 +227,21 @@ zref = zsmall(:);
 q = -Q_hat*zref;
 z0 = Zprev(:);
 %% Gbar, pbar
+if isempty(Gu)
+    Gu = zeros(1, nu);
+    pu = 0;
+end
+if isempty(Gx)
+    Gx = zeros(1, nx);
+    px = 0;
+end
 Gbar = [];
-pbar = [];
-if ~iscell(Gu)
-    %transform to a Nc cell array
-    Gu = repmat({Gu},[Nc 1]);
-    pu = repmat({pu},[Nc 1]);
-end
-if ~iscell(Gx)
-    %transform to a Nc cell array
-    Gx = repmat({Gx},[Nc 1]); 
-    px = repmat({px},[Nc 1]);
-end
+Gbarsmall = blkdiag(Gu, Gx);
 for i = 1:Nc
-    if isempty(Gu{i})
-        Gui = zeros(1, nu);
-        pui = 0;
-    else
-        Gui = Gu{i};
-        pui = pu{i};
-    end
-    if isempty(Gx{i})
-        Gxi = zeros(1, nx);
-        pxi = 0;
-    else
-        Gxi = Gx{i};
-        pxi = px{i};
-    end
-    Gbarsmall = blkdiag(Gui, Gxi);
-    pbarsmall = [pui; pxi];
     Gbar = blkdiag(Gbar, Gbarsmall);
-    pbar = [pbar; pbarsmall];
 end
+pbarsmall = [pu; px];
+pbar = repmat(pbarsmall, [Nc 1]);
 %% Nonlinear solver
 rel = version('-release');
 rel = rel(1:4); %just the year
