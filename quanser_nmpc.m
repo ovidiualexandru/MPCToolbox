@@ -73,6 +73,7 @@ problem.Nc = Nc;
 problem.du = du;
 problem.dx = dx;
 problem.x0 = x0;
+problem.fcx = @quanser_table_constraint;
 %% Solver initialization
 X = zeros(nx, N); %save all states, for plotting
 U = zeros(nu, N); %save all inputs

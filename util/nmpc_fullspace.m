@@ -59,6 +59,14 @@ function [u, X, FVAL, EXITFLAG, OUTPUT] = nmpc_fullspace(problem)
 %   vector.
 %       nru - number of constraints on the combinations of inputs
 %       Gu*u <= pu
+%   - fcu: nonlinear constraints on inputs. Is a function handle that
+%   takes an input vector and returns a nu-by-1 vector with the constraint
+%   values. Calling: cu = fcu(u). The constraints should be formulated so
+%   that cu <= 0. Restrictions: only nu nonlinear constraints on inputs.
+%   - fcx: nonlinear constraints on states. Is a function handle that
+%   takes a state vector and returns a nx-by-1 vector with the constraint
+%   values. Calling: cx = fcx(x). The constraints should be formulated so
+%   that cx <= 0. Restrictions: only nx nonlinear constraints on inputs.
 %
 %   Output arguments:
 %   - U: a nu-by-Nc matrix of computed inputs. U(:,1) must be used.
@@ -120,6 +128,16 @@ if isfield(problem, 'pu')
 else
     pu = [];
 end
+if isfield(problem, 'fcx')
+    fcx = problem.fcx;
+else
+    fcx = [];
+end
+if isfield(problem, 'fcu')
+    fcu = problem.fcu;
+else
+    fcu = [];
+end
 %% Argument processing
 nu = size(du,2); %number of inputs
 nx = size(dx,2); %number of states
@@ -155,9 +173,19 @@ Zprev = [uprev; Xprev];
 if ~isa(handle_nlmodeld, 'function_handle')
     error('fd must be a function handle.');
 end
+if ~isempty(fcx)
+    if ~isa(fcx, 'function_handle')
+        error('fcx must be a function handle.');
+    end
+end
+if ~isempty(fcu)
+    if ~isa(fcu, 'function_handle')
+        error('fcu must be a function handle.');
+    end
+end
 %% Nonlinear constraints function
     function [C,Ceq] = nonlconfunc(z)
-        C = [];
+        C = zeros(size(z));
         Xl = reshape(z, nu+nx,[]);
         ul = Xl(1:nu,:);
         Xl = Xl(nu+1:end,:);
@@ -171,6 +199,12 @@ end
             idx_start = (i-1)*(nx+nu)+1;
             idx_end = i*(nx+nu);
             Ceq(idx_start:idx_end) = ceq;
+            if  ~isempty(fcu)
+                C(idx_start:idx_start+nu) = fcu(ul(:,i));
+            end
+            if ~isempty(fcx)
+                C(idx_start+nu+1:idx_start+nu+nx) = fcx(Xl(:,i));
+            end
         end
     end
 %% QP definition
