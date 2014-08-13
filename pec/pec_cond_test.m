@@ -1,10 +1,15 @@
+%% Tunables
 N = 10;
 P = 15;
-rho0 = 0.1;
-
-Nv = size(U,2);
-Nv = 300;
-Uk = 10*(rand(1,Nv) - 0.5);
+rho0 = .1;
+%% Input signal
+Uk = simout.U(:,450:600);
+% Nv = 300;
+Nv = size(Uk, 2);
+% Uk = rand(1,Nv);
+% Uk = Uk - mean(Uk); %remove dc component
+% Uk = 0.2*Uk + 1.5; %scale
+%% PEC check
 det_val = zeros(Nv,1);
 cond_val = zeros(Nv, 1);
 for k = N+P:Nv
