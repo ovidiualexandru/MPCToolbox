@@ -13,7 +13,8 @@ for k = N+P:Nv
     det_val(k) = det(Omegatil_plus);
     cond_val(k) = cond(Omegatil_plus);
 end
+%% Plotting
 t = 1:Nv;
-figure(1); plot(t,Uk(1:Nv)); grid on;
-figure(2); plot(det_val); grid on;
-figure(3); plot(cond_val); grid on;
+figure(1); plot(t,Uk(:,1:Nv)); title('Signal');grid on;
+figure(2); plot(det_val); title('Determinant'); grid on;
+figure(3); plot(cond_val); title('Condition number'); grid on;
