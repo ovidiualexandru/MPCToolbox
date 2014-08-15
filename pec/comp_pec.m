@@ -26,7 +26,7 @@ sum2 = 0;
 for j = 1:P-1
     uj = U(:,end-(j-1));
     Phi_minusj = comp_phi(U,N,j);
-    sum2 = sum2 + uj*Phi_minusj'*invOmegatil_minus;
+    sum2 = sum2 + uj*Phi_minusj';
 end
 
 sum3 = 0;
@@ -35,5 +35,5 @@ for j= 1:P-1
     Phi_minusj = comp_phi(U,N,j);
     sum3 = sum3 + Phi_minusj*uj';
 end
-gamma = sum1 - sum2 * sum3;
+gamma = sum1 - sum2 * invOmegatil_minus * sum3;
 end
