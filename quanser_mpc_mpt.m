@@ -22,8 +22,8 @@ R = diag([.1, .1],0);
 dx = [ 30,  50,  90,  50,  inf,  inf;
       -30, -50, -90, -50, -inf, -inf];
 %input constraints
-du = [ 22,  22;
-      -22, -22];
+du = [ 4.6,  4.6;
+      -4.6, -4.6];
 %% Model generation
 % Set model coefficients. Leave empty for default value
 mpc_param= []; % Use nominal model
