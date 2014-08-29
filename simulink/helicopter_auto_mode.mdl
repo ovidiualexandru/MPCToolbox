@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.35"
+    ComputedModelVersion    "1.36"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,9 +29,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "ovidiua"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Aug 29 20:44:44 2014"
-  RTWModifiedTimeStamp	  331245882
-  ModelVersionFormat	  "1.%<AutoIncrement:35>"
+  LastModifiedDate	  "Fri Aug 29 22:55:25 2014"
+  RTWModifiedTimeStamp	  331253714
+  ModelVersionFormat	  "1.%<AutoIncrement:36>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -767,6 +767,15 @@ Model {
       PreserveConstantTs      off
     }
     Block {
+      BlockType		      DeadZone
+      LowerValue	      "-0.5"
+      UpperValue	      "0.5"
+      SaturateOnIntegerOverflow	on
+      LinearizeAsGain	      on
+      ZeroCross		      on
+      SampleTime	      "-1"
+    }
+    Block {
       BlockType		      Gain
       Gain		      "1"
       Multiplication	      "Element-wise(K.*u)"
@@ -929,7 +938,7 @@ Model {
   }
   System {
     Name		    "helicopter_auto_mode"
-    Location		    [10, 91, 1029, 593]
+    Location		    [10, 91, 1046, 690]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -943,7 +952,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    107
+    SIDHighWatermark	    120
     Block {
       BlockType		      BusCreator
       Name		      "Bus\nCreator"
@@ -1046,38 +1055,6 @@ Model {
       SaveName		      "ScopeData8"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
-    }
-    Block {
-      BlockType		      Gain
-      Name		      "Gain"
-      SID		      106
-      Position		      [815, 260, 845, 290]
-      Gain		      "1/3"
-      ParameterDataTypeMode   "Inherit via internal rule"
-      ParameterDataType	      "fixdt(1, 16)"
-      ParameterScaling	      "2^0"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeMode	      "Inherit via internal rule"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Gain
-      Name		      "Gain1"
-      SID		      107
-      Position		      [815, 295, 845, 325]
-      Gain		      "1/3"
-      ParameterDataTypeMode   "Inherit via internal rule"
-      ParameterDataType	      "fixdt(1, 16)"
-      ParameterScaling	      "2^0"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeMode	      "Inherit via internal rule"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
     }
     Block {
       BlockType		      Reference
@@ -1724,6 +1701,223 @@ Model {
       }
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Joystick Refence"
+      SID		      108
+      Ports		      [2, 2]
+      Position		      [230, 138, 305, 202]
+      BackgroundColor	      "orange"
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      Port {
+	PortNumber		1
+	Name			"PitchRef"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+      Port {
+	PortNumber		2
+	Name			"ElevationRef"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+      System {
+	Name			"Joystick Refence"
+	Location		[853, 117, 1418, 295]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "X"
+	  SID			  109
+	  Position		  [25, 38, 55, 52]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "Y"
+	  SID			  110
+	  Position		  [25, 98, 55, 112]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  DeadZone
+	  Name			  "Dead Zone"
+	  SID			  111
+	  Position		  [135, 30, 165, 60]
+	  LowerValue		  "-1"
+	  UpperValue		  "1"
+	}
+	Block {
+	  BlockType		  DeadZone
+	  Name			  "Dead Zone1"
+	  SID			  112
+	  Position		  [135, 90, 165, 120]
+	  LowerValue		  "-1"
+	  UpperValue		  "1"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  113
+	  Position		  [80, 30, 110, 60]
+	  Gain			  "12"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  114
+	  Position		  [80, 90, 110, 120]
+	  Gain			  "12"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Integrator
+	  Name			  "Integrator"
+	  SID			  115
+	  Ports			  [1, 1]
+	  Position		  [275, 30, 305, 60]
+	  LimitOutput		  on
+	  UpperSaturationLimit	  "30"
+	  LowerSaturationLimit	  "-30"
+	  ContinuousStateAttributes "'PitchReference'"
+	}
+	Block {
+	  BlockType		  Integrator
+	  Name			  "Integrator1"
+	  SID			  116
+	  Ports			  [1, 1]
+	  Position		  [275, 90, 305, 120]
+	  LimitOutput		  on
+	  UpperSaturationLimit	  "25"
+	  LowerSaturationLimit	  "-25"
+	  ContinuousStateAttributes "'ElevationReference'"
+	}
+	Block {
+	  BlockType		  TransferFcn
+	  Name			  "Transfer Fcn"
+	  SID			  117
+	  Position		  [205, 27, 255, 63]
+	  Denominator		  "[0.1 1]"
+	}
+	Block {
+	  BlockType		  TransferFcn
+	  Name			  "Transfer Fcn1"
+	  SID			  118
+	  Position		  [205, 87, 255, 123]
+	  Denominator		  "[0.1 1]"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "PitchRef"
+	  SID			  119
+	  Position		  [340, 38, 370, 52]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "ElevationRef"
+	  SID			  120
+	  Position		  [340, 98, 370, 112]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Dead Zone"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  DstBlock		  "Dead Zone1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Integrator"
+	  SrcPort		  1
+	  DstBlock		  "PitchRef"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "X"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Integrator1"
+	  SrcPort		  1
+	  DstBlock		  "ElevationRef"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Y"
+	  SrcPort		  1
+	  DstBlock		  "Gain1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Transfer Fcn"
+	  SrcPort		  1
+	  DstBlock		  "Integrator"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Transfer Fcn1"
+	  SrcPort		  1
+	  DstBlock		  "Integrator1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Dead Zone"
+	  SrcPort		  1
+	  DstBlock		  "Transfer Fcn"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Dead Zone1"
+	  SrcPort		  1
+	  DstBlock		  "Transfer Fcn1"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
       BlockType		      Scope
       Name		      "New Data Flag"
       SID		      54
@@ -1893,169 +2087,6 @@ Model {
       type_expr		      "BusObjectIn"
     }
     Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem"
-      SID		      74
-      Ports		      [2, 2]
-      Position		      [235, 138, 310, 202]
-      BackgroundColor	      "orange"
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      Port {
-	PortNumber		1
-	Name			"PitchRef"
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
-      Port {
-	PortNumber		2
-	Name			"ElevationRef"
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
-      System {
-	Name			"Subsystem"
-	Location		[853, 136, 1113, 268]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"A4"
-	PaperUnits		"centimeters"
-	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "X"
-	  SID			  75
-	  Position		  [25, 38, 55, 52]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "Y"
-	  SID			  76
-	  Position		  [25, 83, 55, 97]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Gain"
-	  SID			  77
-	  Position		  [80, 30, 110, 60]
-	  Gain			  "12"
-	  ParameterDataTypeMode	  "Inherit via internal rule"
-	  ParameterDataType	  "fixdt(1, 16)"
-	  ParameterScaling	  "2^0"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeMode	  "Inherit via internal rule"
-	  OutDataType		  "fixdt(1, 16)"
-	  OutScaling		  "2^0"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Gain1"
-	  SID			  78
-	  Position		  [80, 75, 110, 105]
-	  Gain			  "12"
-	  ParameterDataTypeMode	  "Inherit via internal rule"
-	  ParameterDataType	  "fixdt(1, 16)"
-	  ParameterScaling	  "2^0"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeMode	  "Inherit via internal rule"
-	  OutDataType		  "fixdt(1, 16)"
-	  OutScaling		  "2^0"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  79
-	  Ports			  [1, 1]
-	  Position		  [140, 30, 170, 60]
-	  LimitOutput		  on
-	  UpperSaturationLimit	  "30"
-	  LowerSaturationLimit	  "-30"
-	  ContinuousStateAttributes "'PitchReference'"
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator1"
-	  SID			  80
-	  Ports			  [1, 1]
-	  Position		  [140, 75, 170, 105]
-	  LimitOutput		  on
-	  UpperSaturationLimit	  "25"
-	  LowerSaturationLimit	  "-25"
-	  ContinuousStateAttributes "'ElevationReference'"
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "PitchRef"
-	  SID			  81
-	  Position		  [205, 38, 235, 52]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "ElevationRef"
-	  SID			  82
-	  Position		  [205, 83, 235, 97]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "Gain"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Gain1"
-	  SrcPort		  1
-	  DstBlock		  "Integrator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "PitchRef"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "X"
-	  SrcPort		  1
-	  DstBlock		  "Gain"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator1"
-	  SrcPort		  1
-	  DstBlock		  "ElevationRef"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Y"
-	  SrcPort		  1
-	  DstBlock		  "Gain1"
-	  DstPort		  1
-	}
-      }
-    }
-    Block {
       BlockType		      Scope
       Name		      "Travel [deg]"
       SID		      45
@@ -2163,9 +2194,9 @@ Model {
     Line {
       Name		      "PitchRef"
       Labels		      [0, 0]
-      SrcBlock		      "Subsystem"
+      SrcBlock		      "Joystick Refence"
       SrcPort		      1
-      Points		      [15, 0]
+      Points		      [20, 0]
       Branch {
 	Labels			[1, 0]
 	DstBlock		"Bus\nCreator"
@@ -2187,9 +2218,9 @@ Model {
     Line {
       Name		      "ElevationRef"
       Labels		      [0, 0]
-      SrcBlock		      "Subsystem"
+      SrcBlock		      "Joystick Refence"
       SrcPort		      2
-      Points		      [25, 0]
+      Points		      [30, 0]
       Branch {
 	Labels			[1, 0]
 	DstBlock		"Bus\nCreator"
@@ -2363,33 +2394,7 @@ Model {
       Labels		      [0, 0; 0, 0]
       SrcBlock		      "Bus\nSelector1"
       SrcPort		      1
-      DstBlock		      "Gain"
-      DstPort		      1
-    }
-    Line {
-      Name		      "<Vb>"
-      Labels		      [0, 0]
-      SrcBlock		      "Bus\nSelector1"
-      SrcPort		      2
-      DstBlock		      "Gain1"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      1
-      DstBlock		      "Subsystem"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      2
-      DstBlock		      "Subsystem"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Gain"
-      SrcPort		      1
-      Points		      [5, 0]
+      Points		      [55, 0]
       Branch {
 	Points			[0, -60]
 	DstBlock		"Vf"
@@ -2401,9 +2406,11 @@ Model {
       }
     }
     Line {
-      SrcBlock		      "Gain1"
-      SrcPort		      1
-      Points		      [10, 0]
+      Name		      "<Vb>"
+      Labels		      [0, 0]
+      SrcBlock		      "Bus\nSelector1"
+      SrcPort		      2
+      Points		      [60, 0]
       Branch {
 	Points			[0, 75]
 	DstBlock		"Vb"
@@ -2413,6 +2420,18 @@ Model {
 	DstBlock		"Helicopter Write"
 	DstPort			2
       }
+    }
+    Line {
+      SrcBlock		      "Helicopter read"
+      SrcPort		      1
+      DstBlock		      "Joystick Refence"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Helicopter read"
+      SrcPort		      2
+      DstBlock		      "Joystick Refence"
+      DstPort		      2
     }
   }
 }

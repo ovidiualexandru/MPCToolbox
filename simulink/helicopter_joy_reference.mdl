@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.45"
+    ComputedModelVersion    "1.48"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -27,9 +27,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "ovidiua"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Aug 29 19:20:40 2014"
-  RTWModifiedTimeStamp	  331239698
-  ModelVersionFormat	  "1.%<AutoIncrement:45>"
+  LastModifiedDate	  "Fri Aug 29 22:54:50 2014"
+  RTWModifiedTimeStamp	  331253689
+  ModelVersionFormat	  "1.%<AutoIncrement:48>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -753,6 +753,15 @@ Model {
       PreserveConstantTs      off
     }
     Block {
+      BlockType		      DeadZone
+      LowerValue	      "-0.5"
+      UpperValue	      "0.5"
+      SaturateOnIntegerOverflow	on
+      LinearizeAsGain	      on
+      ZeroCross		      on
+      SampleTime	      "-1"
+    }
+    Block {
       BlockType		      Gain
       Gain		      "1"
       Multiplication	      "Element-wise(K.*u)"
@@ -929,7 +938,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    117
+    SIDHighWatermark	    121
     Block {
       BlockType		      Constant
       Name		      "Constant"
@@ -1623,6 +1632,211 @@ Model {
       }
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Joystick Refence"
+      SID		      112
+      Ports		      [2, 2]
+      Position		      [270, 18, 345, 82]
+      BackgroundColor	      "orange"
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Joystick Refence"
+	Location		[853, 117, 1418, 295]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "X"
+	  SID			  114
+	  Position		  [25, 38, 55, 52]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "Y"
+	  SID			  116
+	  Position		  [25, 98, 55, 112]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  DeadZone
+	  Name			  "Dead Zone"
+	  SID			  120
+	  Position		  [135, 30, 165, 60]
+	  LowerValue		  "-1"
+	  UpperValue		  "1"
+	}
+	Block {
+	  BlockType		  DeadZone
+	  Name			  "Dead Zone1"
+	  SID			  121
+	  Position		  [135, 90, 165, 120]
+	  LowerValue		  "-1"
+	  UpperValue		  "1"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  110
+	  Position		  [80, 30, 110, 60]
+	  Gain			  "12"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  111
+	  Position		  [80, 90, 110, 120]
+	  Gain			  "12"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Integrator
+	  Name			  "Integrator"
+	  SID			  105
+	  Ports			  [1, 1]
+	  Position		  [275, 30, 305, 60]
+	  LimitOutput		  on
+	  UpperSaturationLimit	  "30"
+	  LowerSaturationLimit	  "-30"
+	  ContinuousStateAttributes "'PitchReference'"
+	}
+	Block {
+	  BlockType		  Integrator
+	  Name			  "Integrator1"
+	  SID			  106
+	  Ports			  [1, 1]
+	  Position		  [275, 90, 305, 120]
+	  LimitOutput		  on
+	  UpperSaturationLimit	  "25"
+	  LowerSaturationLimit	  "-25"
+	  ContinuousStateAttributes "'ElevationReference'"
+	}
+	Block {
+	  BlockType		  TransferFcn
+	  Name			  "Transfer Fcn"
+	  SID			  118
+	  Position		  [205, 27, 255, 63]
+	  Denominator		  "[0.1 1]"
+	}
+	Block {
+	  BlockType		  TransferFcn
+	  Name			  "Transfer Fcn1"
+	  SID			  119
+	  Position		  [205, 87, 255, 123]
+	  Denominator		  "[0.1 1]"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "PitchRef"
+	  SID			  113
+	  Position		  [340, 38, 370, 52]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "ElevationRef"
+	  SID			  115
+	  Position		  [340, 98, 370, 112]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Dead Zone"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  DstBlock		  "Dead Zone1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Integrator"
+	  SrcPort		  1
+	  DstBlock		  "PitchRef"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "X"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Integrator1"
+	  SrcPort		  1
+	  DstBlock		  "ElevationRef"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Y"
+	  SrcPort		  1
+	  DstBlock		  "Gain1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Transfer Fcn"
+	  SrcPort		  1
+	  DstBlock		  "Integrator"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Transfer Fcn1"
+	  SrcPort		  1
+	  DstBlock		  "Integrator1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Dead Zone"
+	  SrcPort		  1
+	  DstBlock		  "Transfer Fcn"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Dead Zone1"
+	  SrcPort		  1
+	  DstBlock		  "Transfer Fcn1"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
       BlockType		      Scope
       Name		      "Pitch [deg]"
       SID		      49
@@ -1682,157 +1896,6 @@ Model {
       SampleTime	      "0"
     }
     Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem"
-      SID		      112
-      Ports		      [2, 2]
-      Position		      [270, 18, 345, 82]
-      BackgroundColor	      "orange"
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem"
-	Location		[853, 136, 1113, 268]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"A4"
-	PaperUnits		"centimeters"
-	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "X"
-	  SID			  114
-	  Position		  [25, 38, 55, 52]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "Y"
-	  SID			  116
-	  Position		  [25, 83, 55, 97]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Gain"
-	  SID			  110
-	  Position		  [80, 30, 110, 60]
-	  Gain			  "12"
-	  ParameterDataTypeMode	  "Inherit via internal rule"
-	  ParameterDataType	  "fixdt(1, 16)"
-	  ParameterScaling	  "2^0"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeMode	  "Inherit via internal rule"
-	  OutDataType		  "fixdt(1, 16)"
-	  OutScaling		  "2^0"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Gain1"
-	  SID			  111
-	  Position		  [80, 75, 110, 105]
-	  Gain			  "12"
-	  ParameterDataTypeMode	  "Inherit via internal rule"
-	  ParameterDataType	  "fixdt(1, 16)"
-	  ParameterScaling	  "2^0"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeMode	  "Inherit via internal rule"
-	  OutDataType		  "fixdt(1, 16)"
-	  OutScaling		  "2^0"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  105
-	  Ports			  [1, 1]
-	  Position		  [140, 30, 170, 60]
-	  LimitOutput		  on
-	  UpperSaturationLimit	  "30"
-	  LowerSaturationLimit	  "-30"
-	  ContinuousStateAttributes "'PitchReference'"
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator1"
-	  SID			  106
-	  Ports			  [1, 1]
-	  Position		  [140, 75, 170, 105]
-	  LimitOutput		  on
-	  UpperSaturationLimit	  "25"
-	  LowerSaturationLimit	  "-25"
-	  ContinuousStateAttributes "'ElevationReference'"
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "PitchRef"
-	  SID			  113
-	  Position		  [205, 38, 235, 52]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "ElevationRef"
-	  SID			  115
-	  Position		  [205, 83, 235, 97]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "Gain"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Gain1"
-	  SrcPort		  1
-	  DstBlock		  "Integrator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "PitchRef"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "X"
-	  SrcPort		  1
-	  DstBlock		  "Gain"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator1"
-	  SrcPort		  1
-	  DstBlock		  "ElevationRef"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Y"
-	  SrcPort		  1
-	  DstBlock		  "Gain1"
-	  DstPort		  1
-	}
-      }
-    }
-    Block {
       BlockType		      Scope
       Name		      "Travel [deg]"
       SID		      51
@@ -1889,10 +1952,10 @@ Model {
       RTWMemSecDataConstants  "Inherit from model"
       RTWMemSecDataInternal   "Inherit from model"
       RTWMemSecDataParameters "Inherit from model"
-      xmin		      "-1"
-      xmax		      "1"
-      ymin		      "-1"
-      ymax		      "1"
+      xmin		      "-32"
+      xmax		      "32"
+      ymin		      "-30"
+      ymax		      "30"
       st		      "-1"
     }
     Line {
@@ -1948,7 +2011,7 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Subsystem"
+      SrcBlock		      "Joystick Refence"
       SrcPort		      1
       Points		      [20, 0]
       Branch {
@@ -1962,7 +2025,7 @@ Model {
       }
     }
     Line {
-      SrcBlock		      "Subsystem"
+      SrcBlock		      "Joystick Refence"
       SrcPort		      2
       Points		      [105, 0]
       Branch {
@@ -1978,13 +2041,13 @@ Model {
     Line {
       SrcBlock		      "Helicopter read"
       SrcPort		      1
-      DstBlock		      "Subsystem"
+      DstBlock		      "Joystick Refence"
       DstPort		      1
     }
     Line {
       SrcBlock		      "Helicopter read"
       SrcPort		      2
-      DstBlock		      "Subsystem"
+      DstBlock		      "Joystick Refence"
       DstPort		      2
     }
   }
@@ -1996,21 +2059,21 @@ MatData {
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (         $@ .4 "
+    "    &          4    (     0    $    !          D    (        2 !-L$ "
   }
   DataRecord {
     Tag			    DataTag1
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (         $@ .4 "
+    "    &          4    (     0    $    !          D    (        2 !-L$ "
   }
   DataRecord {
     Tag			    DataTag0
     Data		    "  %)30     .    N!\\   8    (     @         %    \"     $    !     0         %  0 $0    $   !F    :7-?="
     "6YI<75E          !O;&1?8FQO8VL          &]L9%]N86UE            :7-?;6]D96Q?8VQO<VEN9P!S971T:6YG<P           &ES7V1"
     "E;&5T960            .    ,     8    (    \"0(        %    \"     $    !     0         \"  $  0    X    X    !@    "
-    "@    &          4    (     0    $    !          D    (         $@ .4 .    .     8    (    !          %    \"     $"
+    "@    &          4    (     0    $    !          D    (        2 !-L$ .    .     8    (    !          %    \"     $"
     "    %     0         0    !0   $A)3\"TQ    #@   #     &    \"     D\"        !0    @    !     0    $          @ !  "
     "     .    Z!T   8    (     @         %    \"     $    !     0         %  0 #P    $    >    ;VQD7V)O87)D7W1Y<&4 <3@"
     "                    .    ,     8    (    !          %    \"     $    \"     0         0  ( <30   X   !0'0  !@    @"
