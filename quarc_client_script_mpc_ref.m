@@ -10,8 +10,9 @@ nx = 6;
 L = 3; % Simulation progress update rate
 Nc = 3; % Control and prediction horizon
 %% Reference state
-savefilename = 'runs/traj3-run1.mat';
-loadfilename = 'references/traj3-noamp-nozerocross.mat';
+savefilename = 'runs/ref3-run9.mat';
+%loadfilename = 'references/traj3-noamp-nozerocross.mat';
+loadfilename = 'references/ref3.mat';
 load(loadfilename); %load XREF and UREF into workspace
 % If the file is a 'path' file (not a trajectory file), set the path as a
 % reference
@@ -21,11 +22,11 @@ if ~exist('XREF','var')
 end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
-Q = diag([1, .1, 1, .1, 0, 0],0);
-R = diag([1.5, 1.5],0);
+Q = diag([30, .01, 1.5, 0.1, 0, 0],0);
+R = diag([4, 4],0);
 %state constraints, positive and negative
-dx = [ 30,  100,  100,  50,  inf,  inf;
-      -30, -100, -100, -50, -inf, -inf];
+dx = [ 30,  100,  60,  100,  inf,  inf;
+      -30, -100, -60, -100, -inf, -inf];
 %input constraints
 du = [ 5,  5;
        0,  0];
@@ -146,11 +147,13 @@ try
     % Once the Esc key is pressed, close the stream handle used for
     % communications.
     fprintf(1, '\nShutting down the client...\n');
+    stream_send_array(stream, [1 1]);
     stream_close(stream);
     fprintf(1, 'Connection closed\n');
 catch
     err = lasterror;
     fprintf(1, '\n%s.\nShutting down the client from catch...\n', err.message);
+    stream_send_array(stream, [1 1]);
     stream_close(stream);
     fprintf(1, 'Connection closed\n');
     rethrow(err);

@@ -11,15 +11,15 @@ L = 3; % Simulation progress update rate
 Nc = 3; % Control and prediction horizon
 N = 1200; % Simulation size
 %% Reference state
-savefilename = 'runs/joystick-run4.mat';
+savefilename = 'runs/joystick-run8.mat';
 %% Cost matrices and constraints
-Q = diag([1.5, .1, 1.5, 1, 0, 0],0);
-R = diag([1.5, 1.5],0);
+Q = diag([5, .1, 2, .1, 0, 0],0);
+R = diag([4, 4],0);
 %state constraints, positive and negative
 dx = [ 30,  100,  60,  100,  inf,  inf;
       -30, -100, -60, -100, -inf, -inf];
 %input constraints
-du = [ 4.5,  4.5;
+du = [ 5,  5;
        0,  0];
  %% Model generation
 % Set model coefficients. Leave empty for default value
@@ -145,11 +145,13 @@ try
     % Once the Esc key is pressed, close the stream handle used for
     % communications.
     fprintf(1, '\nShutting down the client...\n');
+    stream_send_array(stream, [1 1]);
     stream_close(stream);
     fprintf(1, 'Connection closed\n');
 catch
     err = lasterror;
     fprintf(1, '\n%s.\nShutting down the client from catch...\n', err.message);
+    stream_send_array(stream, [1 1]);
     stream_close(stream);
     fprintf(1, 'Connection closed\n');
     rethrow(err);
