@@ -16,8 +16,8 @@ ca = 0.0; % Measurement additional white noise variance
 cm = 0.0; % Measurement multiplicative white noise variance
 title = 'MPC-SL(condensed form)';
 %% Reference state
-savefilename = 'simulations/sim2cond.mat';
-loadfilename = 'references/ref2.mat';
+savefilename = 'simulations/sim2path-noamp-nozerocross.mat';
+loadfilename = 'references/ref3.mat';
 load(loadfilename); %load XREF and UREF into workspace
 % If the file is a 'path' file (not a trajectory file), set the path as a
 % reference
@@ -27,14 +27,14 @@ if ~exist('XREF','var')
 end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
-Q = diag([1, .1, .5, .1, .1, .1],0);
+Q = diag([5, .001, .1, .001, 0, 0],0);
 R = diag([.01, .01],0);
 %state constraints, positive and negative
-dx = [ 30,  50,  90,  50,  inf,  inf;
-      -30, -50, -90, -50, -inf, -inf];
+dx = [ 30,  100,  100,  50,  inf,  inf;
+      -30, -100, -100, -50, -inf, -inf];
 %input constraints
-du = [ 4.6,  4.6;
-      -4.6, -4.6];
+du = [ 5,  5;
+       0,  0];
 %% Model generation
 % Set model coefficients. Leave empty for default value
 mpc_param= []; % Use nominal model
