@@ -3,14 +3,14 @@ addpath('./quanser');
 addpath('./util');
 %% System initialization
 x0 = [0; 0; 0; 0; 0; 0]; %Initial state
-u0 = [1.8; 1.8]; % [Vf Vb] initial inputs
+u0 = [1; 1]; % [Vf Vb] initial inputs
 h = 0.1; % s - sampling time
 nu = 2;
 nx = 6;
 L = 3; % Simulation progress update rate
 Nc = 3; % Control and prediction horizon
 %% Reference state
-savefilename = 'runs/traj3-runx.mat';
+savefilename = 'runs/traj3-run1.mat';
 loadfilename = 'references/traj3-noamp-nozerocross.mat';
 load(loadfilename); %load XREF and UREF into workspace
 % If the file is a 'path' file (not a trajectory file), set the path as a
@@ -21,8 +21,8 @@ if ~exist('XREF','var')
 end
 N = size(XREF,2); % Simulation size
 %% Cost matrices and constraints
-Q = diag([5, .001, .1, .001, 0, 0],0);
-R = diag([.01, .01],0);
+Q = diag([1, .1, 1, .1, 0, 0],0);
+R = diag([1.5, 1.5],0);
 %state constraints, positive and negative
 dx = [ 30,  100,  100,  50,  inf,  inf;
       -30, -100, -100, -50, -inf, -inf];
@@ -48,6 +48,14 @@ TEVAL = zeros(1, N); %save calculation time
 x = x0;
 xr = x0; % 'real' x
 u = u0;
+%% Countdown
+fprintf('Connecting to server in ');
+fprintf('10');
+for i = 9:-1:0
+  pause(1);
+  fprintf('...%d',i);
+end
+fprintf('\n');
 %% Setup
 statedef;
 % URI used to connect to the server model.
@@ -64,9 +72,9 @@ ue = []; %input estimated solution
 try
     for i=1:N
     %% Update SL Model
-        tic;
         %% Receive data
         value = stream_receive_double_array(stream,8);
+        tic;
         x = zeros(6,1);
         x(1) = value(3); %Elevation
         x(2) = value(4); %Elevation Rate
@@ -74,6 +82,11 @@ try
         x(4) = value(6); %Pitch Rate
         x(5) = value(7); %Travel
         x(6) = value(8); %Travel Rate
+        if i > 1 %Overwrite derivates (rates) with euler values
+            x(2) = (x(1) - X(1,i-1))/h;
+            x(4) = (x(3) - X(3,i-1))/h;
+            x(6) = (x(5) - X(5,i-1))/h;
+        end
         %Do work
         if mod(i,L) == 0 || i == 1
             [A,B,g] = mpc_sl(x,u); %recalculate (A,B,g)
@@ -106,9 +119,8 @@ try
     [ue, Xe,fval,EXITFLAG, OUTPUT] = lmpc_condensed(problem);
     if EXITFLAG < 0
         fprintf('Iteration %d\n',i)
-        stream_close(stream);
-        fprintf(1, 'Connection closed\n');
-        error('Solver error \n');
+        fprintf('Message:%s\n', OUTPUT.message);
+        error('Solver error');
     end
     ubar = ue(:,1); %use only the first command in the sequence
     u = ubar + u_o;
@@ -153,8 +165,6 @@ simout.X = X;
 simout.U = U;
 simout.XREF = XREF;
 simout.UREF = UREF;
-simout.XPATH = XPATH;
-simout.UPATH = UPATH;
 simout.h = h;
 simout.L = L;
 simout.Nc = Nc;
@@ -162,11 +172,7 @@ simout.Q = Q;
 simout.R = R;
 simout.dx = dx;
 simout.du = du;
-simout.cx = cx;
-simout.ca = ca;
-simout.cm = cm;
 simout.mpcparam = mpc_param;
-simout.simparam = sim_param;
 simout.date = datestr(now);
-simout.notes = title;
+simout.notes = 'Joystick reference run';
 save(savefilename, 'simout', '-v7');
