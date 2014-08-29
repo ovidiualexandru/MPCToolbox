@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.24"
+    ComputedModelVersion    "1.25"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -29,9 +29,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "ovidiua"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Aug 28 23:46:43 2014"
-  RTWModifiedTimeStamp	  331169928
-  ModelVersionFormat	  "1.%<AutoIncrement:24>"
+  LastModifiedDate	  "Fri Aug 29 18:46:57 2014"
+  RTWModifiedTimeStamp	  331238078
+  ModelVersionFormat	  "1.%<AutoIncrement:25>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -949,7 +949,7 @@ Model {
       Name		      "Bus\nSelector1"
       SID		      64
       Ports		      [1, 2]
-      Position		      [840, 265, 845, 340]
+      Position		      [840, 255, 845, 330]
       ShowName		      off
       OutputSignals	      "Vf,Vb"
       Port {
@@ -1003,7 +1003,7 @@ Model {
       Position		      [535, 479, 565, 511]
       Floating		      off
       Location		      [975, 130, 1487, 460]
-      Open		      on
+      Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
@@ -1148,7 +1148,7 @@ Model {
       Name		      "Helicopter Write"
       SID		      8
       Ports		      [2]
-      Position		      [940, 265, 1035, 340]
+      Position		      [940, 255, 1035, 330]
       BackgroundColor	      "red"
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
@@ -1750,7 +1750,7 @@ Model {
       Position		      [535, 539, 565, 571]
       Floating		      off
       Location		      [959, 560, 1530, 967]
-      Open		      on
+      Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
@@ -1790,7 +1790,7 @@ Model {
       Position		      [410, 69, 440, 101]
       Floating		      off
       Location		      [340, 145, 834, 470]
-      Open		      on
+      Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
@@ -1810,7 +1810,7 @@ Model {
       Position		      [375, 14, 405, 46]
       Floating		      off
       Location		      [334, 586, 841, 964]
-      Open		      on
+      Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
@@ -1864,7 +1864,7 @@ Model {
       Name		      "Stream Server"
       SID		      62
       Ports		      [2, 5]
-      Position		      [635, 244, 735, 326]
+      Position		      [635, 239, 735, 321]
       AttributesFormatString  "\"shmem://foobar:1\""
       LibraryVersion	      "1.1187"
       SourceBlock	      "quarc_library/Communications/Basic/Stream Server"
@@ -2120,7 +2120,7 @@ Model {
     Line {
       SrcBlock		      "Stream Server"
       SrcPort		      1
-      Points		      [40, 0; 0, -160]
+      Points		      [40, 0; 0, -155]
       DstBlock		      "State"
       DstPort		      1
     }
@@ -2128,7 +2128,7 @@ Model {
       Labels		      [0, 0]
       SrcBlock		      "Stream Server"
       SrcPort		      2
-      Points		      [50, 0; 0, -125]
+      Points		      [50, 0; 0, -120]
       DstBlock		      "Error"
       DstPort		      1
     }
@@ -2148,14 +2148,14 @@ Model {
     Line {
       SrcBlock		      "Stream Server"
       SrcPort		      3
-      Points		      [60, 0; 0, -85]
+      Points		      [60, 0; 0, -80]
       DstBlock		      "Sent Flag"
       DstPort		      1
     }
     Line {
       SrcBlock		      "Stream Server"
       SrcPort		      5
-      Points		      [0, 60]
+      Points		      [0, 65]
       DstBlock		      "New Data Flag"
       DstPort		      1
     }
@@ -2163,7 +2163,6 @@ Model {
       Labels		      [0, 0]
       SrcBlock		      "Stream Server"
       SrcPort		      4
-      Points		      [0, 5]
       DstBlock		      "Bus\nSelector1"
       DstPort		      1
     }
@@ -2174,7 +2173,7 @@ Model {
       SrcPort		      1
       Points		      [40, 0]
       Branch {
-	Points			[0, -70]
+	Points			[0, -60]
 	DstBlock		"Vf"
 	DstPort			1
       }
@@ -2190,7 +2189,7 @@ Model {
       SrcPort		      2
       Points		      [45, 0]
       Branch {
-	Points			[0, 65]
+	Points			[0, 75]
 	DstBlock		"Vb"
 	DstPort			1
       }
@@ -2211,21 +2210,21 @@ MatData {
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (         $  ,$ "
+    "    &          4    (     0    $    !          D    (         (  )D "
   }
   DataRecord {
     Tag			    DataTag1
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (         $  ,$ "
+    "    &          4    (     0    $    !          D    (         (  )D "
   }
   DataRecord {
     Tag			    DataTag0
     Data		    "  %)30     .    N!\\   8    (     @         %    \"     $    !     0         %  0 $0    $   !F    :7-?="
     "6YI<75E          !O;&1?8FQO8VL          &]L9%]N86UE            :7-?;6]D96Q?8VQO<VEN9P!S971T:6YG<P           &ES7V1"
     "E;&5T960            .    ,     8    (    \"0(        %    \"     $    !     0         \"  $  0    X    X    !@    "
-    "@    &          4    (     0    $    !          D    (         $  ,$ .    .     8    (    !          %    \"     $"
+    "@    &          4    (     0    $    !          D    (         (  )D .    .     8    (    !          %    \"     $"
     "    %     0         0    !0   $A)3\"TQ    #@   #     &    \"     D\"        !0    @    !     0    $          @ !  "
     "     .    Z!T   8    (     @         %    \"     $    !     0         %  0 #P    $    >    ;VQD7V)O87)D7W1Y<&4 <3@"
     "                    .    ,     8    (    !          %    \"     $    \"     0         0  ( <30   X   !0'0  !@    @"

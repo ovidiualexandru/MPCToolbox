@@ -1,12 +1,12 @@
 Model {
-  Name			  "helicopter_test_v6"
+  Name			  "helicopter_manual_mode"
   Version		  7.5
   MdlSubVersion		  0
   GraphicalInterface {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.16"
+    ComputedModelVersion    "1.34"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -21,15 +21,15 @@ Model {
   MaxMDLFileLineLength	  120
   UserBdParams		  "CheckForProblematicBlocks"
   CheckForProblematicBlocks "on"
-  Created		  "Thu Aug 28 20:00:29 2014"
+  Created		  "Thu Aug 28 19:18:55 2014"
   Creator		  "ovidiua"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "ovidiua"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Aug 29 18:46:50 2014"
-  RTWModifiedTimeStamp	  331238122
-  ModelVersionFormat	  "1.%<AutoIncrement:16>"
+  LastModifiedDate	  "Fri Aug 29 19:26:36 2014"
+  RTWModifiedTimeStamp	  331241186
+  ModelVersionFormat	  "1.%<AutoIncrement:34>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -695,7 +695,7 @@ Model {
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 277, 259, 1573, 976 ] "
+      ConfigPrmDlgPosition    " [ 520, 225, 1400, 855 ] "
     }
     PropName		    "ConfigurationSets"
   }
@@ -753,12 +753,6 @@ Model {
       PreserveConstantTs      off
     }
     Block {
-      BlockType		      Demux
-      Outputs		      "4"
-      DisplayOption	      "none"
-      BusSelectionMode	      off
-    }
-    Block {
       BlockType		      Gain
       Gain		      "1"
       Multiplication	      "Element-wise(K.*u)"
@@ -801,14 +795,6 @@ Model {
       LatchByDelayingOutsideSignal off
       LatchInputForFeedbackSignals off
       Interpolate	      on
-    }
-    Block {
-      BlockType		      Mux
-      Inputs		      "4"
-      DisplayOption	      "none"
-      UseBusObject	      off
-      BusObject		      "BusObject"
-      NonVirtualBus	      off
     }
     Block {
       BlockType		      Outport
@@ -904,9 +890,6 @@ Model {
       SampleTime	      "-1"
     }
     Block {
-      BlockType		      Terminator
-    }
-    Block {
       BlockType		      TransferFcn
       Numerator		      "[1]"
       Denominator	      "[1 2 1]"
@@ -916,8 +899,8 @@ Model {
     }
   }
   System {
-    Name		    "helicopter_test_v6"
-    Location		    [455, 169, 1649, 944]
+    Name		    "helicopter_manual_mode"
+    Location		    [30, 149, 824, 508]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -931,59 +914,15 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    78
-    Block {
-      BlockType		      Constant
-      Name		      "Constant"
-      SID		      76
-      Position		      [635, 225, 665, 255]
-      Value		      "0"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-    }
-    Block {
-      BlockType		      Constant
-      Name		      "Constant1"
-      SID		      78
-      Position		      [635, 305, 665, 335]
-      Value		      "0"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-    }
-    Block {
-      BlockType		      Demux
-      Name		      "Demux"
-      SID		      62
-      Ports		      [1, 2]
-      Position		      [845, 219, 850, 326]
-      ShowName		      off
-      Outputs		      "2"
-      DisplayOption	      "bar"
-    }
-    Block {
-      BlockType		      Gain
-      Name		      "Elevation Gain"
-      SID		      71
-      Position		      [250, 170, 280, 200]
-      Gain		      "20"
-      ParameterDataTypeMode   "Inherit via internal rule"
-      ParameterDataType	      "fixdt(1, 16)"
-      ParameterScaling	      "2^0"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeMode	      "Inherit via internal rule"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
+    SIDHighWatermark	    102
     Block {
       BlockType		      Scope
       Name		      "Elevation [deg]"
       SID		      18
       Ports		      [1]
-      Position		      [545, 479, 575, 511]
+      Position		      [405, 79, 435, 111]
       Floating		      off
-      Location		      [65, 113, 425, 370]
+      Location		      [904, 383, 1213, 640]
       Open		      off
       NumInputPorts	      "1"
       List {
@@ -991,7 +930,7 @@ Model {
 	axes1			"%<SignalLabel>"
       }
       YMin		      "-30"
-      YMax		      "7.5"
+      YMax		      "-2.5"
       SaveName		      "ScopeData2"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
@@ -1001,9 +940,9 @@ Model {
       Name		      "Elevation rate [deg/s]"
       SID		      19
       Ports		      [1]
-      Position		      [615, 509, 645, 541]
+      Position		      [475, 109, 505, 141]
       Floating		      off
-      Location		      [66, 505, 385, 824]
+      Location		      [792, 715, 1152, 1006]
       Open		      off
       NumInputPorts	      "1"
       List {
@@ -1021,7 +960,7 @@ Model {
       Name		      "HIL Initialize"
       SID		      20
       Ports		      []
-      Position		      [90, 14, 174, 89]
+      Position		      [560, 209, 644, 284]
       AttributesFormatString  "%<object_name> (%<board_type>-%<board_number>)"
       LibraryVersion	      "1.1187"
       UserDataPersistent      on
@@ -1109,7 +1048,7 @@ Model {
       Name		      "Helicopter Write"
       SID		      21
       Ports		      [2]
-      Position		      [895, 218, 1005, 327]
+      Position		      [640, 58, 750, 167]
       BackgroundColor	      "red"
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
@@ -1120,7 +1059,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Helicopter Write"
-	Location		[1229, 242, 1599, 482]
+	Location		[869, 416, 1164, 564]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1137,14 +1076,14 @@ Model {
 	  BlockType		  Inport
 	  Name			  "Vf "
 	  SID			  22
-	  Position		  [25, 33, 55, 47]
+	  Position		  [20, 28, 50, 42]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "Vb"
 	  SID			  23
-	  Position		  [25, 88, 55, 102]
+	  Position		  [20, 83, 50, 97]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
@@ -1153,7 +1092,7 @@ Model {
 	  Name			  "HIL Write Analog"
 	  SID			  24
 	  Ports			  [2]
-	  Position		  [260, 24, 345, 86]
+	  Position		  [150, 34, 235, 96]
 	  AttributesFormatString  "(%<object_name>)"
 	  LibraryVersion	  "1.1187"
 	  UserDataPersistent	  on
@@ -1171,7 +1110,7 @@ Model {
 	  Name			  "Saturation"
 	  SID			  25
 	  Ports			  [1, 1]
-	  Position		  [80, 25, 110, 55]
+	  Position		  [75, 20, 105, 50]
 	  UpperLimit		  "3"
 	  LowerLimit		  "-3"
 	  OutDataType		  "fixdt(1, 16)"
@@ -1182,7 +1121,7 @@ Model {
 	  Name			  "Saturation1"
 	  SID			  26
 	  Ports			  [1, 1]
-	  Position		  [80, 80, 110, 110]
+	  Position		  [75, 75, 105, 105]
 	  UpperLimit		  "3"
 	  LowerLimit		  "-3"
 	  OutDataType		  "fixdt(1, 16)"
@@ -1191,13 +1130,14 @@ Model {
 	Line {
 	  SrcBlock		  "Saturation"
 	  SrcPort		  1
+	  Points		  [25, 0]
 	  DstBlock		  "HIL Write Analog"
 	  DstPort		  1
 	}
 	Line {
 	  SrcBlock		  "Saturation1"
 	  SrcPort		  1
-	  Points		  [130, 0]
+	  Points		  [25, 0]
 	  DstBlock		  "HIL Write Analog"
 	  DstPort		  2
 	}
@@ -1220,7 +1160,7 @@ Model {
       Name		      "Helicopter read"
       SID		      27
       Ports		      [0, 8]
-      Position		      [25, 145, 205, 375]
+      Position		      [15, 25, 195, 255]
       BackgroundColor	      "green"
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
@@ -1229,9 +1169,15 @@ Model {
       Opaque		      off
       RequestExecContextInheritance off
       MaskHideContents	      off
+      Port {
+	PortNumber		3
+	Name			"Elevation"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
       System {
 	Name			"Helicopter read"
-	Location		[494, 132, 1613, 927]
+	Location		[44, 534, 686, 992]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1248,7 +1194,7 @@ Model {
 	  BlockType		  Constant
 	  Name			  "Constant"
 	  SID			  28
-	  Position		  [430, 540, 460, 570]
+	  Position		  [380, 185, 410, 215]
 	  Value			  "-28"
 	  OutDataType		  "fixdt(1, 16)"
 	  OutScaling		  "2^0"
@@ -1257,7 +1203,7 @@ Model {
 	  BlockType		  Gain
 	  Name			  "Elevation Gain"
 	  SID			  29
-	  Position		  [265, 484, 335, 526]
+	  Position		  [265, 129, 335, 171]
 	  Gain			  "0.0879"
 	  ParameterDataTypeMode	  "Inherit via internal rule"
 	  ParameterDataType	  "fixdt(1, 16)"
@@ -1273,8 +1219,8 @@ Model {
 	  BlockType		  Reference
 	  Name			  "HIL Read"
 	  SID			  30
-	  Ports			  [0, 7]
-	  Position		  [30, 133, 125, 257]
+	  Ports			  [0, 5]
+	  Position		  [30, 138, 125, 262]
 	  AttributesFormatString  "(%<object_name>)"
 	  LibraryVersion	  "1.1187"
 	  UserDataPersistent	  on
@@ -1282,8 +1228,8 @@ Model {
 	  SourceBlock		  "quarc_library/Data Acquisition/Generic/Immediate I//O/HIL Read"
 	  SourceType		  "HIL Read"
 	  object_name		  "HIL-1"
-	  analog_channels	  "[0:3]"
-	  encoder_channels	  "[0:2]"
+	  analog_channels	  "[1:2]"
+	  encoder_channels	  "[2 1 0]"
 	  digital_channels	  "[]"
 	  other_channels	  "[]"
 	  sample_time		  "qc_get_step_size"
@@ -1293,14 +1239,32 @@ Model {
 	  encoder_data_type	  "double"
 	  digital_data_type	  "boolean"
 	  Port {
-	    PortNumber		    2
+	    PortNumber		    1
 	    Name		    "X"
 	    RTWStorageClass	    "Auto"
 	    DataLoggingNameMode	    "SignalName"
 	  }
 	  Port {
-	    PortNumber		    3
+	    PortNumber		    2
 	    Name		    "Y"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	  Port {
+	    PortNumber		    3
+	    Name		    "Elevation_enc"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	  Port {
+	    PortNumber		    4
+	    Name		    "Pitch_enc"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	  Port {
+	    PortNumber		    5
+	    Name		    "Travel_enc"
 	    RTWStorageClass	    "Auto"
 	    DataLoggingNameMode	    "SignalName"
 	  }
@@ -1309,7 +1273,7 @@ Model {
 	  BlockType		  Gain
 	  Name			  "JoyPreGain"
 	  SID			  31
-	  Position		  [325, 110, 400, 150]
+	  Position		  [325, 15, 400, 55]
 	  Gain			  "1/3.3"
 	  ParameterDataTypeMode	  "Inherit via internal rule"
 	  ParameterDataType	  "fixdt(1, 16)"
@@ -1325,7 +1289,7 @@ Model {
 	  BlockType		  Gain
 	  Name			  "JoyPreGain1"
 	  SID			  32
-	  Position		  [325, 180, 400, 220]
+	  Position		  [325, 70, 400, 110]
 	  Gain			  "1/3.3"
 	  ParameterDataTypeMode	  "Inherit via internal rule"
 	  ParameterDataType	  "fixdt(1, 16)"
@@ -1341,7 +1305,7 @@ Model {
 	  BlockType		  TransferFcn
 	  Name			  "Pitch Deriv"
 	  SID			  33
-	  Position		  [460, 412, 495, 448]
+	  Position		  [425, 302, 460, 338]
 	  Numerator		  "[10 0]"
 	  Denominator		  "[1 10]"
 	}
@@ -1349,7 +1313,7 @@ Model {
 	  BlockType		  Gain
 	  Name			  "Pitch Gain"
 	  SID			  34
-	  Position		  [265, 381, 340, 419]
+	  Position		  [265, 271, 340, 309]
 	  Gain			  "0.0879"
 	  ParameterDataTypeMode	  "Inherit via internal rule"
 	  ParameterDataType	  "fixdt(1, 16)"
@@ -1366,7 +1330,7 @@ Model {
 	  Name			  "Sum"
 	  SID			  35
 	  Ports			  [2, 1]
-	  Position		  [480, 495, 500, 515]
+	  Position		  [430, 140, 450, 160]
 	  ShowName		  off
 	  IconShape		  "round"
 	  Inputs		  "|++"
@@ -1378,22 +1342,10 @@ Model {
 	  SaturateOnIntegerOverflow off
 	}
 	Block {
-	  BlockType		  Terminator
-	  Name			  "Terminator"
-	  SID			  36
-	  Position		  [220, 95, 240, 115]
-	}
-	Block {
-	  BlockType		  Terminator
-	  Name			  "Terminator1"
-	  SID			  37
-	  Position		  [220, 200, 240, 220]
-	}
-	Block {
 	  BlockType		  TransferFcn
 	  Name			  "Transfer Fcn1"
 	  SID			  38
-	  Position		  [480, 582, 515, 618]
+	  Position		  [425, 232, 460, 268]
 	  Numerator		  "[10 0]"
 	  Denominator		  "[1 10]"
 	}
@@ -1401,7 +1353,7 @@ Model {
 	  BlockType		  TransferFcn
 	  Name			  "Travel Deriv"
 	  SID			  39
-	  Position		  [430, 312, 465, 348]
+	  Position		  [425, 392, 460, 428]
 	  Numerator		  "[10 0]"
 	  Denominator		  "[1 10]"
 	}
@@ -1409,7 +1361,7 @@ Model {
 	  BlockType		  Gain
 	  Name			  "Travel Gain"
 	  SID			  40
-	  Position		  [265, 265, 340, 305]
+	  Position		  [265, 345, 340, 385]
 	  Gain			  "-0.091"
 	  ParameterDataTypeMode	  "Inherit via internal rule"
 	  ParameterDataType	  "fixdt(1, 16)"
@@ -1425,30 +1377,30 @@ Model {
 	  BlockType		  Outport
 	  Name			  "X"
 	  SID			  41
-	  Position		  [510, 123, 540, 137]
+	  Position		  [510, 28, 540, 42]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "Y"
 	  SID			  42
-	  Position		  [510, 193, 540, 207]
+	  Position		  [510, 83, 540, 97]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "Elevation [deg]"
-	  SID			  43
-	  Position		  [530, 498, 560, 512]
+	  SID			  47
+	  Position		  [530, 143, 560, 157]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "Elevation rate [deg/s]"
-	  SID			  44
-	  Position		  [560, 548, 590, 562]
+	  SID			  48
+	  Position		  [560, 193, 590, 207]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
 	}
@@ -1456,7 +1408,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "Pitch [deg]"
 	  SID			  45
-	  Position		  [510, 393, 540, 407]
+	  Position		  [510, 283, 540, 297]
 	  Port			  "5"
 	  IconDisplay		  "Port number"
 	}
@@ -1464,60 +1416,25 @@ Model {
 	  BlockType		  Outport
 	  Name			  "Pitch rate [deg/s]"
 	  SID			  46
-	  Position		  [555, 423, 585, 437]
+	  Position		  [555, 313, 585, 327]
 	  Port			  "6"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "Travel [deg]"
-	  SID			  47
-	  Position		  [510, 278, 540, 292]
+	  SID			  43
+	  Position		  [510, 358, 540, 372]
 	  Port			  "7"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "Travel rate [deg/s]"
-	  SID			  48
-	  Position		  [555, 323, 585, 337]
+	  SID			  44
+	  Position		  [555, 403, 585, 417]
 	  Port			  "8"
 	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  1
-	  Points		  [35, 0; 0, -45]
-	  DstBlock		  "Terminator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  4
-	  Points		  [75, 0]
-	  DstBlock		  "Terminator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  5
-	  Points		  [65, 0; 0, 75]
-	  DstBlock		  "Travel Gain"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  6
-	  Points		  [50, 0; 0, 175]
-	  DstBlock		  "Pitch Gain"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  7
-	  Points		  [40, 0; 0, 265]
-	  DstBlock		  "Elevation Gain"
-	  DstPort		  1
 	}
 	Line {
 	  SrcBlock		  "Travel Gain"
@@ -1538,7 +1455,7 @@ Model {
 	  SrcPort		  1
 	  Points		  [25, 0]
 	  Branch {
-	    Points		    [0, 95]
+	    Points		    [0, 100]
 	    DstBlock		    "Transfer Fcn1"
 	    DstPort		    1
 	  }
@@ -1589,26 +1506,8 @@ Model {
 	Line {
 	  SrcBlock		  "Transfer Fcn1"
 	  SrcPort		  1
-	  Points		  [25, 0]
+	  Points		  [80, 0]
 	  DstBlock		  "Elevation rate [deg/s]"
-	  DstPort		  1
-	}
-	Line {
-	  Name			  "X"
-	  Labels		  [0, 0]
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  2
-	  Points		  [90, 0; 0, -35]
-	  DstBlock		  "JoyPreGain"
-	  DstPort		  1
-	}
-	Line {
-	  Name			  "Y"
-	  Labels		  [0, 0]
-	  SrcBlock		  "HIL Read"
-	  SrcPort		  3
-	  Points		  [180, 0]
-	  DstBlock		  "JoyPreGain1"
 	  DstPort		  1
 	}
 	Line {
@@ -1623,60 +1522,318 @@ Model {
 	  DstBlock		  "X"
 	  DstPort		  1
 	}
+	Line {
+	  Name			  "X"
+	  Labels		  [0, 0]
+	  SrcBlock		  "HIL Read"
+	  SrcPort		  1
+	  Points		  [25, 0; 0, -115]
+	  DstBlock		  "JoyPreGain"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Y"
+	  Labels		  [0, 0]
+	  SrcBlock		  "HIL Read"
+	  SrcPort		  2
+	  Points		  [40, 0; 0, -85]
+	  DstBlock		  "JoyPreGain1"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Elevation_enc"
+	  Labels		  [0, 0]
+	  SrcBlock		  "HIL Read"
+	  SrcPort		  3
+	  Points		  [50, 0; 0, -50]
+	  DstBlock		  "Elevation Gain"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Pitch_enc"
+	  Labels		  [0, 0]
+	  SrcBlock		  "HIL Read"
+	  SrcPort		  4
+	  Points		  [50, 0; 0, 65]
+	  DstBlock		  "Pitch Gain"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Travel_enc"
+	  Labels		  [0, 0]
+	  SrcBlock		  "HIL Read"
+	  SrcPort		  5
+	  Points		  [40, 0; 0, 115]
+	  DstBlock		  "Travel Gain"
+	  DstPort		  1
+	}
       }
     }
     Block {
-      BlockType		      Mux
-      Name		      "Mux"
-      SID		      49
-      Ports		      [9, 1]
-      Position		      [525, 145, 530, 405]
-      ShowName		      off
-      Inputs		      "9"
-      DisplayOption	      "bar"
-    }
-    Block {
-      BlockType		      Mux
-      Name		      "Mux1"
-      SID		      77
-      Ports		      [2, 1]
-      Position		      [715, 256, 720, 294]
-      ShowName		      off
-      Inputs		      "2"
-      DisplayOption	      "bar"
-    }
-    Block {
-      BlockType		      Gain
-      Name		      "Pitch Gain"
-      SID		      70
-      Position		      [290, 140, 320, 170]
-      Gain		      "60"
-      ParameterDataTypeMode   "Inherit via internal rule"
-      ParameterDataType	      "fixdt(1, 16)"
-      ParameterScaling	      "2^0"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeMode	      "Inherit via internal rule"
-      OutDataType	      "fixdt(1, 16)"
-      OutScaling	      "2^0"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
+      BlockType		      SubSystem
+      Name		      "Manual mode"
+      SID		      1
+      Ports		      [2, 2]
+      Position		      [285, 18, 365, 82]
+      BackgroundColor	      "magenta"
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Manual mode"
+	Location		[870, 95, 1263, 283]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "X"
+	  SID			  2
+	  Position		  [15, 53, 45, 67]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "Y"
+	  SID			  3
+	  Position		  [15, 103, 45, 117]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  6
+	  Ports			  [2, 1]
+	  Position		  [100, 17, 130, 48]
+	  InputSameDT		  off
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^-10"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add1"
+	  SID			  7
+	  Ports			  [2, 1]
+	  Position		  [100, 87, 130, 118]
+	  Inputs		  "-+"
+	  InputSameDT		  off
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^-10"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  101
+	  Position		  [280, 20, 310, 50]
+	  Gain			  "5"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	  Port {
+	    PortNumber		    1
+	    Name		    "Vf"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  102
+	  Position		  [280, 90, 310, 120]
+	  Gain			  "5"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	  Port {
+	    PortNumber		    1
+	    Name		    "Vb"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Travel Gain1"
+	  SID			  10
+	  Position		  [160, 15, 235, 55]
+	  Gain			  "0.5"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	  Port {
+	    PortNumber		    1
+	    Name		    "Vfnorm"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Travel Gain2"
+	  SID			  11
+	  Position		  [150, 85, 225, 125]
+	  Gain			  "0.5"
+	  ParameterDataTypeMode	  "Inherit via internal rule"
+	  ParameterDataType	  "fixdt(1, 16)"
+	  ParameterScaling	  "2^0"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeMode	  "Inherit via internal rule"
+	  OutDataType		  "fixdt(1, 16)"
+	  OutScaling		  "2^0"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	  Port {
+	    PortNumber		    1
+	    Name		    "Vbnorm"
+	    RTWStorageClass	    "Auto"
+	    DataLoggingNameMode	    "SignalName"
+	  }
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Vf"
+	  SID			  16
+	  Position		  [340, 28, 370, 42]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Vb"
+	  SID			  17
+	  Position		  [340, 98, 370, 112]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  DstBlock		  "Travel Gain1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Add1"
+	  SrcPort		  1
+	  DstBlock		  "Travel Gain2"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "X"
+	  SrcPort		  1
+	  Points		  [30, 0]
+	  Branch {
+	    Points		    [0, -35]
+	    DstBlock		    "Add"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 35]
+	    DstBlock		    "Add1"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "Y"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    DstBlock		    "Add1"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, -70]
+	    DstBlock		    "Add"
+	    DstPort		    2
+	  }
+	}
+	Line {
+	  Name			  "Vfnorm"
+	  Labels		  [0, 0]
+	  SrcBlock		  "Travel Gain1"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Vf"
+	  Labels		  [0, 0]
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Vf"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Vbnorm"
+	  Labels		  [0, 0]
+	  SrcBlock		  "Travel Gain2"
+	  SrcPort		  1
+	  DstBlock		  "Gain1"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "Vb"
+	  Labels		  [0, 0]
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  DstBlock		  "Vb"
+	  DstPort		  1
+	}
+      }
     }
     Block {
       BlockType		      Scope
       Name		      "Pitch [deg]"
-      SID		      50
+      SID		      49
       Ports		      [1]
-      Position		      [545, 534, 575, 566]
+      Position		      [405, 139, 435, 171]
       Floating		      off
-      Location		      [702, 110, 1017, 331]
+      Location		      [1176, 725, 1515, 993]
       Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
 	axes1			"%<SignalLabel>"
       }
-      YMin		      "-10"
-      YMax		      "110"
+      YMin		      "-7.5"
+      YMax		      "15"
       SaveName		      "ScopeData3"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
@@ -1684,112 +1841,39 @@ Model {
     Block {
       BlockType		      Scope
       Name		      "Pitch rate [deg/s]"
-      SID		      51
+      SID		      50
       Ports		      [1]
-      Position		      [615, 564, 645, 596]
+      Position		      [475, 169, 505, 201]
       Floating		      off
-      Location		      [734, 435, 1032, 726]
+      Location		      [1252, 383, 1586, 636]
       Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
 	axes1			"%<SignalLabel>"
       }
-      YMin		      "-90"
-      YMax		      "50"
+      YMin		      "-20"
+      YMax		      "35"
       SaveName		      "ScopeData8"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
     }
     Block {
-      BlockType		      Reference
-      Name		      "Ramp"
-      SID		      54
-      Ports		      [0, 1]
-      Position		      [100, 420, 130, 450]
-      LibraryVersion	      "1.216"
-      SourceBlock	      "simulink/Sources/Ramp"
-      SourceType	      "Ramp"
-      ShowPortLabels	      "FromPortIcon"
-      SystemSampleTime	      "-1"
-      FunctionWithSeparateData off
-      RTWMemSecFuncInitTerm   "Inherit from model"
-      RTWMemSecFuncExecute    "Inherit from model"
-      RTWMemSecDataConstants  "Inherit from model"
-      RTWMemSecDataInternal   "Inherit from model"
-      RTWMemSecDataParameters "Inherit from model"
-      slope		      "10"
-      start		      "0"
-      X0		      "1"
-      VectorParams1D	      on
-      Port {
-	PortNumber		1
-	Name			"Iteration"
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
-    }
-    Block {
-      BlockType		      Scope
-      Name		      "Reference Elevation [deg]"
-      SID		      61
-      Ports		      [1]
-      Position		      [420, 69, 450, 101]
-      Floating		      off
-      Location		      [65, 113, 425, 370]
-      Open		      off
-      NumInputPorts	      "1"
-      List {
-	ListType		AxesTitles
-	axes1			"%<SignalLabel>"
-      }
-      YMin		      "-22.5"
-      YMax		      "20"
-      SaveName		      "ScopeData1"
-      DataFormat	      "StructureWithTime"
-      SampleTime	      "0"
-    }
-    Block {
-      BlockType		      Scope
-      Name		      "Reference Pitch [deg]"
-      SID		      60
-      Ports		      [1]
-      Position		      [385, 14, 415, 46]
-      Floating		      off
-      Location		      [65, 113, 425, 370]
-      Open		      off
-      NumInputPorts	      "1"
-      List {
-	ListType		AxesTitles
-	axes1			"%<SignalLabel>"
-      }
-      YMin		      "-80"
-      YMax		      "70"
-      DataFormat	      "StructureWithTime"
-      SampleTime	      "0"
-    }
-    Block {
-      BlockType		      Terminator
-      Name		      "Terminator"
-      SID		      75
-      Position		      [555, 265, 575, 285]
-    }
-    Block {
       BlockType		      Scope
       Name		      "Travel [deg]"
-      SID		      52
+      SID		      51
       Ports		      [1]
-      Position		      [545, 594, 575, 626]
+      Position		      [405, 199, 435, 231]
       Floating		      off
-      Location		      [1333, 121, 1637, 370]
+      Location		      [1625, 383, 1877, 642]
       Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
 	axes1			"%<SignalLabel>"
       }
-      YMin		      "-14"
-      YMax		      "3"
+      YMin		      "180"
+      YMax		      "227.5"
       SaveName		      "ScopeData4"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
@@ -1797,192 +1881,87 @@ Model {
     Block {
       BlockType		      Scope
       Name		      "Travel rate [deg/s]"
-      SID		      53
+      SID		      52
       Ports		      [1]
-      Position		      [615, 629, 645, 661]
+      Position		      [475, 229, 505, 261]
       Floating		      off
-      Location		      [1356, 464, 1651, 724]
+      Location		      [1560, 721, 1895, 983]
       Open		      off
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
 	axes1			"%<SignalLabel>"
       }
-      YMin		      "-30"
-      YMax		      "35"
+      YMin		      "-17.5"
+      YMax		      "22.5"
       SaveName		      "ScopeData7"
       DataFormat	      "StructureWithTime"
       SampleTime	      "0"
     }
     Line {
-      Name		      "Iteration"
-      Labels		      [1, 0]
-      SrcBlock		      "Ramp"
-      SrcPort		      1
-      Points		      [300, 0; 0, -40]
-      DstBlock		      "Mux"
-      DstPort		      9
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      2
-      DstBlock		      "Elevation Gain"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      1
-      DstBlock		      "Pitch Gain"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Pitch Gain"
-      SrcPort		      1
-      Points		      [15, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -125]
-	DstBlock		"Reference Pitch [deg]"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Elevation Gain"
-      SrcPort		      1
-      Points		      [65, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			2
-      }
-      Branch {
-	Points			[0, -100]
-	DstBlock		"Reference Elevation [deg]"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      3
-      Points		      [65, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			3
-      }
-      Branch {
-	Points			[0, 280]
-	DstBlock		"Elevation [deg]"
-	DstPort			1
-      }
-    }
-    Line {
       SrcBlock		      "Helicopter read"
       SrcPort		      4
-      Points		      [75, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			4
-      }
-      Branch {
-	Points			[0, 280]
-	DstBlock		"Elevation rate [deg/s]"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      5
-      Points		      [85, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			5
-      }
-      Branch {
-	Points			[0, 275]
-	DstBlock		"Pitch [deg]"
-	DstPort			1
-      }
+      DstBlock		      "Elevation rate [deg/s]"
+      DstPort		      1
     }
     Line {
       SrcBlock		      "Helicopter read"
       SrcPort		      6
-      Points		      [95, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			6
-      }
-      Branch {
-	Points			[0, 275]
-	DstBlock		"Pitch rate [deg/s]"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Helicopter read"
-      SrcPort		      7
-      Points		      [105, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			7
-      }
-      Branch {
-	Points			[0, 275]
-	DstBlock		"Travel [deg]"
-	DstPort			1
-      }
+      DstBlock		      "Pitch rate [deg/s]"
+      DstPort		      1
     }
     Line {
       SrcBlock		      "Helicopter read"
       SrcPort		      8
-      Points		      [115, 0]
-      Branch {
-	DstBlock		"Mux"
-	DstPort			8
-      }
-      Branch {
-	Points			[0, 280]
-	DstBlock		"Travel rate [deg/s]"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Demux"
-      SrcPort		      1
-      DstBlock		      "Helicopter Write"
+      DstBlock		      "Travel rate [deg/s]"
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Demux"
+      Name		      "Elevation"
+      Labels		      [0, 0]
+      SrcBlock		      "Helicopter read"
+      SrcPort		      3
+      DstBlock		      "Elevation [deg]"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Helicopter read"
+      SrcPort		      7
+      DstBlock		      "Travel [deg]"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Helicopter read"
+      SrcPort		      5
+      DstBlock		      "Pitch [deg]"
+      DstPort		      1
+    }
+    Line {
+      Labels		      [0, 0]
+      SrcBlock		      "Helicopter read"
+      SrcPort		      1
+      DstBlock		      "Manual mode"
+      DstPort		      1
+    }
+    Line {
+      Labels		      [0, 0]
+      SrcBlock		      "Helicopter read"
       SrcPort		      2
-      DstBlock		      "Helicopter Write"
+      DstBlock		      "Manual mode"
       DstPort		      2
     }
     Line {
-      SrcBlock		      "Mux"
+      SrcBlock		      "Manual mode"
       SrcPort		      1
-      DstBlock		      "Terminator"
+      Points		      [220, 0; 0, 50]
+      DstBlock		      "Helicopter Write"
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Mux1"
-      SrcPort		      1
-      DstBlock		      "Demux"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Constant"
-      SrcPort		      1
-      Points		      [30, 0]
-      DstBlock		      "Mux1"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Constant1"
-      SrcPort		      1
-      Points		      [30, 0]
-      DstBlock		      "Mux1"
+      SrcBlock		      "Manual mode"
+      SrcPort		      2
+      Points		      [185, 0; 0, 75]
+      DstBlock		      "Helicopter Write"
       DstPort		      2
     }
   }
@@ -1994,21 +1973,21 @@ MatData {
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (        (  ,G$ "
+    "    &          4    (     0    $    !          D    (        8 !*KD "
   }
   DataRecord {
     Tag			    DataTag1
     Data		    "  %)30     .    & $   8    (     @         %    \"     $    !     0         %  0 #0    $    G    ;VQD7V"
     "YA;64      &ES7V1E;&5T960   !O8FIE8W1?8FQO8VL   X    X    !@    @    $          4    (     0    4    !         !  "
     "   %    2$E,+3$    .    ,     8    (    \"0(        %    \"     $    !     0         \"  $       X    X    !@    @"
-    "    &          4    (     0    $    !          D    (        (  ,G$ "
+    "    &          4    (     0    $    !          D    (        8 !*KD "
   }
   DataRecord {
     Tag			    DataTag0
     Data		    "  %)30     .    N!\\   8    (     @         %    \"     $    !     0         %  0 $0    $   !F    :7-?="
     "6YI<75E          !O;&1?8FQO8VL          &]L9%]N86UE            :7-?;6]D96Q?8VQO<VEN9P!S971T:6YG<P           &ES7V1"
     "E;&5T960            .    ,     8    (    \"0(        %    \"     $    !     0         \"  $  0    X    X    !@    "
-    "@    &          4    (     0    $    !          D    (        (  ,G$ .    .     8    (    !          %    \"     $"
+    "@    &          4    (     0    $    !          D    (        8 !*KD .    .     8    (    !          %    \"     $"
     "    %     0         0    !0   $A)3\"TQ    #@   #     &    \"     D\"        !0    @    !     0    $          @ !  "
     "     .    Z!T   8    (     @         %    \"     $    !     0         %  0 #P    $    >    ;VQD7V)O87)D7W1Y<&4 <3@"
     "                    .    ,     8    (    !          %    \"     $    \"     0         0  ( <30   X   !0'0  !@    @"
