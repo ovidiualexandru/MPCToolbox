@@ -16,9 +16,9 @@ ca = 0.0; % Measurement additional white noise variance
 cm = 0.0; % Measurement multiplicative white noise variance
 title = 'Nonlinear-MPC';
 %% Reference state
-savefilename = 'simulations/sim2nl.mat';
-loadfilename = 'references/ref2.mat';
-trajfilename = 'references/traj2.mat';
+savefilename = 'simulations/sim3nl-noamp-nozerocross.mat';
+loadfilename = 'references/ref3.mat';
+trajfilename = 'references/traj3-noamp-nozerocross.mat';
 load(loadfilename); %load XREF and UREF into workspace
 % If the file is a 'path' file (not a trajectory file), set the path as a
 % reference
@@ -31,11 +31,11 @@ N = size(XREF,2); % Simulation size
 Q = diag([1, .1, .5, .1, .1, .1],0);
 R = diag([.01, .01],0);
 %state constraints, positive and negative
-dx = [ 30,  50,  90,  50,  inf,  inf;
-      -30, -50, -90, -50, -inf, -inf];
+dx = [ 30,  100,  100,  50,  inf,  inf;
+      -30, -100, -100, -50, -inf, -inf];
 %input constraints
-du = [ 22,  22;
-      -22, -22];
+du = [ 5,  5;
+       0,  0];
   %% Model generation
 % Set model coefficients. Leave empty for default value
 mpc_param= []; % Use nominal model
